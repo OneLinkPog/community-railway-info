@@ -2,7 +2,7 @@
   {
     "name": "R10",
     "status": "Station notice",
-    "notice": "North Bohemia - Bardo is currently closed due to reconstruction and renaming. Please use Wawer instead.",
+    "notice": "<b>Attention to all Northern Citizen. </b> Station N. Bohemia - Bardo is currently closed due to massive reconstruction. And also the station will be renamed. So please use the near station at Wawer.<br>Every changes will be announced.<br>We apologies for the inconvenience. Your <i><b>Magwer Transport</b></i>",
     "color": "#29B442",
     "stations" : [
       "Wawer",
