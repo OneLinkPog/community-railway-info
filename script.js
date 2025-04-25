@@ -25,7 +25,7 @@ async function loadTrainLines() {
                 newline.innerHTML = line.name
                 stationnoticecontainer.appendChild(newline)
                 break;
-            case "Suspended":
+            case "No scheduled service":
                 noscheduledservicecontainer.style.display = "block"
                 var newline = document.createElement("span")
                 newline.classList.add("line")
