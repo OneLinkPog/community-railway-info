@@ -1,12 +1,13 @@
 [
   {
     "name": "R10",
-    "status": "Running",
-    "notice": "",
+    "status": "Station notice",
+    "notice": "North Bohemia - Bardo is currently closed due to reconstruction and renaming. Please use Wawer instead.",
     "color": "#29B442",
     "stations" : [
       "Wawer",
-      "North Bohemia - Bardo",
+      "<del>North Bohemia - Bardo</del>
+      ",
       "Two Cities Central",
       "Spawn"
     ]
@@ -97,21 +98,21 @@
   },
   {
     "name": "RE60",
-    "status": "Suspended",
+    "status": "No scheduled service",
     "notice": "Under construction.",
     "color": "#9fc5e8",
     "stations" : []
   },
   {
     "name": "RE61",
-    "status": "Suspended",
+    "status": "No scheduled service",
     "notice": "Under construction.",
     "color": "#9fc5e8",
     "stations" : []
   },
   {
     "name": "RE62",
-    "status": "Suspended",
+    "status": "No scheduled service",
     "notice": "Under construction.",
     "color": "#9fc5e8",
     "stations" : []
@@ -194,7 +195,7 @@
   },
   {
     "name": "IC110",
-    "status": "Suspended",
+    "status": "No scheduled service",
     "notice": "Under construction.",
     "color": "#29b442",
     "stations" : []
@@ -208,7 +209,7 @@
       "Wawer",
       "Two Cities Central",
       "Spawn",
-      "Salzingen Hbf"
+      "Salzingen Hbf2"
     ]
   },
   {
