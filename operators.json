@@ -109,4 +109,13 @@
         ],
         "uid": "ovb"
     }
+    {
+        "name": "MTA Metro-South",
+        "short": "MSRR",
+        "color": "#0060AA",
+        "users": [
+            "709020485094080533"
+        ],
+        "uid": "mtamsrr"
+    }
 ]
