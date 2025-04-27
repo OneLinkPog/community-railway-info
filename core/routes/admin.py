@@ -26,7 +26,7 @@ def admin_route():
 
     operator = None
     if user and 'id' in user:
-        operator = next((op for op in operators if user['id'] in op['users']), None)
+        operator = [op for op in operators if user['id'] in op['users']]
 
     return render_template(
         'admin/admin.html',
@@ -52,7 +52,7 @@ def admin_settings():
 
     operator = None
     if user and 'id' in user:
-        operator = next((op for op in operators if user['id'] in op['users']), None)
+        operator = [op for op in operators if user['id'] in op['users']]
 
     return render_template(
         'admin/settings.html',
@@ -84,7 +84,7 @@ def admin_logs():
 
     operator = None
     if user and 'id' in user:
-        operator = next((op for op in operators if user['id'] in op['users']), None)
+        operator = [op for op in operators if user['id'] in op['users']]
 
     return render_template(
         'admin/logs.html',
@@ -93,6 +93,43 @@ def admin_logs():
         operator=operator,
         logs=logs
     )
+    
+@admin.route('/admin/companies')
+def admin_companies():
+    user = session.get('user')
+
+    if not user or user.get('id') not in config.web_admins:
+        return redirect(url_for('index.index_route'))
+
+    operator = None
+    if user and 'id' in user:
+        operator = [op for op in operators if user['id'] in op['users']]
+
+    try:
+        with open(main_dir + '/operator_requests.json', 'r') as f:
+            requests = json.load(f)
+        
+        requests.sort(key=lambda x: x['timestamp'], reverse=True)
+        
+        with open(main_dir + '/operators.json') as f:
+            operators = json.load(f)
+
+        return render_template(
+            'admin/companies.html',
+            user=user,
+            admin=True,
+            operator=operator,
+            requests=requests
+        )
+    except FileNotFoundError:
+        return render_template(
+            'admin/companies.html',
+            user=user,
+            admin=True,
+            operator=operator,
+            requests=[]
+        )
+        
     
 @admin.route('/admin/settings/update', methods=['POST'])
 def save_settings():
@@ -131,11 +168,6 @@ def save_settings():
         logger.error(f'[@{session.get("user")["username"]}] Error updating settings: {str(e)}')
         return jsonify({'error': str(e)}), 500
     
-
-
-    
-    
-    
 @admin.route('/admin/clear-logs', methods=['POST'])
 def clear_logs():
     user = session.get('user')
@@ -172,44 +204,6 @@ def update_logs():
     
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-    
-    
-@admin.route('/admin/companies')
-def admin_companies():
-    user = session.get('user')
-
-    if not user or user.get('id') not in config.web_admins:
-        return redirect(url_for('index.index_route'))
-
-    operator = None
-
-    try:
-        with open(main_dir + '/operator_requests.json', 'r') as f:
-            requests = json.load(f)
-        
-        requests.sort(key=lambda x: x['timestamp'], reverse=True)
-        
-        with open(main_dir + '/operators.json') as f:
-            operators = json.load(f)
-
-        if user and 'id' in user:
-            operator = next((op for op in operators if user['id'] in op['users']), None)
-
-        return render_template(
-            'admin/companies.html',
-            user=user,
-            admin=True,
-            operator=operator,
-            requests=requests
-        )
-    except FileNotFoundError:
-        return render_template(
-            'admin/companies.html',
-            user=user,
-            admin=True,
-            operator=operator,
-            requests=[]
-        )
 
 @admin.route('/admin/companies/handle-request', methods=['POST'])
 def handle_company_request():

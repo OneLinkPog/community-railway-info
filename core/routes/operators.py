@@ -30,8 +30,7 @@ def operators_route():
 
     operator = None
     if user and 'id' in user:
-        operator = next(
-            (op for op in operators if user['id'] in op['users']), None)
+        operator = [op for op in operators if user['id'] in op['users']]
 
     admin = False
     if user and user["id"] in config.web_admins:
@@ -58,10 +57,10 @@ def operator_route(uid):
         operators = json.load(f)
 
     operator = None
+    if user and 'id' in user:
+        operator = [op for op in operators if user['id'] in op['users']]
+
     admin = False
-
-    operator = next((op for op in operators if op['uid'] == uid), None)
-
     if user and user["id"] in config.web_admins:
         admin = True
 
@@ -109,8 +108,9 @@ def operator_route(uid):
         admin=admin,
         operator_lines=operator_lines
     )
-    
-@operators.route('/request', methods=['GET'])
+
+
+@operators.route('/request')
 def request_operator_page():
     user = session.get('user')
 

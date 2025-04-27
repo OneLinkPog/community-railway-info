@@ -14,7 +14,7 @@ dashboard = Blueprint('dashboard', __name__)
 logger = Logger("@dashboard")
 
 
-@dashboard.route('/dashboard')
+"""@dashboard.route('/dashboard')
 async def dashboard_view():
     user = session.get('user')
 
@@ -84,7 +84,7 @@ async def dashboard_view():
         operator=operator,
         admin=admin,
         operator_lines=operator_lines
-    )
+    )"""
 
 
 @dashboard.route('/api/lines', methods=['POST'])
