@@ -53,6 +53,7 @@ with Session(engine) as session:
       db_line = Line(
         name=line["name"],
         status=LineStatus.from_legacy(line["status"]),
+        notice=line["notice"] or None,
         color=int(line["color"][1:], 16),
         operator_id=line["operator_uid"]
       )
