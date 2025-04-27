@@ -7,15 +7,20 @@
 <div class="content">
     <div class="dashboard-content">
         <div class="dashboard-header">
-            <h1>{{ operator.name }}</h1>
+            <h1>{{ operator_overview.name }}</h1>
+
             {% if admin %}
-            <span class="admin-badge">Admin</span>
+            <span class="operator-badge admin">Admin</span>
+            {% endif %}
+
+            {% if member %}
+            <span class="operator-badge member">Member</span>
             {% endif %}
         
             <div class="operator-members">
-                {% if operator.user_datas %}
+                {% if operator_overview.user_datas %}
                 <div class="member-avatars">
-                    {% for user_data in operator.user_datas %}
+                    {% for user_data in operator_overview.user_datas %}
                     <div class="member-avatar" data-tooltip="{{ user_data.display_name }} (@{{ user_data.username }})">
                         <img src="{{ user_data.avatar_url }}" alt="Member Avatar">
                     </div>
@@ -25,14 +30,14 @@
             </div>
         </div>
 
-        {% if admin %}
+        {% if admin or member %}
         <div class="dashboard-controls">
             <button onclick="showAddLineModal()" class="smd-component_button-medium btn-primary poppins">
                 <span style="position: absolute" class="material-symbols-outlined">add</span>
                 <span style="margin-left: 30px;">Add Line</span>
             </button>
 
-            <button onclick="editOperator('{{ operator.name }}')" class="smd-component_button-medium btn-primary poppins">
+            <button onclick="editOperator('{{ operator_overview.name }}')" class="smd-component_button-medium btn-primary poppins">
                 <span style="position: absolute" class="material-symbols-outlined">edit</span>
                 <span style="margin-left: 30px;">Edit operator</span>
             </button>
@@ -69,7 +74,7 @@
                         {% endif %}
                     </div>
                 </div>
-                {% if admin %}
+                {% if admin or member %}
                 <div class="line-actions">
                     <button onclick="editLine('{{ line.name }}')" class="btn-secondary smd-component_button-medium">
                         <span class="material-symbols-outlined">edit</span>
@@ -84,7 +89,7 @@
         </div>
     </div>
 
-    {% if admin %}
+    {% if admin or member %}
     <div id="lineModal" class="modal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: -25px;">
@@ -167,8 +172,8 @@
 </div>
 
 <script>
-    window.operatorName = "{{ operator.name }}";
-    window.operatorUid = "{{ operator.uid }}";
+    window.operatorName = "{{ operator_overview.name }}";
+    window.operatorUid = "{{ operator_overview.uid }}";
     window.lines = {{ operator_lines | tojson | safe }};
 </script>
 

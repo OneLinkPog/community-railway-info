@@ -16,12 +16,19 @@
     gap: 20px;
 }
 
-.admin-badge {
-    background: #ff4444;
+.operator-badge {
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
     margin-left: 10px;
+}
+
+.operator-badge.admin {
+    background: #ff4444;
+}
+
+.operator-badge.member {
+    background: #ff9100;
 }
 
 .dashboard-controls {

@@ -13,6 +13,13 @@ logger = Logger("requests")
 operators = Blueprint('operators', __name__)
 
 
+"""
+    --- Routes ---
+    - /operators
+    - /operators/<string:uid>
+    - /operators/request
+"""
+
 @operators.route('/operators')
 def operators_route():
     user = session.get('user')
@@ -55,10 +62,17 @@ def operator_route(uid):
 
     with open(main_dir + '/operators.json') as f:
         operators = json.load(f)
+        
+    operator = next((op for op in operators if op['uid'] == uid), None)
 
-    operator = None
+    user_operator = None
     if user and 'id' in user:
-        operator = [op for op in operators if user['id'] in op['users']]
+        user_operator = [op for op in operators if user['id'] in op['users']]
+        
+    member = False
+    operator_obj = next((op for op in operators if op['uid'] == uid), None)
+    if operator_obj and user and user['id'] in operator_obj['users']:
+        member = True
 
     admin = False
     if user and user["id"] in config.web_admins:
@@ -104,9 +118,11 @@ def operator_route(uid):
     return render_template(
         'operators/overview.html',
         user=user,
-        operator=operator,
+        operator=user_operator,
+        operator_overview=operator,
         admin=admin,
-        operator_lines=operator_lines
+        operator_lines=operator_lines,
+        member=member,
     )
 
 
@@ -128,6 +144,11 @@ def request_operator_page():
 
     return render_template('operators/request.html', user=user)
 
+
+"""
+    --- API Endpoints ---
+    - /api/operators/request
+"""
 
 @operators.route('/api/operators/request', methods=['POST'])
 def request_operator():
