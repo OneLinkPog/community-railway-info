@@ -80,12 +80,13 @@
   },
   {
     "name": "IC40",
+    "color": "#ba42ae",
     "status": "Running",
     "notice": "",
-    "color": "#BA42AE",
     "stations": [
       "Lursin",
       "Sola Interchange",
+      "Salzingen Hbf",
       "Elmswalde Hbf"
     ],
     "operator": "Lursin (LR)",
