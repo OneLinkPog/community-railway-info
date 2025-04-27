@@ -116,5 +116,5 @@ class Line(SQLModel, table=True):
 # -- INIT --
 file = "db.sqlite"
 
-engine = create_engine(f"sqlite:///{file}", echo=True)
+engine = create_engine(f"sqlite:///{file}")
 SQLModel.metadata.create_all(engine)
