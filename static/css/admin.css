@@ -136,3 +136,97 @@ button[type="submit"]:active {
     border-color: #17a2b8;
     box-shadow: 0 0 0 2px rgba(23, 162, 184, 0.2);
 }
+
+
+.admin-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 20px;
+}
+
+.admin-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #17a2b8, #6f42c1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.admin-subtitle {
+    color: #8e9297;
+    font-size: 1.1em;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.admin-card {
+    background: var(--color-background-deep);
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-color: #17a2b8;
+}
+
+.card-icon {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+
+.admin-card h3 {
+    color: #ffffff;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.admin-card p {
+    color: #8e9297;
+    font-size: 0.9em;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 600px) {
+    .admin-grid {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+    
+    .admin-header h1 {
+        font-size: 2em;
+    }
+}
+
+/* Animationen */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-card {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.admin-card:nth-child(2) {
+    animation-delay: 0.2s;
+}

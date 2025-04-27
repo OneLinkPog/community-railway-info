@@ -6,17 +6,34 @@
 
 {% block content %}
 <div class="content">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Admin Panel</h1>
-            </div>
-        </div>
+    <div class="admin-header">
+        <h1>Admin Panel</h1>
+        <p class="admin-subtitle">Manage your Railway-Info instance</p>
     </div>
-    <div class="container">
-        <div class="row">
-            <a class="smd-component_button-medium poppins" href="/admin/settings">Settings</a>
-            <a class="smd-component_button-medium poppins" href="/admin/logs">View Logs</a>
+    
+    <div class="admin-grid">
+        <div class="admin-card" onclick="window.location.href='/admin/settings'">
+            <div class="card-icon">⚙️</div>
+            <h3>Settings</h3>
+            <p>Manage system settings</p>
+        </div>
+        
+        <div class="admin-card" onclick="window.location.href='/admin/logs'">
+            <div class="card-icon">📋</div>
+            <h3>Logs</h3>
+            <p>View system logs</p>
+        </div>
+
+        <div class="admin-card" onclick="window.location.href='/admin/companies'">
+            <div class="card-icon">🚆</div>
+            <h3>Companies</h3>
+            <p>Manage train companies, view requests and create new companies</p>
+        </div>
+
+        <div class="admin-card" onclick="window.location.href='/admin/trains'">
+            <div class="card-icon">🚄</div>
+            <h3>Trains</h3>
+            <p>Manage train information</p>
         </div>
     </div>
 </div>

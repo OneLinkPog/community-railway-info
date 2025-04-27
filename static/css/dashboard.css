@@ -170,7 +170,7 @@
     transform: translateY(-5px);
 }
 
-#close {
+.close {
     color: #fff;
     float: right;
     font-size: 28px;
@@ -180,8 +180,8 @@
     transform: translateY(0);
 }
 
-#close:hover,
-#close:focus {
+.close:hover,
+.close:focus {
     box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.35), 0 25px 65px 0 rgba(0, 0, 0, 0.30);
     transform: translateY(-5px);
     color: red;
@@ -208,17 +208,17 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    overflow: visible; /* Geändert von hidden zu visible für den Tooltip */
+    overflow: visible;
     border: 2px solid rgba(255, 255, 255, 0.1);  
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: transform 0.2s ease;
-    position: relative; /* Wichtig für die Tooltip-Positionierung */
+    position: relative; 
 }
 
 .member-avatar::after {
     content: attr(data-tooltip);
     position: absolute;
-    bottom: calc(100% + 10px); /* 10px Abstand zum Avatar */
+    bottom: calc(100% + 10px); 
     left: 50%;
     transform: translateX(-50%);
     padding: 5px 10px;
@@ -234,7 +234,7 @@
 
 .member-avatar:hover::after {
     opacity: 1;
-    bottom: calc(100% + 5px); /* Leicht nach oben bewegen beim Hover */
+    bottom: calc(100% + 5px);
 }
 
 .member-avatar:hover {
@@ -246,5 +246,5 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%; /* Rundes Bild beibehalten */
+    border-radius: 50%; 
 }

@@ -32,7 +32,7 @@
                 <span style="margin-left: 30px;">Add Line</span>
             </button>
 
-            <button onclick="showAddLineModal()" class="smd-component_button-medium btn-primary poppins">
+            <button onclick="editOperator('{{ operator.name }}')" class="smd-component_button-medium btn-primary poppins">
                 <span style="position: absolute" class="material-symbols-outlined">edit</span>
                 <span style="margin-left: 30px;">Edit operator</span>
             </button>
@@ -124,6 +124,42 @@
 
                 <input type="hidden" id="lineId" name="id">
                 <button type="submit" class="btn-primary smd-component_button-medium poppins">Save Line</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="operatorModal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: -25px;">
+                <h1>Edit Operator</h1>
+                <span class="close" id="closeOperator">&times;</span>
+            </div>
+            <form id="operatorForm">
+                <div class="form-group">
+                    <label for="operatorName">Operator Name</label>
+                    <input type="text" id="operatorName" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="operatorShort">Short Name</label>
+                    <input type="text" id="operatorShort" name="short" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="operatorColor">Operator Color</label>
+                    <input type="color" id="operatorColor" name="color" required style="width: 50px; height: 50px;">
+                </div>
+
+                <div class="form-group">
+                    <label for="operatorUsers">Users (one per Line)</label>
+                    <textarea id="operatorUsers" name="users" rows="4" placeholder="Enter usernames, one per line"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="operatorAvatar">Operator UID</label>
+                    <input type="text" id="operatorUid" name="avatar" required readonly>
+                </div>
+                <button type="submit" class="btn-primary smd-component_button-medium poppins">Save Changes</button>
             </form>
         </div>
     </div>

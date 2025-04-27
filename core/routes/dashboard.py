@@ -177,3 +177,39 @@ async def delete_line(name):
     except Exception as e:
         logger.error(f"[@{session.get("user")["username"]}] Error while deleting line {name}: {str(e)}")
         return {'error': str(e)}, 500
+
+
+@dashboard.route('/api/operators/<name>', methods=['PUT'])
+async def update_operator(name):
+    if not session.get('user'):
+        return {'error': 'Not authorized'}, 401
+
+    try:
+        data = request.json
+        logger.info(f"[@{session.get('user')['username']}] Updating operator {name} with data: {data}")
+
+        with open(main_dir + '/operators.json', 'r+') as f:
+            operators = json.load(f)
+
+            operator_updated = False
+            for i, operator in enumerate(operators):
+                if operator.get('uid') == name:
+                    data['uid'] = operator['uid']
+                    operators[i] = data
+                    operator_updated = True
+                    logger.info(f"[@{session.get('user')['username']}] Operator {name} updated successfully with new data: {operators[i]}")
+                    break
+
+            if not operator_updated:
+                logger.info(f"[@{session.get('user')['username']}] Operator {name} not found")
+                return {'error': f'Operator {name} not found'}, 404
+
+            f.seek(0)
+            json.dump(operators, f, indent=2)
+            f.truncate()
+
+        return {'success': True}, 200
+    
+    except Exception as e:
+        logger.error(f"[@{session.get('user')['username']}] Error while updating operator {name}: {str(e)}")
+        return {'error': str(e)}, 500
