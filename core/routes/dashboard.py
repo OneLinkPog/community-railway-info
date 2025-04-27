@@ -31,8 +31,7 @@ async def dashboard_view():
     admin = False
 
     if user and 'id' in user:
-        operator = next(
-            (op for op in operators if user['id'] in op['users']), None)
+        operator = next((op for op in operators if user['id'] in op['users']), None)
 
     if user and user["id"] in config.web_admins:
         admin = True

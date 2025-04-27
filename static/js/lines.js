@@ -70,10 +70,21 @@ function fetchLines() {
 
                         const operatorColor = await getOperatorColor(lineData.operator_uid);
 
+                        const operatorName = await fetch('/operators.json')
+                            .then(response => response.json())
+                            .then(operators => {
+                                const operator = operators.find(op => op.uid === lineData.operator_uid);
+                                return operator?.name || 'Unknown Operator';
+                            })
+                            .catch(error => {
+                                console.error('Error fetching operator name:', error);
+                                return 'Unknown Operator';
+                            });
+
                         modalContent.innerHTML = `
                             <div style="display: flex; align-items: center">
                                 <h1 class="line-modal" style="background-color: ${lineData.color}">${lineData.name}</h1>
-                                <span style="margin-left: 16px; background-color: ${operatorColor}" class="line-modal" onclick="window.location.href = '/operators/${lineData.operator_uid || ''}'">${lineData.operator || ''}</span>
+                                <span style="margin-left: 16px; background-color: ${operatorColor}" class="line-modal" onclick="window.location.href = '/operators/${lineData.operator_uid || ''}'">${operatorName || ''}</span>
                             </div>
                             <h3>${statusEmoji} ${lineData.status || 'No description available'}</h3>
                             <p>${lineData.notice || 'No notice available'}</p>
