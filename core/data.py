@@ -27,6 +27,19 @@ class User(SQLModel, table=True):
   id: str = Field(primary_key=True)
   operators: list["Operator"] = Relationship(back_populates="users", link_model=UserOperatorLink)
 
+  display_name: str | None
+  username: str | None
+  avatar_hash: str | None
+
+  def get_default_avatar_url():
+    return "https://cdn.discordapp.com/embed/avatars/0.png"
+
+  def get_avatar_url(self):
+    if self.avatar_hash == None:
+      return User.get_default_avatar_url()
+    
+    return f"https://cdn.discordapp.com/avatars/{self.id}/{self.avatar_hash}.png"
+
 # operators
 class Operator(SQLModel, table=True):
   id: str = Field(primary_key=True)

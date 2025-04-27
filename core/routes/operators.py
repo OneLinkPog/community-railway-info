@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for
 from core import main_dir
 from core.config import config, allowed_tags
-from core.data import Line, Operator
+from core.data import *
 
 import json
 import requests
@@ -46,7 +46,7 @@ def operator_route(uid):
     user = session.get('user')
 
     lines = Line.get_legacy()
-    operator = Operator.get_legacy()
+    operators = Operator.get_legacy()
 
     operator = None
     admin = False
@@ -67,19 +67,21 @@ def operator_route(uid):
     if operator and 'users' in operator:
         operator['user_datas'] = []
         for user_id in operator['users']:
-            user_data = "https://avatar-cyan.vercel.app/api/" + user_id
+            with Session(engine) as db:
+                user = db.exec(select(User).where(User.id == user_id)).one_or_none()
 
-            try:
-                user_data = requests.get(user_data).json()
-            except Exception:
-                user_data = {"avatarUrl": default_avatar}
-
-            operator['user_datas'].append({
-                'id': user_id,
-                'avatar_url': user_data["avatarUrl"].replace("?size=512", "?size=32"),
-                'username': user_data["username"],
-                'display_name': user_data["display_name"],
-            })
+                if user == None:
+                    operator['user_datas'].append({
+                        "id": user_id,
+                        "avatar_url": User.get_default_avatar_url(),
+                    })
+                else:
+                    operator['user_datas'].append({
+                        "id": user_id,
+                        "username": user.username or f"id:{user_id}",
+                        "display_name": user.display_name or "Unknown",
+                        "avatar_url": user.get_avatar_url(),
+                    })
 
     for line in operator_lines:
         line['notice'] = clean(
