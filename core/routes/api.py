@@ -2,6 +2,7 @@ from flask import Blueprint, session, request
 from core.url import *
 from core import main_dir
 from core.logger import Logger
+from core.config import config
 
 import json
 
@@ -25,11 +26,6 @@ async def add_line():
     
     with open(main_dir + '/operators.json', 'r') as f:
         operators = json.load(f)
-        
-    user_operator = next((op for op in operators if op['uid'] == session['user']['company']), None)
-    if not user_operator:
-        logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
-        return {'error': 'Not authorized - must be member of the rail company'}, 401
 
     try:
         data = request.json
@@ -55,6 +51,22 @@ async def add_line():
             f.seek(0)
             json.dump(lines, f, indent=2)
             f.truncate()
+            
+            with open(main_dir + '/lines.json', 'r') as f:
+                lines = json.load(f)
+                line = next((line for line in lines if line.get('name') == data["name"]), None)
+                if not line:
+                    logger.error(f'[@{session.get("user")["username"]}] Line not found')
+                    return {'error': 'Line not found'}, 404
+                    
+            operator = next((op for op in operators if op['uid'] == line['operator_uid']), None)
+            if not operator:
+                logger.error(f'[@{session.get("user")["username"]}] Operator not found')
+                return {'error': 'Operator not found'}, 404
+                
+            if session.get('user')['id'] not in operator.get('users', []) and session.get('user')['id'] not in config.web_admins:
+                logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
+                return {'error': 'Not authorized - must be member of the rail company'}, 401
 
         return {'success': True}, 200
     except Exception as e:
@@ -70,9 +82,20 @@ async def update_line(name):
     
     with open(main_dir + '/operators.json', 'r') as f:
         operators = json.load(f)
+    
+    with open(main_dir + '/lines.json', 'r') as f:
+        lines = json.load(f)
+        line = next((line for line in lines if line.get('name') == name), None)
+        if not line:
+            logger.error(f'[@{session.get("user")["username"]}] Line not found')
+            return {'error': 'Line not found'}, 404
+            
+    operator = next((op for op in operators if op['uid'] == line['operator_uid']), None)
+    if not operator:
+        logger.error(f'[@{session.get("user")["username"]}] Operator not found')
+        return {'error': 'Operator not found'}, 404
         
-    user_operator = next((op for op in operators if op['uid'] == session['user']['company']), None)
-    if not user_operator:
+    if session.get('user')['id'] not in operator.get('users', []) and session.get('user')['id'] not in config.web_admins:
         logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
         return {'error': 'Not authorized - must be member of the rail company'}, 401
 
@@ -120,8 +143,19 @@ async def delete_line(name):
     with open(main_dir + '/operators.json', 'r') as f:
         operators = json.load(f)
         
-    user_operator = next((op for op in operators if op['uid'] == session['user']['company']), None)
-    if not user_operator:
+    with open(main_dir + '/lines.json', 'r') as f:
+        lines = json.load(f)
+        line = next((line for line in lines if line.get('name') == name), None)
+        if not line:
+            logger.error(f'[@{session.get("user")["username"]}] Line not found')
+            return {'error': 'Line not found'}, 404
+            
+    operator = next((op for op in operators if op['uid'] == line['operator_uid']), None)
+    if not operator:
+        logger.error(f'[@{session.get("user")["username"]}] Operator not found')
+        return {'error': 'Operator not found'}, 404
+        
+    if session.get('user')['id'] not in operator.get('users', []) and session.get('user')['id'] not in config.web_admins:
         logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
         return {'error': 'Not authorized - must be member of the rail company'}, 401
 
@@ -151,8 +185,12 @@ async def update_operator(name):
     with open(main_dir + '/operators.json', 'r') as f:
         operators = json.load(f)
         
-    user_operator = next((op for op in operators if op['uid'] == session['user']['company']), None)
-    if not user_operator:
+    operator = next((op for op in operators if op['uid'] == name), None)
+    if not operator:
+        logger.error(f'[@{session.get("user")["username"]}] Operator not found')
+        return {'error': 'Operator not found'}, 404
+        
+    if session.get('user')['id'] not in operator.get('users', []) and session.get('user')['id'] not in config.web_admins:
         logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
         return {'error': 'Not authorized - must be member of the rail company'}, 401
 

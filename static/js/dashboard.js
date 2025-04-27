@@ -68,6 +68,7 @@ async function editLine(lineName) {
     document.getElementById('lineName').value = line.name;
     document.getElementById('lineColor').value = line.color || '#000000';
     document.getElementById('lineStatus').value = line.status || 'Running';
+    document.getElementById('lineType').value = line.type || 'public';
     document.getElementById('lineNotice').value = line.notice || '';
     document.getElementById('lineStations').value = (line.stations || []).join('\n');
     document.getElementById('lineId').value = line.name;
@@ -140,6 +141,7 @@ async function handleLineSubmit(event, uid) {
         name: formData.get('name'),
         color: formData.get('color'),
         status: formData.get('status'),
+        type: formData.get('type'),
         notice: formData.get('notice'),
         stations: formData.get('stations').split('\n').filter(s => s.trim()),
         operator: window.operatorName,
@@ -164,11 +166,11 @@ async function handleLineSubmit(event, uid) {
             window.location.reload();
         } else {
             const error = await response.json();
-            alert('[Server] Error while saving: ' + (error.message || 'Unknown Error'));
+            alert('[Server] Error while saving: ' + (error || 'Unknown Error'));
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Error while saving: ' + error.message);
+        alert('Error while saving: ' + error);
     }
 }
 

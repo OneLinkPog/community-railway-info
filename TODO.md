@@ -8,8 +8,8 @@
 ## Company Management
 - [x] Add admin panel for railway companies
 - [x] Add company edit modal with color change option
-- [ ] Support multiple railway companies per user
-- [ ] Add other users to company
+- [x] Support multiple railway companies per user
+- [x] Add other users to company
 - [ ] Support lines having multiple operators
 
 ## Documentation

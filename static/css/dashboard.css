@@ -110,11 +110,29 @@
     transform: translateY(-20px);
     opacity: 0;
     transition: all 0.3s ease-in-out;
+    max-height: 80vh; 
+    overflow-y: auto; 
 }
 
 .modal.show .modal-content {
     transform: translateY(0);
     opacity: 1;
+}
+
+.modal-content::-webkit-scrollbar {
+    display: none;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    display: none;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    display: none;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    display: none;
 }
 
 .form-group {
@@ -136,6 +154,7 @@
     background: #1f2325;
     color: var(--color-text);
     margin-right: 10px;
+    max-width: calc(100% - 15px);
 }
 
 .form-group select {

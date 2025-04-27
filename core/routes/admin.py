@@ -100,6 +100,9 @@ def admin_companies():
 
     if not user or user.get('id') not in config.web_admins:
         return redirect(url_for('index.index_route'))
+    
+    with open(main_dir + '/operators.json') as f:
+        operators = json.load(f)
 
     operator = None
     if user and 'id' in user:
