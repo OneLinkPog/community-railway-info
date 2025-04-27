@@ -96,16 +96,21 @@ function fetchLines() {
                         } else {
                             modalContent.innerHTML += `<h2>Stations</h2>`;
                             const ul = document.createElement("ul");
-                            lineData.stations.forEach(station => {
-                                const li = document.createElement("li");
-                                if (station.includes('<del>')) {
+                            if (lineData.stations.length === 1 && lineData.stations[0].startsWith('<content:html>')) {
+                                modalContent.innerHTML += lineData.stations[0].replace('<content:html>', '').replace("<script>", "").replace("</script>", "");
+                            } else {
+                                lineData.stations.forEach(station => {
+                                    const li = document.createElement("li");
                                     li.innerHTML = station;
-                                } else {
-                                    li.textContent = station;
-                                }
-                                ul.appendChild(li);
-                            });
-                            modalContent.appendChild(ul);
+                                    /* if (station.includes('<del>')) {
+                                        li.innerHTML = station;
+                                    } else {
+                                        li.textContent = station;
+                                    } */
+                                    ul.appendChild(li);
+                                });
+                                modalContent.appendChild(ul);
+                            }
                         }
 
                         openModal();

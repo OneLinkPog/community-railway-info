@@ -112,8 +112,8 @@ def operator_route(uid):
         )
 
         if 'stations' in line:
-            line['stations'] = [clean(station, tags=["del"], attributes={
-            }, strip=True) for station in line['stations']]
+            line['stations'] = [clean(station, tags=allowed_tags, attributes={}, 
+            strip=True) for station in line['stations']]
 
     return render_template(
         'operators/overview.html',
