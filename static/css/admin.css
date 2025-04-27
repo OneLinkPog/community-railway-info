@@ -230,3 +230,115 @@ button[type="submit"]:active {
 .admin-card:nth-child(2) {
     animation-delay: 0.2s;
 }
+
+
+.requests-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.request-card {
+    background: var(--color-background-deep);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.request-header h3 {
+    margin: 0;
+    color: white;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.status-pending {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+}
+
+.status-accepted {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+.status-rejected {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+.request-details {
+    color: #8e9297;
+}
+
+.request-details p {
+    margin: 8px 0;
+}
+
+.request-details strong {
+    color: white;
+}
+
+.color-preview {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.color-preview span {
+    color: white;
+    mix-blend-mode: difference;
+}
+
+.request-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+}
+
+.action-btn.accept {
+    background: #28a745;
+    color: white;
+}
+
+.action-btn.reject {
+    background: #dc3545;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.no-requests {
+    text-align: center;
+    color: #8e9297;
+    padding: 40px;
+}
