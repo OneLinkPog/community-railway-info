@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, request
+from flask import Blueprint, render_template, session, request, redirect, url_for
 from datetime import datetime
 from core import main_dir
 from core.config import config, allowed_tags
@@ -115,7 +115,7 @@ def request_operator_page():
     user = session.get('user')
 
     if not user:
-        return render_template('operators/request.html', error="Not authorized")
+        return redirect(url_for('auth.login'))
 
     with open(main_dir + '/operators.json') as f:
         operators = json.load(f)
