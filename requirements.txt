@@ -2,3 +2,4 @@ flask
 flask[async]
 requests_oauthlib
 sqlmodel
+bleach

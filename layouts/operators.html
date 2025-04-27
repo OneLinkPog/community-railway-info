@@ -6,18 +6,78 @@
 {% block content %}
 <div class="content">
     <div class="line-status">
-        <h1>Train Operators</h1>
+        <div class="sort-buttons" style="display: flex; gap: 50px;">
+            <h1>Train Operators</h1>
 
-        <div class="lines">
+            <div class="sort-buttons" style="margin-top: 25px;">
+                <button class="smd-component_button-small" style="font-family: 'Poppins', sans-serif; background: #607D8B;" onclick="sortOperators('name')">Sort by name</button>
+                <button class="smd-component_button-small" style="font-family: 'Poppins', sans-serif; background: #607D8B;" onclick="sortOperators('trains')">Sort by number of trains</button>
+            </div>
+        </div>
+
+        <div class="lines" id="operators-list">
             {% for operator in operators %}
-            <div class="line-item line" id="operator-{{ operator.uid }}" data-color="{{ operator.color }}">
-                {{ operator.name }}
+            <div class="line-item line" id="operator-{{ operator.uid }}" 
+                 data-color="{{ operator.color }}"
+                 data-name="{{ operator.name }}"
+                 data-trains="{{ operator.train_count }}"
+                 onclick="window.location.href='/operators/{{ operator.uid }}'">
+                <span class="operator-name">{{ operator.name }}</span>
+                <span class="train-count">({{ operator.train_count }})</span>
             </div>
             <script>
-                document.getElementById('operator-{{ operator.uid }}').style.backgroundColor = '{{ operator.color }}';
+                (function() {
+                    const element = document.getElementById('operator-{{ operator.uid }}');
+                    if (!element) return;
+                    
+                    try {
+                        element.style.backgroundColor = '{{ operator.color }}';
+                        const hex = '{{ operator.color }}'.replace('#', '');
+                        const r = parseInt(hex.substr(0,2), 16);
+                        const g = parseInt(hex.substr(2,2), 16);
+                        const b = parseInt(hex.substr(4,2), 16);
+                        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                        
+                        element.style.color = brightness > 128 ? '#000000' : '#ffffff';
+                    } catch (error) {
+                        console.error('Error setting colors:', error);
+                    }
+                })();
             </script>
             {% endfor %}
         </div>
     </div>
 </div>
+
+<script>
+    function sortOperators(criterion) {
+        const container = document.getElementById('operators-list');
+        if (!container) return;
+    
+        const operators = Array.from(container.children);
+        
+        operators.sort((a, b) => {
+            try {
+                if (criterion === 'name') {
+                    const nameA = (a.dataset.name || '').toLowerCase();
+                    const nameB = (b.dataset.name || '').toLowerCase();
+                    return nameA.localeCompare(nameB);
+                } else if (criterion === 'trains') {
+                    const trainsA = parseInt(a.dataset.trains) || 0;
+                    const trainsB = parseInt(b.dataset.trains) || 0;
+                    return trainsB - trainsA;
+                }
+            } catch (error) {
+                console.error('Sorting error:', error);
+                return 0;
+            }
+            return 0;
+        });
+        
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+        operators.forEach(op => container.appendChild(op));
+    }
+</script>
 {% endblock content %}

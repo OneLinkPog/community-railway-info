@@ -1,3 +1,24 @@
+function openModal() {
+    modal.style.display = "block";
+    modal.offsetHeight;
+    requestAnimationFrame(() => {
+        document.body.classList.add('blur');
+        modal.classList.add('show');
+    });
+}
+
+function closeModal() {
+    document.body.classList.remove('blur');
+    modal.classList.remove('show');
+    
+    modal.addEventListener('transitionend', function hideModal(e) {
+        if (e.propertyName === 'opacity') {
+            modal.style.display = "none";
+            modal.removeEventListener('transitionend', hideModal);
+        }
+    });
+}
+
 function fetchLines() {
     let linesData = [];
     fetch('/lines.json')
@@ -19,8 +40,20 @@ function fetchLines() {
             const modal = document.getElementById("modal");
             const modalContent = document.getElementById("modal-inner");
 
+            async function getOperatorColor(operatorUid) {
+                try {
+                    const response = await fetch('/operators.json');
+                    const operators = await response.json();
+                    const operator = operators.find(op => op.uid === operatorUid);
+                    return operator?.color || '#808080';
+                } catch (error) {
+                    console.error('Error fetching operator color:', error);
+                    return '#808080';
+                }
+            }
+
             document.querySelectorAll(".line").forEach(lineElement => {
-                lineElement.addEventListener("click", () => {
+                lineElement.addEventListener("click", async () => {
                     const clickedLineName = lineElement.dataset.line;
                     const lineData = linesData.find(line => line.name === clickedLineName);
 
@@ -35,10 +68,12 @@ function fetchLines() {
                             }
                         })();
 
+                        const operatorColor = await getOperatorColor(lineData.operator_uid);
+
                         modalContent.innerHTML = `
                             <div style="display: flex; align-items: center">
                                 <h1 class="line-modal" style="background-color: ${lineData.color}">${lineData.name}</h1>
-                                <span style="margin-left: 16px">${lineData.operator || ''}</span>
+                                <span style="margin-left: 16px; background-color: ${operatorColor}" class="line-modal" onclick="window.location.href = '/operators/${lineData.operator_uid || ''}'">${lineData.operator || ''}</span>
                             </div>
                             <h3>${statusEmoji} ${lineData.status || 'No description available'}</h3>
                             <p>${lineData.notice || 'No notice available'}</p>
@@ -62,37 +97,27 @@ function fetchLines() {
                             modalContent.appendChild(ul);
                         }
 
-                        modal.style.display = "block";
-                        document.body.classList.add('blur');
-                        setTimeout(() => {
-                            modal.classList.add('show');
-                        }, 10);
+                        openModal();
                     }
                 });
             });
 
-            document.getElementById("close").onclick = () => {
+            document.getElementById("close").onclick = (e) => {
+                e.stopPropagation();
                 closeModal();
             };
-
+            
             window.onclick = (event) => {
-                if (event.target == modal) {
+                if (event.target === modal) {
                     closeModal();
                 }
             };
-
+            
             window.addEventListener('keydown', (event) => {
                 if (event.key === "Escape") {
                     closeModal();
                 }
             });
-
-            function closeModal() {
-                modal.classList.remove('show');
-                setTimeout(() => {
-                    modal.style.display = "none";
-                }, 300);
-            }
         })
         .catch(error => {
             console.error('Error fetching lines:', error);

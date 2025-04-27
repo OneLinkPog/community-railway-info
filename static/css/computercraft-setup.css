@@ -1,0 +1,77 @@
+.page-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.image-container {
+    width: 300px;
+    margin-right: 60px;
+}
+
+.setup-container {
+    flex: 1;
+}
+
+.instructions {
+    margin-top: 20px;
+}
+
+.instructions ul {
+    padding: 16px;
+    margin: 0;
+}
+
+.image-container img, .setup-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+    margin-top: 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.setup-image {
+    width: 50% !important;
+    margin: 20px
+}
+
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 90vh;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

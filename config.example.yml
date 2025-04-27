@@ -7,3 +7,5 @@ port: 30789
 debug: true
 
 web_admins: ["your_user_id", "another_user_id"]
+maintenance_mode: false
+maintenance_message: "I'm currently working on the next update. Please check back later!"

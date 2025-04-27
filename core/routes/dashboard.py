@@ -1,14 +1,18 @@
 from flask import Blueprint, session, redirect, url_for, render_template, request
 from requests_oauthlib import OAuth2Session
-from core.config import config
+from core.config import config, allowed_tags
 from core.url import *
 from core import main_dir
 from core.data import *
+from core.logger import Logger
+from bleach import clean
 
 import json
-
+import requests
 
 dashboard = Blueprint('dashboard', __name__)
+
+logger = Logger("@dashboard")
 
 
 @dashboard.route('/dashboard')
@@ -25,7 +29,8 @@ async def dashboard_view():
     admin = False
 
     if user and 'id' in user:
-        operator = next((op for op in operators if user['id'] in op['users']), None)
+        operator = next(
+            (op for op in operators if user['id'] in op['users']), None)
 
     if user and user["id"] in config.web_admins:
         admin = True
@@ -39,6 +44,38 @@ async def dashboard_view():
             line for line in lines
             if 'operator_uid' in line and line['operator_uid'] == operator['uid']
         ]
+
+    operators.sort(key=lambda x: x['name'])
+
+    default_avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
+
+    if operator and 'users' in operator:
+        operator['user_datas'] = []
+        for user_id in operator['users']:
+            user_data = "https://avatar-cyan.vercel.app/api/" + user_id
+
+            try:
+                user_data = requests.get(user_data).json()
+            except Exception:
+                user_data = {"avatarUrl": default_avatar}
+
+            operator['user_datas'].append({
+                'id': user_id,
+                'avatar_url': user_data["avatarUrl"].replace("?size=512", "?size=32"),
+                'username': user_data["username"],
+                'display_name': user_data["display_name"],
+            })
+            
+    for line in operator_lines:
+        line['notice'] = clean(
+            line['notice'],
+            tags=allowed_tags,
+            attributes={},
+            strip=True
+        )
+        
+        if 'stations' in line:
+            line['stations'] = [clean(station, tags=["del"], attributes={}, strip=True) for station in line['stations']]
 
     return render_template(
         'dashboard.html',
@@ -60,13 +97,15 @@ async def add_line():
         required_fields = ['name', 'color', 'status', 'operator_uid']
         for field in required_fields:
             if field not in data:
-                print(f'Missing field: {field}')
+                logger.error(f'[@{session.get("user")["username"]}] Missing field: {field}')
                 return {'error': f'Missing field: {field}'}, 400
             
         with Session(engine) as db:
             if Line.exists(db, data["name"]):
+                logger.error(f'[@{session.get("user")["username"]}] A line with that name already exists')
                 return {'error': 'A line with that name already exists'}, 400
             
+            logger.info(f'[@{session.get("user")["username"]}] Added new line: {data["name"]}')
             new_line = Line(
                 name=data["name"],
                 status=LineStatus.from_legacy(data["status"]),
@@ -79,7 +118,7 @@ async def add_line():
 
             return {'success': True}, 200
     except Exception as e:
-        raise (e)
+        logger.error(f"[@{session.get("user")["username"]}] Error while adding line: {str(e)}")
         return {'error': str(e)}, 500
 
 
@@ -90,15 +129,17 @@ async def update_line(name):
 
     try:
         data = request.json
-        print(f"Updating line {name} with data:", data) 
+        logger.info(f"[@{session.get("user")["username"]}] Updating line {name} with data: {data}")
 
         with Session(engine) as session:
             line = session.exec(select(Line).where(Line.name == name)).one_or_none()
 
             if line == None:
+                logger.info(f"[@{session.get('user')['username']}] Line {name} not found")
                 return {'error': f'Line {name} not found'}, 404
             
             if line.name != data["name"] and Line.exists(session, data["name"]) != None:
+                logger.error(f'[@{session.get("user")["username"]}] A line with that name already exists')
                 return {'error': 'A line with that name already exists'}, 400
             
             line.name = data["name"]
@@ -106,13 +147,14 @@ async def update_line(name):
             line.status = LineStatus.from_legacy(data["status"])
             line.notice = data["notice"] or None
             line.stations = lmap(lambda id: session.exec(select(Station).where(Station.id == id)).one(), data["stations"])
+            logger.info(f"[@{session.get("user")["username"]}] Line {name} updated successfully with new data: {line}") # TODO: `line` probably needs serialization to be logged
             
             session.add(line)
             session.commit()
                 
             return {'success': True}, 200
     except Exception as e:
-        print(f"Error while updating line {name}:", str(e))  
+        logger.error(f"[@{session.get('user')['username']}] Error while updating line {name}: {str(e)}")
         return {'error': str(e)}, 500
 
 
@@ -127,6 +169,8 @@ async def delete_line(name):
             session.delete(line)
             session.commit()
 
+            logger.info(f"[@{session.get('user')['username']}] Deleted line {name} successfully.")
             return {'success': True}, 200
     except Exception as e:
+        logger.error(f"[@{session.get("user")["username"]}] Error while deleting line {name}: {str(e)}")
         return {'error': str(e)}, 500

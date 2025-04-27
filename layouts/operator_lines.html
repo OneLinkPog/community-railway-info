@@ -7,8 +7,11 @@
 <div class="content">
     <div class="dashboard-content">
         <div class="dashboard-header">
-            <h1>Dashboard - {{ operator.name }}</h1>
-
+            <h1>{{ operator.name }}</h1>
+            {% if admin %}
+            <span class="admin-badge">Admin</span>
+            {% endif %}
+        
             <div class="operator-members">
                 {% if operator.user_datas %}
                 <div class="member-avatars">
@@ -22,12 +25,19 @@
             </div>
         </div>
 
+        {% if admin %}
         <div class="dashboard-controls">
             <button onclick="showAddLineModal()" class="smd-component_button-medium btn-primary poppins">
-                <span style="position: absolute"class="material-symbols-outlined">add</span>
+                <span style="position: absolute" class="material-symbols-outlined">add</span>
                 <span style="margin-left: 30px;">Add Line</span>
             </button>
+
+            <button onclick="showAddLineModal()" class="smd-component_button-medium btn-primary poppins">
+                <span style="position: absolute" class="material-symbols-outlined">edit</span>
+                <span style="margin-left: 30px;">Edit operator</span>
+            </button>
         </div>
+        {% endif %}
 
         <div class="lines-grid">
             {% for line in operator_lines %}
@@ -59,6 +69,7 @@
                         {% endif %}
                     </div>
                 </div>
+                {% if admin %}
                 <div class="line-actions">
                     <button onclick="editLine('{{ line.name }}')" class="btn-secondary smd-component_button-medium">
                         <span class="material-symbols-outlined">edit</span>
@@ -67,11 +78,13 @@
                         <span class="material-symbols-outlined">delete</span>
                     </button>
                 </div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
     </div>
 
+    {% if admin %}
     <div id="lineModal" class="modal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: -25px;">
@@ -114,12 +127,13 @@
             </form>
         </div>
     </div>
+    {% endif %}
 </div>
 
 <script>
     window.operatorName = "{{ operator.name }}";
     window.operatorUid = "{{ operator.uid }}";
-    window.lines = {{ operator_lines|tojson|safe }};
+    window.lines = {{ operator_lines | tojson | safe }};
 </script>
 
 <script src="/static/js/dashboard.js"></script>

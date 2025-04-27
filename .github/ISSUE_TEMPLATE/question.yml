@@ -1,0 +1,42 @@
+name: Question
+description: Ask a question about the project
+labels: ['question', 'triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to ask a question! Please fill out the information below.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Your Question
+      description: Please provide a clear and concise description of what you want to know
+      placeholder: I would like to know...
+    validations:
+      required: true
+      
+  - type: textarea
+    id: other-informations
+    attributes:
+      label: Additional Context
+      description: |
+        Please provide any relevant information that could help us answer your question:
+        - Operating System and version
+        - Project version you're using
+        - Related configuration
+        - Error messages (if applicable)
+      placeholder: OS: Windows 11, Version: 1.2.3, etc.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before submitting
+      options:
+        - label: I have searched existing issues and verified this question hasn't been asked before
+          required: true
+        - label: I have read the project documentation
+          required: true

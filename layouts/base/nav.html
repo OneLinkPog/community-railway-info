@@ -1,14 +1,15 @@
-<header class="smd-layout_header--floating">
+<header class="smd-layout_header">
   <div class="smd-layout_header-logo">
     <a href="/">
       <img src="/static/favicon.png" alt="Logo">
     </a>
-    <span class="smd-layout_header-title">Community Railway</span>
+    <span class="smd-layout_header-title" style="cursor: pointer" onclick="window.location.href = '/'">Community Railway</span>
   </div>
 
   <nav class="smd-layout_navbar">
     <a href="/">Status Overview</a>
     <a href="/operators">Train Operators</a>
+    <a href="/computercraft-setup">Setup station display</a>
 
   </nav>
 
@@ -25,7 +26,7 @@
       {% endif %}
 
       {% if admin %}
-        <a class="line-modal" style="background-color: red" href="/admin">Admin Panel</a>
+        <a class="line-modal" style="background-color: red" href="/admin">Admin</a>
       {% endif %}
 
       <div class="smd-component_dropdown">

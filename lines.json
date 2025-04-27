@@ -1,23 +1,23 @@
 [
   {
     "name": "R10",
+    "color": "#29b442",
     "status": "Possible delays",
-    "notice": "<b>Attention to all Northern Citizen. </b> Station N. Bohemia - Bardo is currently closed due to massive reconstruction. <br>And also the station will be renamed. So please use the near station at Wawer.<br>Every changes will be announced.<br>We apologies for the inconvenience. Your <i><b>Magwer Transport</b></i>",
-    "color": "#29B442",
+    "notice": "<b>Attention to all Northern Citizen</b> <br>\nStation N. Bohemia - Bardo is currently closed due to massive reconstruction. <br>And also the station will be renamed. So please use the near station at Wawer.<br>Every changes will be announced.<br>We apologies for the inconvenience. Your <i><b>Magwer Transport</b></i>",
     "stations": [
       "Wawer",
       "<del>North Bohemia - Bardo</del>",
       "Two Cities Central",
       "Spawn"
     ],
-    "operator": "Magwer Transport",
-    "operator_uid": "magwer"
+    "operator": "Stacode X Railways (SXR)",
+    "operator_uid": "stacodex"
   },
   {
     "name": "HS10",
     "color": "#ff954a",
     "status": "Possible delays",
-    "notice": "Works in Silverfall",
+    "notice": "New junctions in testing at Silverfall",
     "stations": [
       "Silverfall",
       "Danube HQ"
@@ -27,9 +27,9 @@
   },
   {
     "name": "R11",
+    "color": "#ff954a",
     "status": "Possible delays",
-    "notice": "Works in Silverfall",
-    "color": "#FF954A",
+    "notice": "New junctions in testing at Silverfall\n",
     "stations": [
       "Riverside Central",
       "Kothausen",
@@ -75,7 +75,7 @@
       "Candenset South",
       "Two Cities Central"
     ],
-    "operator": "Patriots Transit (TPT)",
+    "operator": "The Patriots Transit (TPT)",
     "operator_uid": "patriots"
   },
   {
@@ -170,9 +170,9 @@
   },
   {
     "name": "R101",
+    "color": "#ff954a",
     "status": "Possible delays",
-    "notice": "Works in Silverfall",
-    "color": "#FF954A",
+    "notice": "New junctions in testing at Silverfall\n",
     "stations": [
       "Silverfall",
       "Molten Works",
@@ -184,9 +184,9 @@
   },
   {
     "name": "R102",
+    "color": "#ff954a",
     "status": "Possible delays",
-    "notice": "Works in Silverfall",
-    "color": "#FF954A",
+    "notice": "New junctions in testing at Silverfall\n",
     "stations": [
       "Riverside Central",
       "Kothausen",
@@ -200,9 +200,9 @@
   },
   {
     "name": "IC103",
+    "color": "#ff954a",
     "status": "Possible delays",
-    "notice": "Works in Silverfall",
-    "color": "#FF954A",
+    "notice": "New junctions in testing at Silverfall\n",
     "stations": [
       "Silverfall",
       "Szolnok",
@@ -214,9 +214,9 @@
   },
   {
     "name": "RE104",
-    "status": "Possible delays",
-    "notice": "Works in Silverfall",
-    "color": "#3D72E5",
+    "color": "#3d72e5",
+    "status": "Suspended",
+    "notice": "Works in Silverfall.",
     "stations": [
       "Silverfall",
       "Kothausen",
@@ -227,9 +227,9 @@
   },
   {
     "name": "IC105",
+    "color": "#ff954a",
     "status": "Possible delays",
-    "notice": "Works in Silverfall",
-    "color": "#FF954A",
+    "notice": "New junctions in testing at Silverfall\n",
     "stations": [
       "Silverfall",
       "Novaburg Central",
@@ -239,19 +239,10 @@
     "operator_uid": "danube"
   },
   {
-    "name": "IC110",
-    "status": "No scheduled service",
-    "notice": "Under construction.",
-    "color": "#29b442",
-    "stations": [],
-    "operator": "Stacode X Railways (SXR)",
-    "operator_uid": "stacodex"
-  },
-  {
     "name": "IC125",
+    "color": "#cb0a3d",
     "status": "Running",
     "notice": "",
-    "color": "#ed558d",
     "stations": [
       "Wawer",
       "Two Cities Central",
@@ -263,9 +254,9 @@
   },
   {
     "name": "IC682",
-    "status": "Possible delays",
-    "notice": "Works in Silverfall",
     "color": "#45bf9d",
+    "status": "Suspended",
+    "notice": "Works in Silverfall",
     "stations": [
       "Riverside Central",
       "Kothausen",
@@ -273,7 +264,33 @@
       "Szolnok",
       "Two Cities Central"
     ],
-    "operator": "MAV",
+    "operator": "M\u00c1V",
     "operator_uid": "mav"
+  },
+  {
+    "name": "IC693",
+    "color": "#ff0000",
+    "status": "No scheduled service",
+    "notice": "<h2>IC691</h2>\nPlanned InterCity train that brings people from the south to Kothausen<br><br>\n\nNote, this line is in <strong>EARLY DEVELOPMENT</strong>",
+    "stations": [
+      "Kothausen",
+      "?...?",
+      "Salzingen Hbf"
+    ],
+    "operator": "Kothausen Railways",
+    "operator_uid": "kothausen"
+  },
+  {
+    "name": "S70",
+    "color": "#ee0034",
+    "status": "No scheduled service",
+    "notice": "Service has not started",
+    "stations": [
+      "Two Cities Central",
+      "Spawn",
+      "Lavender Valley"
+    ],
+    "operator": "MTA Metro-South Railroad",
+    "operator_uid": "msr"
   }
 ]

@@ -1,6 +1,7 @@
 from flask import Flask
 from core.utils import load_secret
 from core.config import config
+
 from core.routes.oauth2 import auth
 from core.routes.dashboard import dashboard
 from core.routes.index import index
@@ -24,15 +25,28 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 app.register_blueprint(auth)
 app.register_blueprint(dashboard)
-
-app.add_url_rule(rule="/", view_func=index)
-app.add_url_rule(rule="/admin", view_func=admin)
-app.add_url_rule(rule="/operators", view_func=operators)
+app.register_blueprint(index)
+app.register_blueprint(operators)
+app.register_blueprint(admin)
 
 
 @app.route('/lines.json')
 def lines_json():
     return json.dumps(Line.get_legacy())
+
+
+@app.route('/operators.json')
+def operators_json():
+    with open(os.path.join(os.path.dirname(__file__), '../operators.json')) as f:
+        operators = json.load(f)
+    return operators
+
+
+@app.route('/setup.lua')
+def setup_lua():
+    with open(os.path.join(os.path.dirname(__file__), '../static/assets/lua/setup.lua')) as f:
+        lua = f.read()
+    return lua, 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=setup.lua'}
 
 
 class App:

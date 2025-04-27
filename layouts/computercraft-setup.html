@@ -1,0 +1,98 @@
+{% extends "base/base.html" %}
+{% block stylesheet %}
+<link rel="stylesheet" href="/static/css/index.css">
+<link rel="stylesheet" href="/static/css/computercraft-setup.css">
+{% endblock stylesheet %}
+
+{% block content %}
+<div class="content">
+    <div class="page-layout">
+        <div class="image-container">
+            <img src="/static/assets/png/overview.png" alt="Overview">
+        </div>
+        <div class="setup-container">
+            <h1>ComputerCraft Station Display Setup <span class="line" style="background-color: red">v1.1.2 BETA</span></h1>
+            <p>Welcome to the ComputerCraft station display setup page! This guide will help you set up your station
+                display using ComputerCraft in Minecraft.</p>
+
+            <h2>Instructions</h2>
+            <p>To set up the ComputerCraft station display, follow these steps:</p>
+            <div class="instructions">
+                <ol>
+                    <li>You need 6 (advanced) monitors and 1 (advanced) computer</li>
+                    <ul>→ Preferably use <b>advanced monitors</b> and a <b>standard computer</b>, as the extended
+                        monitors support color and touch. The computer only serves as an interface and therefore does
+                        not require a modem or extended functions</ul>
+
+                    <li>Place the monitors in a <b>3x2</b> grid, with the computer <b>under the monitors</b></li>
+                    <img src="/static/assets/png/setup-pt1.png" alt="Setup Step 1" class="setup-image">
+
+                    <li>Open the ComputerCraft terminal in your Minecraft game.</li>
+                    <li>Type the following command to download and run the setup script:</li>
+                    <pre>wget run https://railinfo.juliandev02.me/setup.lua</pre>
+                    <li>Wait for the setup to complete. It should automatically reboot</li>
+                    <li>After the reboot, the script will automatically start and display the station information on the
+                        monitors.</li>
+                    <li>Enjoy!</li>
+                </ol>
+
+                <p>
+                    <span class="material-symbols-outlined material-symbols-outlined--ul" style="vertical-align: middle;">info</span>
+                    It is possible to connect multiple monitors to a single computer. The startup script is designed
+                    to detect the number of connected monitors and adjust the display accordingly.
+                    You can use a cable modem to connect the computer to the monitors.
+                    <br><br>
+                    → The script automatically fetches the latest lines.json from 
+                    <a style="color: lightblue;" href="https://railinfo.juliandev02.me/lines.json">https://railinfo.juliandev02.me/lines.json</a>
+                    every time the computer is restarted (manually or after a server restart, which happens every 6 hours)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="lightbox" id="lightbox"></div>
+</div>
+
+<script>
+    document.querySelectorAll('.image-container img, .setup-image').forEach(element => {
+        element.addEventListener('mousemove', (e) => {
+            const rect = element.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = (centerY - y) / 20;
+            const rotateY = (x - centerX) / 20;
+
+            element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        element.addEventListener('mouseleave', () => {
+            element.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        });
+
+        const lightbox = document.getElementById('lightbox');
+
+        document.querySelectorAll('.image-container img, .setup-image').forEach(image => {
+            image.style.cursor = 'pointer';
+            image.addEventListener('click', () => {
+                const fullImg = document.createElement('img');
+                fullImg.src = image.src;
+
+                while (lightbox.firstChild) {
+                    lightbox.removeChild(lightbox.firstChild);
+                }
+
+                lightbox.appendChild(fullImg);
+                lightbox.classList.add('active');
+            });
+        });
+
+        lightbox.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+    });
+</script>
+{% endblock content %}

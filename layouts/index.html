@@ -5,6 +5,17 @@
 
 {% block content %}
 <div class="content">
+  {% if maintenance_mode %}
+  <div class="line-status" style="background-color: rgb(255, 115, 0);">
+    <h1>🚧 Maintenance <span class="line" style="background-color: red">v1.1.0</span></h1>
+    <p>We are currently performing maintenance on the system. Please check back later.</p>
+
+    <p>{{ maintenance_message | safe }}</p>
+
+    <span class="line" style="background-color: orange">Started by @juliandev02</span>
+  </div>
+  {% endif %}
+
   <div id="suspended" class="line-status" {% if not suspended_lines %}style="display: none;" {% endif %}>
     <h1>🚫 Suspended</h1>
 
@@ -17,30 +28,41 @@
     </div>
   </div>
 
-  <div id="possibledelays" class="line-status" {% if not possible_delays_lines %}style="display: none;" {% endif %}>
-    <h1>⚠️ Possible delays</h1>
+  <div class="possible-delays-no-scheduled-service-container">
+    <div id="possibledelays" class="line-status" style="flex: 1; ">
+      <h1>⚠️ Possible delays</h1>
 
-    <div class="lines">
-      {% for line in possible_delays_lines %}
-      <div class="line-item line" data-line="{{ line.name }}">
-        {{ line.name }}
+      {% if not possible_delays_lines %}
+      <p>No delays reported</p>
+      {% endif %}
+  
+      <div class="lines">
+        {% for line in possible_delays_lines %}
+        <div class="line-item line" data-line="{{ line.name }}">
+          {{ line.name }}
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
+    </div>
+  
+    <div id="noscheduledservice" class="line-status" style="flex: 1;">
+      <h1>🌙 No scheduled service</h1>
+
+      {% if not no_scheduled_service %}
+      <p>No scheduled service available</p>
+      {% endif %}
+  
+      <div class="lines">
+        {% for line in no_scheduled_service %}
+        <div class="line-item line" data-line="{{ line.name }}">
+          {{ line.name }}
+        </div>
+        {% endfor %}
+      </div>
     </div>
   </div>
 
-  <div id="noscheduledservice" class="line-status" {% if not no_scheduled_service %}style="display: none;" {% endif %}>
-    <h1>🌙 No scheduled service</h1>
-
-    <div class="lines">
-      {% for line in no_scheduled_service %}
-      <div class="line-item line" data-line="{{ line.name }}">
-        {{ line.name }}
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-
+  
   <div id="running" class="line-status" {% if not running_lines %}style="display: none;" {% endif %}>
     <h1>{% if running_lines %}🚄 Running service{% else %}❌ No active service{% endif %}</h1>
 

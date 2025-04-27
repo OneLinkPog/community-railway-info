@@ -52,10 +52,10 @@ async def callback():
         "global_name": user.get('global_name', user['username']),
     }
 
-    return redirect(url_for('index'))
+    return redirect(url_for('index.index_route'))
 
 
 @auth.route('/logout')
 async def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for('index.index_route'))

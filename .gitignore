@@ -2,3 +2,4 @@ __pycache__
 secret.key
 config.yml
 db.sqlite
+server.log

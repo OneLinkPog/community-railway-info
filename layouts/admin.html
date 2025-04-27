@@ -1,9 +1,24 @@
 {% extends "base/base.html" %}
 {% block stylesheet %}
 <link rel="stylesheet" href="/static/css/index.css">
+<link rel="stylesheet" href="/static/css/admin.css">
 {% endblock stylesheet %}
 
 {% block content %}
 <div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Admin Panel</h1>
+            </div>
+        </div>
+    </div>
+    {% block body %}{% endblock %}
+    <div class="container">
+        <div class="row">
+            <a class="smd-component_button-medium poppins" href="/admin/settings">Settings</a>
+            <a class="smd-component_button-medium poppins" href="/admin/logs">View Logs</a>
+        </div>
+    </div>
 </div>
 {% endblock content %}

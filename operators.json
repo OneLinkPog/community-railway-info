@@ -29,7 +29,8 @@
         "short": "DR",
         "color": "#FF954A",
         "users": [
-            "787000285737517147"
+            "787000285737517147",
+            "456459086565998603"
         ],
         "uid": "danube"
     },
@@ -57,7 +58,7 @@
     {
         "name": "Lursin Rails",
         "short": "LR", 
-        "color": "#BA42AE",
+        "color": "#E25352",
         "users": [
             "563650375824179202"
         ],
@@ -82,6 +83,15 @@
         "uid": "mav"
     },
     {
+        "name": "MTA Metro-South Railroad",
+        "short": "msr",
+        "color": "#0060AA",
+        "users": [
+            "709020485094080533"
+        ],
+        "uid": "msr"
+    },
+    {
         "name": "OVB",
         "short": "OVB",
         "color": "#ff6a00",
@@ -90,7 +100,7 @@
             "563650375824179202"
         ],
         "uid": "ovb"
-    }
+    },
     {
         "name": "Stacode X Railways",
         "short": "SXR",
@@ -101,9 +111,9 @@
         "uid": "stacodex"
     },
     {
-        "name": "Patriots Transit",
+        "name": "The Patriots Transit",
         "short": "TPT",
-        "color": "#C37A99",
+        "color": "#98FBCB",
         "users": [
             "1057870253255835679"
         ],
@@ -112,7 +122,7 @@
     {
         "name": "Valiance",
         "short": "VAL",
-        "color": "#ed558d",
+        "color": "#cb0a3d",
         "users": [
             "399968653677690880"
         ],

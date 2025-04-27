@@ -109,3 +109,17 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+.possible-delays-no-scheduled-service-container {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+    .possible-delays-no-scheduled-service-container {
+        flex-direction: column;
+    }
+}
