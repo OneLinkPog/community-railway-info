@@ -17,4 +17,4 @@
   
 ## Admin
 - [ ] Add admin panel for adding new companies
-- [ ] Add logs
+- [x] Add logs
