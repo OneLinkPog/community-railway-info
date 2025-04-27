@@ -34,7 +34,7 @@ def operators_route():
         admin = True
 
     return render_template(
-        'operators.html',
+        'operators/operators.html',
         user=user,
         admin=admin,
         operator=operator,
@@ -98,7 +98,7 @@ def operator_route(uid):
             line['stations'] = [clean(station, tags=["del"], attributes={}, strip=True) for station in line['stations']]
 
     return render_template(
-        'operator_lines.html',
+        'operators/overview.html',
         user=user,
         operator=operator,
         admin=admin,

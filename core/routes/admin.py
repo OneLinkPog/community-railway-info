@@ -29,7 +29,7 @@ def admin_route():
         operator = next((op for op in operators if user['id'] in op['users']), None)
 
     return render_template(
-        'admin.html',
+        'admin/admin.html',
         user=user,
         operator=operator,
         admin=True,
