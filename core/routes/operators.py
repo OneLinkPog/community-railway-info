@@ -45,11 +45,8 @@ def operators_route():
 def operator_route(uid):
     user = session.get('user')
 
-    with open(main_dir + '/lines.json') as f:
-        lines = json.load(f)
-
-    with open(main_dir + '/operators.json') as f:
-        operators = json.load(f)
+    lines = Line.get_legacy()
+    operator = Operator.get_legacy()
 
     operator = None
     admin = False

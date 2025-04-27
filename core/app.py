@@ -7,7 +7,7 @@ from core.routes.dashboard import dashboard
 from core.routes.index import index
 from core.routes.admin import admin
 from core.routes.operators import operators
-from core.data import Line
+from core.data import Line, Operator
 
 import os
 import json
@@ -32,14 +32,12 @@ app.register_blueprint(admin)
 
 @app.route('/lines.json')
 def lines_json():
-    return json.dumps(Line.get_legacy())
+    return Line.get_legacy()
 
 
 @app.route('/operators.json')
 def operators_json():
-    with open(os.path.join(os.path.dirname(__file__), '../operators.json')) as f:
-        operators = json.load(f)
-    return operators
+    return Operator.get_legacy()
 
 
 @app.route('/setup.lua')
