@@ -110,15 +110,28 @@ async def add_line():
                 name=data["name"],
                 status=LineStatus.from_legacy(data["status"]),
                 color=int(data["color"][1:], 16),
-                operator_id=data["operator_uid"],
-                stations=lmap(lambda id: db.exec(select(Station).where(Station.id == id)).one(), data["stations"])
+                operator_id=data["operator_uid"]
             )
+
+            order = 0
+            for id in data["stations"]:
+                station = db.exec(select(Station).where(Station.id == id)).one_or_none()
+
+                if station == None:
+                    logger.error(f'[@{session.get("user")["username"]}] The station "{id}" does not exist')
+                    return {'error': f'The station "{id}" does not exist'}, 400
+                
+                link = LineStationLink(line=new_line, station=station, order=order)
+                new_line.stations.append(link)
+                order += 1
+
             db.add(new_line)
+            db.add_all(new_line.stations)
             db.commit()
 
             return {'success': True}, 200
     except Exception as e:
-        logger.error(f"[@{session.get("user")["username"]}] Error while adding line: {str(e)}")
+        logger.error(f'[@{session.get("user")["username"]}] Error while adding line: {str(e)}')
         return {'error': str(e)}, 500
 
 
@@ -129,16 +142,16 @@ async def update_line(name):
 
     try:
         data = request.json
-        logger.info(f"[@{session.get("user")["username"]}] Updating line {name} with data: {data}")
+        logger.info(f'[@{session.get("user")["username"]}] Updating line {name} with data: {data}')
 
-        with Session(engine) as session:
-            line = session.exec(select(Line).where(Line.name == name)).one_or_none()
+        with Session(engine) as db:
+            line = db.exec(select(Line).where(Line.name == name)).one_or_none()
 
             if line == None:
                 logger.info(f"[@{session.get('user')['username']}] Line {name} not found")
                 return {'error': f'Line {name} not found'}, 404
             
-            if line.name != data["name"] and Line.exists(session, data["name"]) != None:
+            if line.name != data["name"] and Line.exists(db, data["name"]) != None:
                 logger.error(f'[@{session.get("user")["username"]}] A line with that name already exists')
                 return {'error': 'A line with that name already exists'}, 400
             
@@ -146,11 +159,28 @@ async def update_line(name):
             line.color = int(data["color"][1:], 16)
             line.status = LineStatus.from_legacy(data["status"])
             line.notice = data["notice"] or None
-            line.stations = lmap(lambda id: session.exec(select(Station).where(Station.id == id)).one(), data["stations"])
-            logger.info(f"[@{session.get("user")["username"]}] Line {name} updated successfully with new data: {line}") # TODO: `line` probably needs serialization to be logged
             
-            session.add(line)
-            session.commit()
+            for link in line.stations:
+                db.delete(link)
+            line.stations = []
+
+            order = 0
+            for id in data["stations"]:
+                station = db.exec(select(Station).where(Station.id == id)).one_or_none()
+
+                if station == None:
+                    logger.error(f'[@{session.get("user")["username"]}] The station "{id}" does not exist')
+                    return {'error': f'The station "{id}" does not exist'}, 400
+                
+                link = LineStationLink(line=line, station=station, order=order)
+                line.stations.append(link)
+                order += 1
+
+            logger.info(f'[@{session.get("user")["username"]}] Line {name} updated successfully with new data: {line}') # TODO: `line` probably needs serialization to be logged
+            
+            db.add(line)
+            db.add_all(line.stations)
+            db.commit()
                 
             return {'success': True}, 200
     except Exception as e:
@@ -172,5 +202,5 @@ async def delete_line(name):
             logger.info(f"[@{session.get('user')['username']}] Deleted line {name} successfully.")
             return {'success': True}, 200
     except Exception as e:
-        logger.error(f"[@{session.get("user")["username"]}] Error while deleting line {name}: {str(e)}")
+        logger.error(f'[@{session.get("user")["username"]}] Error while deleting line {name}: {str(e)}')
         return {'error': str(e)}, 500

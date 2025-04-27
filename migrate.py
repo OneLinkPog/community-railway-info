@@ -54,10 +54,17 @@ with Session(engine) as session:
         name=line["name"],
         status=LineStatus.from_legacy(line["status"]),
         color=int(line["color"][1:], 16),
-        operator_id=line["operator_uid"],
-        stations=line_db_stations
+        operator_id=line["operator_uid"]
       )
       session.add(db_line)
+
+      order = 0
+      for db_station in line_db_stations:
+        link = LineStationLink(line=db_line, station=db_station, order=order)
+        session.add(link)
+        db_line.stations.append(link)
+        order += 1
+
       print(f"Migrated line {line['name']}")
 
   session.commit()

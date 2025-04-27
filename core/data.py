@@ -1,14 +1,22 @@
 from sqlmodel import *
 from enum import Enum
+from typing import Callable, Iterable, TypeVar
 
-def lmap(*args):
-  return list(map(*args))
+_LMapInput = TypeVar("LMapInput")
+_LMapOutput = TypeVar("LMapOutput")
+def lmap(func: Callable[[_LMapInput], _LMapOutput], iterable: Iterable[_LMapInput]) -> list[_LMapOutput]:
+  return list(map(func, iterable))
 
 # -- SCHEMA --
 # linkers
 class LineStationLink(SQLModel, table=True):
   line_id: str | None = Field(default=None, foreign_key="line.id", primary_key=True)
+  line: "Line" = Relationship(back_populates="stations")
+
   station_id: int | None = Field(default=None, foreign_key="station.id", primary_key=True)
+  station: "Station" = Relationship(back_populates="lines")
+
+  order: int
 
 class UserOperatorLink(SQLModel, table=True):
   user_id: str | None = Field(default=None, foreign_key="user.id", primary_key=True)
@@ -49,7 +57,7 @@ class Station(SQLModel, table=True):
   id: str = Field(primary_key=True)
   name: str
 
-  lines: list["Line"] = Relationship(back_populates="stations", link_model=LineStationLink)
+  lines: list[LineStationLink] = Relationship(back_populates="station")
 
 # lines
 class LineStatus(Enum):
@@ -87,7 +95,7 @@ class Line(SQLModel, table=True):
   notice: str | None = Field(default=None)
   color: int
 
-  stations: list[Station] = Relationship(back_populates="lines", link_model=LineStationLink)
+  stations: list[LineStationLink] = Relationship(back_populates="line")
 
   operator_id: str | None = Field(default=None, foreign_key="operator.id")
   operator: Operator | None = Relationship(back_populates="lines")
@@ -106,12 +114,15 @@ class Line(SQLModel, table=True):
             "status": line.status.get_legacy(),
             "notice": line.notice if line.notice != None else "",
             "color": "#%06x" % (line.color & 0xffffff),
-            "stations": lmap(lambda station: station.name, line.stations),
+            "stations": lmap(lambda l: l.station.name, line.get_ordered_stations()),
             "operator": line.operator.name,
             "operator_uid": line.operator.id
           },
         lines
       )
+    
+  def get_ordered_stations(self):
+    return sorted(self.stations, key=lambda l: l.order)
 
 # -- INIT --
 file = "db.sqlite"
