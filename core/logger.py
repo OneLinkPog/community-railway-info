@@ -7,6 +7,9 @@ import os
 
 class Logger:
     def __init__(self, name):
+        ADMIN_LEVEL = 25 
+        logging.addLevelName(ADMIN_LEVEL, "ADMIN")
+
         self.name = name
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.DEBUG)
@@ -23,11 +26,18 @@ class Logger:
                                                      datefmt='%Y-%m-%d %H:%M:%S'))
         self.logger.addHandler(console_handler)
 
+        def admin(self, message):
+            self.log(ADMIN_LEVEL, message)
+        logging.Logger.admin = admin
+
     def debug(self, message):
         self.logger.debug(message)
 
     def info(self, message):
         self.logger.info(message)
+
+    def admin(self, message):
+        self.logger.admin(message)
 
     def warning(self, message):
         self.logger.warning(message)

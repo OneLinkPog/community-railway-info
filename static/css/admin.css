@@ -72,3 +72,67 @@
 .log-entry[data-level="INFO"] {
     border-left: 3px solid #17a2b8;
 }
+
+.log-entry[data-level="DEBUG"] {
+    border-left: 3px solid #6c757d;
+}
+
+.log-entry[data-level="ADMIN"] {
+    border-left: 3px solid #6f42c1;
+}
+
+#settingsForm {
+    width: 100%;
+    max-width: 600px;
+    background: var(--color-background-deep);
+    padding: 25px;
+    border-radius: 16px;
+    margin: 20px auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.form-group input[type="number"],
+.form-group input[type="text"],
+.form-group textarea {
+    width: calc(100% - 15px);
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #17a2b8;
+    box-shadow: 0 0 0 2px rgba(23, 162, 184, 0.2);
+}

@@ -1,0 +1,70 @@
+{% extends "base/base.html" %}
+{% block stylesheet %}
+<link rel="stylesheet" href="/static/css/index.css">
+<link rel="stylesheet" href="/static/css/admin.css">
+{% endblock stylesheet %}
+
+{% block content %}
+<div class="content">
+    <h1>Settings</h1>
+    <form id="settingsForm" onsubmit="handleSettingsSubmit(event)">
+        <div class="form-group">
+            <label for="port">Port:</label>
+            <input type="number" id="port" name="port" value="{{ config.port }}">
+        </div>
+        <div class="form-group">
+            <label for="debug">Debug Mode:</label>
+            <input type="checkbox" id="debug" name="debug" {% if config.debug %}checked{% endif %}>
+        </div>
+        <div class="form-group">
+            <label for="web_admins">Web Admins (comma-separated IDs):</label>
+            <input type="text" id="web_admins" name="web_admins" value="{{ config.web_admins|join(',') }}">
+        </div>
+        <div class="form-group">
+            <label for="maintenance_mode">Maintenance Mode:</label>
+            <input type="checkbox" id="maintenance_mode" name="maintenance_mode" {% if config.maintenance_mode %}checked{% endif %}>
+        </div>
+        <div class="form-group">
+            <label for="maintenance_message">Maintenance Message:</label>
+            <textarea id="maintenance_message" name="maintenance_message">{{ config.maintenance_message }}</textarea>
+        </div>
+        <button type="submit" class="smd-component_button-medium" style="font-family: Poppins;">Save Settings</button>
+    </form>
+</div>
+
+<script>
+async function handleSettingsSubmit(event) {
+    event.preventDefault();
+    
+    const formData = {
+        port: parseInt(document.getElementById('port').value),
+        debug: document.getElementById('debug').checked,
+        web_admins: document.getElementById('web_admins').value.split(',').map(id => id.trim()),
+        maintenance_mode: document.getElementById('maintenance_mode').checked,
+        maintenance_message: document.getElementById('maintenance_message').value
+    };
+
+    try {
+        const response = await fetch('/admin/settings/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Settings saved successfully!');
+            window.location.reload();
+        } else {
+            alert('Error saving settings: ' + (data.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error saving settings: ' + error.message);
+    }
+}
+</script>
+{% endblock content %}
