@@ -234,6 +234,7 @@ def handle_company_request():
         if action == 'accept':
             new_operator = {
                 'name': request_data['company_name'],
+                'short_code': request_data['short_code'].lower(),
                 'uid': request_data['short_code'].lower(),
                 'color': request_data['color'],
                 'users': [request_data['requester']['id']] + request_data['additional_users']

@@ -30,12 +30,18 @@ async def add_line():
     try:
         data = request.json
 
-        required_fields = ['name', 'color', 'status', 'operator_uid']
+        required_fields = ['name', 'color', 'status', 'operator_uid', 'type']
         for field in required_fields:
             if field not in data:
                 logger.error(
                     f'[@{session.get("user")["username"]}] Missing field: {field}')
                 return {'error': f'Missing field: {field}'}, 400
+
+        allowed_types = ['public', 'private', 'metro', 'tram', 'bus']
+        if data['type'] not in allowed_types:
+            logger.error(
+                f'[@{session.get("user")["username"]}] Invalid line type: {data["type"]}')
+            return {'error': f'Invalid line type. Must be one of: {", ".join(allowed_types)}'}, 400
 
         with open(main_dir + '/lines.json', 'r+') as f:
             lines = json.load(f)
@@ -45,8 +51,7 @@ async def add_line():
                     f'[@{session.get("user")["username"]}] A line with that name already exists')
                 return {'error': 'A line with that name already exists'}, 400
 
-            logger.info(
-                f'[@{session.get("user")["username"]}] Added new line: {data["name"]}')
+            logger.info(f'[@{session.get("user")["username"]}] Added new line: {data["name"]} (Type: {data["type"]})')
             lines.append(data)
             f.seek(0)
             json.dump(lines, f, indent=2)

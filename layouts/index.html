@@ -5,6 +5,17 @@
 
 {% block content %}
 <div class="content">
+  <div class="header">
+    <h1>🚆 Line Status</h1>
+    <p>Check the status of all lines in the system</p>
+  </div>
+  <div class="tabs" style="display: flex; gap: 10px;">
+    <button class="tab-btn active" data-tab="public"><b>Public</b></button>
+    <button class="tab-btn" data-tab="private"><b>Private</b></button>
+    <button class="tab-btn" data-tab="metro"><b>Metro</b></button>
+    <button class="tab-btn" data-tab="tram"><b>Tram</b></button>
+    <button class="tab-btn" data-tab="bus"><b>Bus</b></button>
+  </div>
   {% if maintenance_mode %}
   <div class="line-status" style="background-color: rgb(255, 115, 0);">
     <h1>🚧 Maintenance <span class="line" style="background-color: red">v1.2.0</span></h1>
@@ -16,44 +27,58 @@
   </div>
   {% endif %}
 
-  <div id="suspended" class="line-status" {% if not suspended_lines %}style="display: none;" {% endif %}>
-    <h1>🚫 Suspended</h1>
 
-    <div class="lines">
-      {% for line in suspended_lines %}
-      <div class="line-item line" data-line="{{ line.name }}">
-        {{ line.name }}
-      </div>
-      {% endfor %}
-    </div>
-  </div>
 
-  <div class="possible-delays-no-scheduled-service-container">
-    <div id="possibledelays" class="line-status" style="flex: 1; ">
-      <h1>⚠️ Possible delays</h1>
-
-      {% if not possible_delays_lines %}
-      <p>No delays reported</p>
-      {% endif %}
-  
+  {% for type, status in line_types.items() %}
+  <div class="tab-content {% if type == 'public' %}active{% endif %}" id="{{ type }}">
+    <div id="suspended" class="line-status" {% if not status.suspended %}style="display: none;"{% endif %}>
+      <h1>🚫 Suspended</h1>
       <div class="lines">
-        {% for line in possible_delays_lines %}
+        {% for line in status.suspended %}
         <div class="line-item line" data-line="{{ line.name }}">
           {{ line.name }}
         </div>
         {% endfor %}
       </div>
     </div>
-  
-    <div id="noscheduledservice" class="line-status" style="flex: 1;">
-      <h1>🌙 No scheduled service</h1>
 
-      {% if not no_scheduled_service %}
-      <p>No scheduled service available</p>
-      {% endif %}
-  
+    <div class="possible-delays-no-scheduled-service-container">
+      <div id="possibledelays" class="line-status" style="flex: 1;">
+        <h1>⚠️ Possible delays</h1>
+        {% if not status.possible_delays %}
+        <p>No delays reported</p>
+        {% endif %}
+        <div class="lines">
+          {% for line in status.possible_delays %}
+          <div class="line-item line" data-line="{{ line.name }}">
+            {{ line.name }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div id="noscheduledservice" class="line-status" style="flex: 1;">
+        <h1>🌙 No scheduled service</h1>
+        {% if not status.no_scheduled %}
+        <p>No scheduled service available</p>
+        {% endif %}
+        <div class="lines">
+          {% for line in status.no_scheduled %}
+          <div class="line-item line" data-line="{{ line.name }}">
+            {{ line.name }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div id="running" class="line-status">
+      <h1>{% if status.running %}🚄 Running service{% else %}❌ No active service{% endif %}</h1>
       <div class="lines">
-        {% for line in no_scheduled_service %}
+        {% if not status.running %}
+        <p>No active service available</p>
+        {% endif %}
+        {% for line in status.running %}
         <div class="line-item line" data-line="{{ line.name }}">
           {{ line.name }}
         </div>
@@ -61,19 +86,7 @@
       </div>
     </div>
   </div>
-
-  
-  <div id="running" class="line-status" {% if not running_lines %}style="display: none;" {% endif %}>
-    <h1>{% if running_lines %}🚄 Running service{% else %}❌ No active service{% endif %}</h1>
-
-    <div class="lines">
-      {% for line in running_lines %}
-      <div class="line-item line" data-line="{{ line.name }}">
-        {{ line.name }}
-      </div>
-      {% endfor %}
-    </div>
-  </div>
+  {% endfor %}
 
   <div id="modal" class="modal">
     <div class="modal-content">

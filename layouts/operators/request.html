@@ -31,7 +31,7 @@
 
             <div class="form-group">
                 <label for="companyUid">Unique Company ID (Cannot be changed later)</label>
-                <input type="text" id="companyUid" name="companyUid" required>
+                <input type="text" id="companyUid" name="companyUid" pattern="\S+" title="No spaces allowed" required>
             </div>
 
             <button type="submit" class="submit-btn">Submit request</button>

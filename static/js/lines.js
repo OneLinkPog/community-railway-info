@@ -134,3 +134,34 @@ function fetchLines() {
             console.error('Error fetching lines:', error);
         });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            tab.classList.add('active');
+            const tabId = tab.dataset.tab;
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    function filterLinesByType(type) {
+        document.querySelectorAll('.line-item').forEach(line => {
+            const lineName = line.dataset.line;
+            const lineData = linesData.find(l => l.name === lineName);
+            
+            if (lineData && lineData.type === type) {
+                line.style.display = 'block';
+            } else {
+                line.style.display = 'none';
+            }
+        });
+    }
+
+    filterLinesByType('public');
+});

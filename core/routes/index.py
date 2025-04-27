@@ -25,42 +25,32 @@ def index_route():
     if user and user["id"] in config.web_admins:
         admin = True
     
-    suspended_lines = []
-    running_lines = []
-    possible_delays_lines = []
-    no_scheduled_service = []
+    line_types = {
+        'public': {'suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
+        'private': {'suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
+        'metro': {'suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
+        'tram': {'suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
+        "bus": {'suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
+    }
     
     for line in lines:
-        line_info = {
-            'name': line['name'],
-            'status': line['status'],
-            'color': line.get('color'), 
-            'notice': line.get('notice', ''),
-            'stations': line.get('stations', [])
-        }
+        line_type = line.get('type', 'public')
+        status_key = {
+            'Suspended': 'suspended',
+            'Running': 'running',
+            'Possible delays': 'possible_delays',
+            'No scheduled service': 'no_scheduled'
+        }.get(line['status'])
         
-        match line["status"]:
-            case "Suspended":
-                suspended_lines.append(line_info)
-            case "Running":
-                running_lines.append(line_info)
-            case "Possible delays":
-                possible_delays_lines.append(line_info)
-            case "No scheduled service":
-                no_scheduled_service.append(line_info)
-            case _:
-                print(f"{line['name']} has an invalid status")
+        if status_key and line_type in line_types:
+            line_types[line_type][status_key].append(line)
     
     return render_template(
         'index.html',
         user=user,
         operator=operator,
         admin=admin,
-        suspended_lines=suspended_lines,
-        running_lines=running_lines,
-        possible_delays_lines=possible_delays_lines,
-        no_scheduled_service=no_scheduled_service,
-        lines=lines,
+        line_types=line_types,
         maintenance_mode=config.maintenance_mode,
         maintenance_message=config.maintenance_message
     )
