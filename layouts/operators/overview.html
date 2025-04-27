@@ -6,6 +6,14 @@
 {% block content %}
 <div class="content">
     <div class="dashboard-content">
+        {% if operator_overview == none %}
+        <h1>Operator not found</h1>
+        <p>The operator you are looking for does not exist or has been deleted.</p>
+        <a href="/operators" class="btn-secondary smd-component_button-medium poppins">
+            <span style="position: absolute" class="material-symbols-outlined">arrow_back</span>
+            <span style="margin-left: 30px;">Back to Operators</span>
+        </a>
+        {% else %}
         <div class="dashboard-header">
             <h1>{{ operator_overview.name }}</h1>
 
@@ -16,7 +24,7 @@
             {% if member %}
             <span class="operator-badge member">Member</span>
             {% endif %}
-        
+
             <div class="operator-members">
                 {% if operator_overview.user_datas %}
                 <div class="member-avatars">
@@ -37,7 +45,8 @@
                 <span style="margin-left: 30px;">Add Line</span>
             </button>
 
-            <button onclick="editOperator('{{ operator_overview.name }}')" class="smd-component_button-medium btn-primary poppins">
+            <button onclick="editOperator('{{ operator_overview.name }}')"
+                class="smd-component_button-medium btn-primary poppins">
                 <span style="position: absolute" class="material-symbols-outlined">edit</span>
                 <span style="margin-left: 30px;">Edit operator</span>
             </button>
@@ -87,6 +96,7 @@
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
 
     {% if admin or member %}
@@ -168,7 +178,8 @@
 
                 <div class="form-group">
                     <label for="operatorUsers">Users (one per Line)</label>
-                    <textarea id="operatorUsers" name="users" rows="4" placeholder="Enter usernames, one per line"></textarea>
+                    <textarea id="operatorUsers" name="users" rows="4"
+                        placeholder="Enter usernames, one per line"></textarea>
                 </div>
 
                 <div class="form-group">

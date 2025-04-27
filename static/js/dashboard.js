@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.reload();
             } else {
                 const error = await response.json();
-                alert('[Server] Error while saving: ' + (error.message || 'Unknown Error'));
+                alert('[Server] Error while saving: ' + (error || 'Unknown Error'));
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error while saving: ' + error.message);
+            alert('Error while saving: ' + error);
         }
     }
 
@@ -141,11 +141,11 @@ async function handleLineSubmit(event, uid) {
         name: formData.get('name'),
         color: formData.get('color'),
         status: formData.get('status'),
-        type: formData.get('type'),
+        type: formData.get('type'),       
         notice: formData.get('notice'),
         stations: formData.get('stations').split('\n').filter(s => s.trim()),
         operator: window.operatorName,
-        operator_uid: window.operatorUid
+        operator_uid: window.operatorUid    
     };
 
     try {
