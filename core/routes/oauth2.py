@@ -2,6 +2,7 @@ from flask import Blueprint, session, redirect, url_for, request
 from requests_oauthlib import OAuth2Session
 from core.config import config
 from core.url import *
+from core.data import Session, User, select, engine
 
 auth = Blueprint('auth', __name__)
 
@@ -51,6 +52,24 @@ async def callback():
         'avatar': user['avatar'],
         "global_name": user.get('global_name', user['username']),
     }
+
+    with Session(engine) as db:
+        db_user = db.exec(select(User).where(User.id == user["id"])).one_or_none()
+
+        if db_user == None:
+            db_user = User(
+                id=user['id'],
+                username=user['username'],
+                display_name=user.get('global_name', user['username']),
+                avatar_hash=user['avatar']
+            )
+        
+        db_user.username = user["username"]
+        db_user.display_name = user.get('global_name', user['username'])
+        db_user.avatar_hash = user['avatar']
+
+        db.add(db_user)
+        db.commit()
 
     return redirect(url_for('index.index_route'))
 

@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, render_template, session, redirect, url_fo
 from core import main_dir
 from core.logger import Logger
 from core.config import config
+from core.data import Line, Operator
 
 import json
 
@@ -16,12 +17,9 @@ def admin_route():
 
     if not user or user.get('id') not in config.web_admins:
         return redirect(url_for('index.index_route'))
-
-    with open(main_dir + '/lines.json') as f:
-        lines = json.load(f)
-
-    with open(main_dir + '/operators.json') as f:
-        operators = json.load(f)
+    
+    lines = Line.get_legacy()
+    operators = Operator.get_legacy()
 
     operator = None
     if user and 'id' in user:
