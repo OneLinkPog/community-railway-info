@@ -106,21 +106,32 @@ async def update_line(name):
 
     try:
         data = request.json
-        logger.info(
-            f"[@{session.get("user")["username"]}] Updating line {name} with data: {data}")
 
         with open(main_dir + '/lines.json', 'r+') as f:
             lines = json.load(f)
+            
+            old_line = None
+            for line in lines:
+                if line.get('name') == name:
+                    old_line = line.copy()
+                    break
 
             line_updated = False
             for i, line in enumerate(lines):
                 if line.get('name') == name:
+                    # Preserve operator data
                     data['operator'] = line.get('operator')
                     data['operator_uid'] = line.get('operator_uid')
                     lines[i] = data
                     line_updated = True
-                    logger.info(
-                        f"[@{session.get("user")["username"]}] Line {name} updated successfully with new data: {lines[i]}")
+                    
+                    changes = []
+                    for key in data:
+                        if key in old_line and data[key] != old_line[key]:
+                            changes.append(f"{key}: {old_line[key]} -> {data[key]}")
+                    
+                    change_log = ", ".join(changes) if changes else "no changes"
+                    logger.info(f"[@{session.get('user')['username']}] Updated line {name}. Changes: {change_log}")
                     break
 
             if not line_updated:
