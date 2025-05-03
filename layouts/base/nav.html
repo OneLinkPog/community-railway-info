@@ -3,7 +3,8 @@
     <a href="/">
       <img src="/static/favicon.png" alt="Logo">
     </a>
-    <span class="smd-layout_header-title" style="cursor: pointer" onclick="window.location.href = '/'">Community Railway</span>
+    <span class="smd-layout_header-title" style="cursor: pointer" onclick="window.location.href = '/'">Community
+      Railway</span>
   </div>
 
   <nav class="smd-layout_navbar">
@@ -15,52 +16,64 @@
 
   <div class="smd-layout_navbar-right">
     {% if not session.get('user') %}
-      <a href="{{ url_for('auth.login') }}">Login</a>
+    <a href="{{ url_for('auth.login') }}">Login</a>
     {% else %}
 
-      {% if operator %}
-        <a class="line-modal" href="/dashboard" id="operatorLink">{{ operator.name }}</a>
-        <script>
-          document.getElementById('operatorLink').style.backgroundColor = '{{ operator.color }}';
-        </script>
-      {% endif %}
-
-      {% if admin %}
-        <a class="line-modal" style="background-color: red" href="/admin">Admin</a>
-      {% endif %}
-
-      <div class="smd-component_dropdown">
-        <button class="smd-component_dropdown-dropbtn" onclick="toggleDropdown()">
-          {{ session.user.global_name }}
-          <div class="smd-layout_navbar-profile-picture">
-            <img src="https://cdn.discordapp.com/avatars/{{ session.user.id }}/{{ session.user.avatar }}.png" alt="Profile Picture">
-          </div>
-        </button>
-
-        <div class="smd-component_dropdown-content">
-          <div class="smd-component_dropdown-header">
-            <a href="/"><img src="/static/favicon.png" class="smd-component_dropdown-logo" style="width: 17%; padding-bottom: 10px"></a>
-
-            <div class="smd-component_dropdown-profile">
-              <div class="smd-component_dropdown-profile-name">@{{ session.user.username }}</div>
-              <div class="smd-component_dropdown-profile-picture">
-                <img src="https://cdn.discordapp.com/avatars/{{ session.user.id }}/{{ session.user.avatar }}.png" alt="Profile Picture">
-              </div>
-            </div>
-            <hr>
-          </div>
-
-          <div class="smd-component_dropdown-content-main">
-            <a href="{{ url_for('auth.logout') }}">
-              <span class="material-symbols-outlined material-symbols-outlined--ul">logout</span>
-              <span class="smd-component_dropdown-content-main-text">Logout</span>
-            </a>
-            <div class="smd-component_dropdown-spacer"></div>
-          </div>
-
+    <div class="smd-component_dropdown">
+      <button class="smd-component_dropdown-dropbtn" onclick="toggleDropdown()">
+        {{ session.user.global_name }}
+        <div class="smd-layout_navbar-profile-picture">
+          <img src="https://cdn.discordapp.com/avatars/{{ session.user.id }}/{{ session.user.avatar }}.png"
+            alt="Profile Picture">
         </div>
-    {% endif %}
+      </button>
+
+      <div class="smd-component_dropdown-content">
+        <div class="smd-component_dropdown-header">
+          <a href="/"><img src="/static/favicon.png" class="smd-component_dropdown-logo"
+              style="width: 17%; padding-bottom: 10px"></a>
+
+          <div class="smd-component_dropdown-profile">
+            <div class="smd-component_dropdown-profile-name">@{{ session.user.username }}</div>
+            <div class="smd-component_dropdown-profile-picture">
+              <img src="https://cdn.discordapp.com/avatars/{{ session.user.id }}/{{ session.user.avatar }}.png"
+                alt="Profile Picture">
+            </div>
+          </div>
+          <hr>
+        </div>
+
+        <div class="smd-component_dropdown-content-main">
+          {% if operator %}
+          {% for op in operator %}
+          <a href="/operators/{{ op.uid }}">
+            <span data-line="{{ op.uid }}" id="op-{{ op.uid }}"
+              class="material-symbols-outlined material-symbols-outlined--ul">train</span>
+            <span class="smd-component_dropdown-content-main-text">{{ op.name }}</span>
+          </a>
+          <script>
+            document.getElementById('op-{{ op.uid }}').style.color = '{{ op.color }}';
+          </script>
+          {% endfor %}
+          <hr>
+          {% endif %}
+          {% if admin %}
+          <a href="/admin">
+            <span class="material-symbols-outlined material-symbols-outlined--ul"
+              style="color: rgb(255, 67, 67)">admin_panel_settings</span>
+            <span class="smd-component_dropdown-content-main-text">Admin</span>
+          </a>
+          {% endif %}
+          <a href="{{ url_for('auth.logout') }}">
+            <span class="material-symbols-outlined material-symbols-outlined--ul"
+              style="color: rgb(146, 146, 146)">logout</span>
+            <span class="smd-component_dropdown-content-main-text">Logout</span>
+          </a>
+          <div class="smd-component_dropdown-spacer"></div>
+        </div>
       </div>
+      {% endif %}
+    </div>
 
     <script>
       function toggleDropdown() {

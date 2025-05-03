@@ -2,3 +2,7 @@ __pycache__
 secret.key
 config.yml
 server.log
+
+lines.json
+operators.json
+operator_requests.json

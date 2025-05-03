@@ -7,6 +7,12 @@ with open(main_dir + "/config.yml", "r") as _config:
 
 class Config:
     def __init__(self):
+        self.load()
+        
+    def load(self):
+        with open(main_dir + "/config.yml", "r") as _config:
+            config_data = yaml.load(_config, Loader=yaml.SafeLoader)
+        
         self.discord_client_id = config_data["discord_client_id"]
         self.discord_client_secret = config_data["discord_client_secret"]
         self.discord_redirect_uri = config_data["discord_redirect_uri"]
@@ -25,5 +31,5 @@ config = Config()
 allowed_tags = [
     'p', 'br', 'strong', 'em', 'a', 'ul', 'li', 'h1',
     'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div', 'b', 'i',
-    'u', 's', 'mark', 'pre', 'blockquote', 'strong'
+    'u', 's', 'mark', 'pre', 'blockquote', 'strong', "hr"
 ]

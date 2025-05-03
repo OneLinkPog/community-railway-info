@@ -1,0 +1,58 @@
+{% extends "base/base.html" %}
+{% block stylesheet %}
+<link rel="stylesheet" href="/static/css/index.css">
+<link rel="stylesheet" href="/static/css/admin.css">
+{% endblock stylesheet %}
+
+{% block content %}
+<div class="content">
+    <div class="admin-header">
+        <h1>Operator Requests</h1>
+        <p class="admin-subtitle">Manage incoming requests for new Rail Companies</p>
+    </div>
+
+    <div class="requests-container">
+        {% if requests %}
+            {% for request in requests %}
+                <div class="request-card" data-status="{{ request.status }}">
+                    <div class="request-header">
+                        <h3>{{ request.company_name }}</h3>
+                        <span class="status-badge status-{{ request.status }}">{{ request.status }}</span>
+                    </div>
+                    
+                    <div class="request-details">
+                        <p><strong>Short Code:</strong> {{ request.short_code }}</p>
+                        <p><strong>Requested by:</strong> @{{ request.requester.username }}</p>
+                        <p><strong>Timestamp:</strong> {{ request.timestamp }}</p>
+                        
+                        <div class="color-preview" style="background-color: {{ request.color }}">
+                            <span>Color: {{ request.color }}</span>
+                        </div>
+                        
+                        {% if request.additional_users %}
+                        <p><strong>Additional Users:</strong> {{ request.additional_users|join(', ') }}</p>
+                        {% endif %}
+                    </div>
+
+                    {% if request.status == 'pending' %}
+                    <div class="request-actions">
+                        <button onclick="handleRequest('{{ request.timestamp }}', 'accept')" class="action-btn accept">
+                            Accept
+                        </button>
+                        <button onclick="handleRequest('{{ request.timestamp }}', 'reject')" class="action-btn reject">
+                            Reject
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-requests">
+                <p>No pending requests available</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script src="/static/js/companies.js"></script>
+{% endblock content %}

@@ -70,10 +70,21 @@ function fetchLines() {
 
                         const operatorColor = await getOperatorColor(lineData.operator_uid);
 
+                        const operatorName = await fetch('/operators.json')
+                            .then(response => response.json())
+                            .then(operators => {
+                                const operator = operators.find(op => op.uid === lineData.operator_uid);
+                                return operator?.name || 'Unknown Operator';
+                            })
+                            .catch(error => {
+                                console.error('Error fetching operator name:', error);
+                                return 'Unknown Operator';
+                            });
+
                         modalContent.innerHTML = `
                             <div style="display: flex; align-items: center">
                                 <h1 class="line-modal" style="background-color: ${lineData.color}">${lineData.name}</h1>
-                                <span style="margin-left: 16px; background-color: ${operatorColor}" class="line-modal" onclick="window.location.href = '/operators/${lineData.operator_uid || ''}'">${lineData.operator || ''}</span>
+                                <span style="margin-left: 16px; background-color: ${operatorColor}" class="line-modal" onclick="window.location.href = '/operators/${lineData.operator_uid || ''}'">${operatorName || ''}</span>
                             </div>
                             <h3>${statusEmoji} ${lineData.status || 'No description available'}</h3>
                             <p>${lineData.notice || 'No notice available'}</p>
@@ -85,16 +96,21 @@ function fetchLines() {
                         } else {
                             modalContent.innerHTML += `<h2>Stations</h2>`;
                             const ul = document.createElement("ul");
-                            lineData.stations.forEach(station => {
-                                const li = document.createElement("li");
-                                if (station.includes('<del>')) {
+                            if (lineData.stations.length === 1 && lineData.stations[0].startsWith('<content:html>')) {
+                                modalContent.innerHTML += lineData.stations[0].replace('<content:html>', '').replace("<script>", "").replace("</script>", "");
+                            } else {
+                                lineData.stations.forEach(station => {
+                                    const li = document.createElement("li");
                                     li.innerHTML = station;
-                                } else {
-                                    li.textContent = station;
-                                }
-                                ul.appendChild(li);
-                            });
-                            modalContent.appendChild(ul);
+                                    /* if (station.includes('<del>')) {
+                                        li.innerHTML = station;
+                                    } else {
+                                        li.textContent = station;
+                                    } */
+                                    ul.appendChild(li);
+                                });
+                                modalContent.appendChild(ul);
+                            }
                         }
 
                         openModal();
@@ -122,4 +138,53 @@ function fetchLines() {
         .catch(error => {
             console.error('Error fetching lines:', error);
         });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            tab.classList.add('active');
+            const tabId = tab.dataset.tab;
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    function filterLinesByType(type) {
+        document.querySelectorAll('.line-item').forEach(line => {
+            const lineName = line.dataset.line;
+            const lineData = linesData.find(l => l.name === lineName);
+            
+            if (lineData && lineData.type === type) {
+                line.style.display = 'block';
+            } else {
+                line.style.display = 'none';
+            }
+        });
+    }
+
+    filterLinesByType('public');
+});
+
+
+function setContrastColor(elementId, color) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    try {
+        const hex = color.replace('#', '');
+        const r = parseInt(hex.substr(0,2), 16);
+        const g = parseInt(hex.substr(2,2), 16);
+        const b = parseInt(hex.substr(4,2), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        
+        element.style.color = brightness > 128 ? '#000000' : '#ffffff';
+    } catch (error) {
+        console.error(`Error setting colors for ${elementId}:`, error);
+    }
 }
