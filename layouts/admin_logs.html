@@ -6,6 +6,7 @@
 
 {% block content %}
 <div class="log-content">
+    <center><h1>Server Logs</h1></center>
     <div class="container">
         <div class="log-controls">
             <input type="text" id="logSearch" placeholder="Search Logs..." class="search-input">
@@ -14,14 +15,11 @@
                 <option value="INFO">Info</option>
                 <option value="WARNING">Warning</option>
                 <option value="ERROR">Error</option>
-                <option value="DEBUG">Debug</option>
-                <option value="ADMIN">Admin</option>
             </select>
             <button onclick="clearLogs()" class="smd-component_button-small clear-logs" style="font-family: Poppins;">Clear logs</button>
-            <button onclick="updateLogs()" class="smd-component_button-small clear-logs" style="font-family: Poppins;">Update logs</button>
         </div>
         <div class="log-container">
-            {% for log in logs|reverse %}
+            {% for log in logs|reverse %}   
             <div class="log-entry" data-level="{{ log[1].split('[')[1].split(']')[0] if '[' in log[1] else 'INFO' }}">
                 <span class="log-timestamp">{{ log[0] }}</span>
                 <span class="log-message">{{ log[1] }}</span>
@@ -59,42 +57,6 @@ function clearLogs() {
                 }
             });
     }
-}
-
-function updateLogs() {
-    fetch('/admin/update-logs')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const logContainer = document.querySelector('.log-container');
-                logContainer.innerHTML = '';
-                data.logs.reverse().forEach(log => {
-                    const logEntry = document.createElement('div');
-                    logEntry.className = 'log-entry';
-                    const level = log[1].includes('[') ? log[1].split('[')[1].split(']')[0] : 'INFO';
-                    logEntry.setAttribute('data-level', level);
-                    const timestamp = log[0].replace(/[&<>"']/g, char => ({
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        '"': '&quot;',
-                        "'": '&#39;'
-                    })[char]);
-                    const message = log[1].replace(/[&<>"']/g, char => ({
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        '"': '&quot;',
-                        "'": '&#39;'
-                    })[char]);
-                    logEntry.innerHTML = `
-                        <span class="log-timestamp">${timestamp}</span>
-                        <span class="log-message">${message}</span>
-                    `;
-                    logContainer.appendChild(logEntry);
-                });
-            }
-        });
 }
 </script>
 {% endblock content %}

@@ -6,15 +6,15 @@
 - [x] Add order alphabetical and by trains to train operators
 
 ## Company Management
-- [x] Add admin panel for railway companies
-- [x] Add company edit modal with color change option
-- [x] Support multiple railway companies per user
-- [x] Add other users to company
+- [ ] Add admin panel for railway companies
+- [ ] Add company edit modal with color change option
+- [ ] Support multiple railway companies per user
+- [ ] Add other users to company
 - [ ] Support lines having multiple operators
 
 ## Documentation
 - [x] Add ComputerCraft display installation instructions
   
 ## Admin
-- [x] Add admin panel for adding new companies
-- [x] Add logs
+- [ ] Add admin panel for adding new companies
+- [ ] Add logs

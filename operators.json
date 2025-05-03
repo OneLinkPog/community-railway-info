@@ -1,0 +1,131 @@
+[
+    {
+        "name": "Agilis",
+        "short": "AG",
+        "color": "#B1FA4C",
+        "users": [],
+        "uid": "agilis"
+    },
+    {   
+        "name": "Alba Railways",
+        "short": "ALB",
+        "color": "#ccccff",
+        "users": [
+            "531472858577108992"
+        ],
+        "uid": "alba"
+    },
+    {
+        "name": "Baylink",
+        "short": "BAY",
+        "color": "#9fc5e8",
+        "users": [
+            "919253203244183603"
+        ],
+        "uid": "baylink"
+    },
+    {
+        "name": "Danube Rails",
+        "short": "DR",
+        "color": "#FF954A",
+        "users": [
+            "787000285737517147",
+            "456459086565998603"
+        ],
+        "uid": "danube"
+    },
+    {
+        "name": "Deutsche Bahn",
+        "short": "DB",
+        "color": "#FF5D5D",
+        "users": [
+            "596795121974902784",
+            "1000434582010740746",
+            "605436353806598148"
+        ],
+        "uid": "deutschebahn"
+    },
+    {
+        "name": "Kothausen Railways",
+        "short": "KTR",
+        "color": "#ff6a00",
+        "users": [
+            "874283885654077511",
+            "933697808152801311"
+        ],
+        "uid": "kothausen"
+    },
+    {
+        "name": "Lursin Rails",
+        "short": "LR", 
+        "color": "#E25352",
+        "users": [
+            "563650375824179202"
+        ],
+        "uid": "lursin"
+    },
+    {
+        "name": "Magwer Transport",
+        "short": "MT",
+        "color": "#29B442",
+        "users": [
+            "297644473687605258"
+        ],
+        "uid": "magwer"
+    },
+    {
+        "name": "MÁV",
+        "short": "MÁV",
+        "color": "#45bf9d",
+        "users": [
+            "699695904357351536"
+        ],
+        "uid": "mav"
+    },
+    {
+        "name": "MTA Metro-South Railroad",
+        "short": "msr",
+        "color": "#0060AA",
+        "users": [
+            "709020485094080533"
+        ],
+        "uid": "msr"
+    },
+    {
+        "name": "OVB",
+        "short": "OVB",
+        "color": "#ff6a00",
+        "users": [
+            "1003011961635737642",
+            "563650375824179202"
+        ],
+        "uid": "ovb"
+    },
+    {
+        "name": "Stacode X Railways",
+        "short": "SXR",
+        "color": "#378648",
+        "users": [
+            "761833623934337074"
+        ],
+        "uid": "stacodex"
+    },
+    {
+        "name": "The Patriots Transit",
+        "short": "TPT",
+        "color": "#98FBCB",
+        "users": [
+            "1057870253255835679"
+        ],
+        "uid": "patriots"
+    },
+    {
+        "name": "Valiance",
+        "short": "VAL",
+        "color": "#cb0a3d",
+        "users": [
+            "399968653677690880"
+        ],
+        "uid": "valiance"
+    }
+]

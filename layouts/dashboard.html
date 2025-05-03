@@ -6,29 +6,13 @@
 {% block content %}
 <div class="content">
     <div class="dashboard-content">
-        {% if operator_overview == none %}
-        <h1>Operator not found</h1>
-        <p>The operator you are looking for does not exist or has been deleted.</p>
-        <a href="/operators" class="btn-secondary smd-component_button-medium poppins">
-            <span style="position: absolute" class="material-symbols-outlined">arrow_back</span>
-            <span style="margin-left: 30px;">Back to Operators</span>
-        </a>
-        {% else %}
         <div class="dashboard-header">
-            <h1>{{ operator_overview.name }}</h1>
-
-            {% if admin %}
-            <span class="operator-badge admin">Admin</span>
-            {% endif %}
-
-            {% if member %}
-            <span class="operator-badge member">Member</span>
-            {% endif %}
+            <h1>Dashboard - {{ operator.name }}</h1>
 
             <div class="operator-members">
-                {% if operator_overview.user_datas %}
+                {% if operator.user_datas %}
                 <div class="member-avatars">
-                    {% for user_data in operator_overview.user_datas %}
+                    {% for user_data in operator.user_datas %}
                     <div class="member-avatar" data-tooltip="{{ user_data.display_name }} (@{{ user_data.username }})">
                         <img src="{{ user_data.avatar_url }}" alt="Member Avatar">
                     </div>
@@ -38,20 +22,12 @@
             </div>
         </div>
 
-        {% if admin or member %}
         <div class="dashboard-controls">
             <button onclick="showAddLineModal()" class="smd-component_button-medium btn-primary poppins">
-                <span style="position: absolute" class="material-symbols-outlined">add</span>
+                <span style="position: absolute"class="material-symbols-outlined">add</span>
                 <span style="margin-left: 30px;">Add Line</span>
             </button>
-
-            <button onclick="editOperator('{{ operator_overview.name }}')"
-                class="smd-component_button-medium btn-primary poppins">
-                <span style="position: absolute" class="material-symbols-outlined">edit</span>
-                <span style="margin-left: 30px;">Edit operator</span>
-            </button>
         </div>
-        {% endif %}
 
         <div class="lines-grid">
             {% for line in operator_lines %}
@@ -83,7 +59,6 @@
                         {% endif %}
                     </div>
                 </div>
-                {% if admin or member %}
                 <div class="line-actions">
                     <button onclick="editLine('{{ line.name }}')" class="btn-secondary smd-component_button-medium">
                         <span class="material-symbols-outlined">edit</span>
@@ -92,14 +67,11 @@
                         <span class="material-symbols-outlined">delete</span>
                     </button>
                 </div>
-                {% endif %}
             </div>
             {% endfor %}
         </div>
-        {% endif %}
     </div>
 
-    {% if admin or member %}
     <div id="lineModal" class="modal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: -25px;">
@@ -128,17 +100,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="lineType">Type</label>
-                    <select id="lineType" name="type" required>
-                        <option value="public">Public</option>
-                        <option value="private">Private</option>
-                        <option value="bus">Bus</option>
-                        <option value="tram">Tram</option>
-                        <option value="metro">Metro</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
                     <label for="lineNotice">Notice (Supports HTML)</label>
                     <textarea id="lineNotice" name="notice" rows="6"></textarea>
                 </div>
@@ -153,50 +114,12 @@
             </form>
         </div>
     </div>
-
-    <div id="operatorModal" class="modal">
-        <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: -25px;">
-                <h1>Edit Operator</h1>
-                <span class="close" id="closeOperator">&times;</span>
-            </div>
-            <form id="operatorForm">
-                <div class="form-group">
-                    <label for="operatorName">Operator Name</label>
-                    <input type="text" id="operatorName" name="name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="operatorShort">Short Name</label>
-                    <input type="text" id="operatorShort" name="short" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="operatorColor">Operator Color</label>
-                    <input type="color" id="operatorColor" name="color" required style="width: 50px; height: 50px;">
-                </div>
-
-                <div class="form-group">
-                    <label for="operatorUsers">Users (one per Line)</label>
-                    <textarea id="operatorUsers" name="users" rows="4"
-                        placeholder="Enter usernames, one per line"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="operatorAvatar">Operator UID</label>
-                    <input type="text" id="operatorUid" name="avatar" required readonly>
-                </div>
-                <button type="submit" class="btn-primary smd-component_button-medium poppins">Save Changes</button>
-            </form>
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <script>
-    window.operatorName = "{{ operator_overview.name }}";
-    window.operatorUid = "{{ operator_overview.uid }}";
-    window.lines = {{ operator_lines | tojson | safe }};
+    window.operatorName = "{{ operator.name }}";
+    window.operatorUid = "{{ operator.uid }}";
+    window.lines = {{ operator_lines|tojson|safe }};
 </script>
 
 <script src="/static/js/dashboard.js"></script>
