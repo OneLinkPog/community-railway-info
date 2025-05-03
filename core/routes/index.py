@@ -3,6 +3,7 @@ from core import main_dir
 from core.config import config
 
 import json
+import re
 
 index = Blueprint('index', __name__)
 
@@ -44,6 +45,14 @@ def index_route():
         
         if status_key and line_type in line_types:
             line_types[line_type][status_key].append(line)
+    
+    # Sort each status list in each line type
+    for line_type in line_types.values():
+        for status in line_type.values():
+            status.sort(key=lambda x: (
+                ''.join([i for i in x['name'] if not i.isdigit()]),  # alphabetical part
+                [int(''.join(g)) for g in re.findall(r'\d+', x['name'])] or [0]  # numerical part
+            ))
     
     return render_template(
         'index.html',
