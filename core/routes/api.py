@@ -131,7 +131,7 @@ async def update_line(name):
                             changes.append(f"{key}: {old_line[key]} -> {data[key]}")
                     
                     change_log = ", ".join(changes) if changes else "no changes"
-                    logger.info(f"[@{session.get('user')['username']}] Updated line {name}. Changes: {change_log}")
+                    logger.info(f"[@{session.get('user')['username']}] Updated line {name}. Changes: {change_log.replace(chr(10), ' ').replace(chr(13), ' ')}")
                     break
 
             if not line_updated:

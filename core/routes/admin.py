@@ -74,9 +74,18 @@ def admin_logs():
         logs = f.readlines()
         
     logs = [log.strip() for log in logs if log.strip()]
-    logs = [log.split(' - ', 1) for log in logs]
-    logs = [(log[0], log[1].split(' - ', 1)[1] if len(log) > 1 else '') for log in logs]
     
+    parsed_logs = []
+    for log in logs:
+        parts = log.split(' - ', 1)
+        if len(parts) == 2:
+            timestamp = parts[0]
+            rest = parts[1].split(' - ', 1)
+            message = rest[1] if len(rest) > 1 else rest[0]
+            parsed_logs.append((timestamp, message))
+        else:
+            parsed_logs.append(('', log))
+
     logger.admin(f'[@{session.get("user")["username"]}] Accessed server logs')
     
     with open(main_dir + '/operators.json') as f:
@@ -91,7 +100,7 @@ def admin_logs():
         user=user,
         admin=True,
         operator=operator,
-        logs=logs
+        logs=parsed_logs
     )
     
 @admin.route('/admin/companies')
