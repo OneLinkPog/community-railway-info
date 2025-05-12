@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.reload();
             } else {
                 const error = await response.json();
-                alert('[Server] Error while saving: ' + (error || 'Unknown Error'));
+                alert('[Server] Error while saving: ' + (error.error || 'Unknown Error'));
             }
         } catch (error) {
             console.error('Error:', error);
@@ -166,7 +166,7 @@ async function handleLineSubmit(event, uid) {
             window.location.reload();
         } else {
             const error = await response.json();
-            alert('[Server] Error while saving: ' + (error || 'Unknown Error'));
+            alert('[Server] Error while saving: ' + (error.error || 'Unknown Error'));
         }
     } catch (error) {
         console.error('Error:', error);

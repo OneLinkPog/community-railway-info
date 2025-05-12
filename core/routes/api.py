@@ -75,8 +75,7 @@ async def add_line():
 
         return {'success': True}, 200
     except Exception as e:
-        logger.error(
-            f"[@{session.get("user")["username"]}] Error while adding line: {str(e)}")
+        logger.error(f"[@{session.get("user")["username"]}] Error while adding line: {str(e)}")
         return {'error': str(e)}, 500
 
 
