@@ -20,7 +20,7 @@
 
     <div class="smd-component_dropdown">
       <button class="smd-component_dropdown-dropbtn" onclick="toggleDropdown()">
-        {{ session.user.global_name }}
+        <span class="smd-layout_navbar-profile-name">{{ session.user.global_name }}</span>
         <div class="smd-layout_navbar-profile-picture">
           <img src="https://cdn.discordapp.com/avatars/{{ session.user.id }}/{{ session.user.avatar }}.png"
             alt="Profile Picture">
