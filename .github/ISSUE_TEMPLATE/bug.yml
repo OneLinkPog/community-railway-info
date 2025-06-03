@@ -37,20 +37,11 @@ body:
       render: shell
 
   - type: input
-    id: version
+    id: web-browser
     attributes:
-      label: Version
-      description: What version of the software are you running?
-      placeholder: e.g. v1.0.0
-    validations:
-      required: true
-
-  - type: input
-    id: operating-system
-    attributes:
-      label: Operating System
-      description: What operating system and version are you using?
-      placeholder: e.g. Ubuntu 20.04, Windows 11
+      label: Web Browser
+      description: What web browser are you using?
+      placeholder: e.g. Chrome, Firefox, Safari
     validations:
       required: true
 
