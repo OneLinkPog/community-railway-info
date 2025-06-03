@@ -110,6 +110,8 @@ def operator_route(uid):
             attributes={},
             strip=True
         )
+        
+        line['notice'] = line['notice'].rstrip()
 
         if 'stations' in line:
             line['stations'] = [clean(station, tags=allowed_tags, attributes={}, 
