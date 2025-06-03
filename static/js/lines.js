@@ -87,7 +87,7 @@ function fetchLines() {
                                 <span style="margin-left: 16px; background-color: ${operatorColor}" class="line-modal" onclick="window.location.href = '/operators/${lineData.operator_uid || ''}'">${operatorName || ''}</span>
                             </div>
                             <h3>${statusEmoji} ${lineData.status || 'No description available'}</h3>
-                            <p>${lineData.notice || 'No notice available'}</p>
+                            <p>${(lineData.notice && lineData.notice.trim() !== '') ? lineData.notice.trim() : 'No notice available'}</p>
                             <hr>
                         `;
 
