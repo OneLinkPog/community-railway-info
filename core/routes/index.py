@@ -35,6 +35,14 @@ def index_route():
     }
     
     for line in lines:
+        if 'notice' in line:
+            if line['notice'] is None or line['notice'].strip() == '':
+                line['notice'] = None
+            else:
+                line['notice'] = line['notice'].strip()
+        else:
+            line['notice'] = None
+                
         line_type = line.get('type', 'public')
         status_key = {
             'Suspended': 'suspended',
@@ -42,9 +50,10 @@ def index_route():
             'Possible delays': 'possible_delays',
             'No scheduled service': 'no_scheduled'
         }.get(line['status'])
-        
+
         if status_key and line_type in line_types:
             line_types[line_type][status_key].append(line)
+
     
     # Sort each status list in each line type
     for line_type in line_types.values():
