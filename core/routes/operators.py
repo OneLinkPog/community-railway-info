@@ -113,6 +113,7 @@ def operator_route(uid):
         
         line['notice'] = line['notice'].rstrip()
 
+
         if 'stations' in line:
             line['stations'] = [clean(station, tags=allowed_tags, attributes={}, 
             strip=True) for station in line['stations']]
