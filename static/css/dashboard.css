@@ -274,3 +274,7 @@
     object-fit: cover;
     border-radius: 50%; 
 }
+
+.form-make-this-shit-white {
+    color: white !important;
+}
