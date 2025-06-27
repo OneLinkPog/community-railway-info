@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, session, request, redirect, url_for
 from datetime import datetime
 from core import main_dir
-from core.config import config, allowed_tags
+from core.config import config, allowed_tags, allowed_attributes
 from core.logger import Logger
 
 import json
@@ -107,7 +107,7 @@ def operator_route(uid):
         line['notice'] = clean(
             line['notice'],
             tags=allowed_tags,
-            attributes={},
+            attributes=allowed_attributes,
             strip=True
         )
         
@@ -115,7 +115,7 @@ def operator_route(uid):
 
 
         if 'stations' in line:
-            line['stations'] = [clean(station, tags=allowed_tags, attributes={}, 
+            line['stations'] = [clean(station, tags=allowed_tags, attributes=allowed_attributes, 
             strip=True) for station in line['stations']]
 
     return render_template(

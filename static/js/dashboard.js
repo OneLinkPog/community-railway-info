@@ -63,21 +63,35 @@ async function editLine(lineName) {
     }
 
     console.log('Editing Line:', line);
+    console.log('Notice:', line.notice); 
 
     document.getElementById('modalTitle').textContent = 'Edit line';
     document.getElementById('lineName').value = line.name;
     document.getElementById('lineColor').value = line.color || '#000000';
     document.getElementById('lineStatus').value = line.status || 'Running';
     document.getElementById('lineType').value = line.type || 'public';
-    document.getElementById('lineNotice').value = line.notice || '';
-    document.getElementById('lineStations').value = (line.stations || []).join('\n');
+
+    if (window.noticeEditor) {
+        window.noticeEditor.setValue(line.notice || "");
+        setTimeout(() => {
+            window.noticeEditor.refresh();
+        }, 10);
+    }
+
     document.getElementById('lineId').value = line.name;
+    var stationsField = document.getElementById('lineStations');
+    if (stationsField) {
+        stationsField.value = (line.stations || []).join('\n');
+    }
 
     const modal = document.getElementById('lineModal');
     modal.style.display = 'block';
     setTimeout(() => {
         modal.classList.add('show');
-    }, 10);
+        if (window.noticeEditor) {
+            window.noticeEditor.refresh();
+        }
+    }, 20);
 }
 
 async function editOperator(operatorName) {

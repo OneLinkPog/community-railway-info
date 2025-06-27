@@ -140,12 +140,13 @@
 
                 <div class="form-group">
                     <label for="lineNotice">Notice (Supports HTML)</label>
-                    <textarea id="lineNotice" name="notice" rows="6"></textarea>
+                    <div id="lineNoticeEditor" style="height: 150px; border: 1px solid #ccc;"></div>
+                    <textarea id="lineNotice" name="notice" style="display:none;"></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="lineStations">Stations (one per line)</label>
-                    <textarea id="lineStations" name="stations" required rows="6"></textarea>
+                    <textarea id="lineStations" name="stations" required rows="10"></textarea>
                 </div>
 
                 <input type="hidden" id="lineId" name="id">
@@ -200,5 +201,17 @@
 </script>
 
 <script src="/static/js/dashboard.js"></script>
+
+<script>
+    window.noticeEditor = CodeMirror(document.getElementById('lineNoticeEditor'), {
+    value: document.getElementById('lineNotice').value,
+    mode: 'htmlmixed',
+    lineNumbers: true,
+    lineWrapping: true,
+    theme: 'monokai',
+    });
+
+    window.noticeEditor.setSize("100%", "150px");
+</script>
 
 {% endblock content %}
