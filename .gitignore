@@ -6,3 +6,4 @@ server.log
 lines.json
 operators.json
 operator_requests.json
+operator_avatar_cache.json
