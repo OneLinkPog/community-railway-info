@@ -1,5 +1,4 @@
 from flask import Blueprint, session, request
-from core.url import *
 from core import main_dir
 from core.logger import Logger
 from core.config import config
@@ -61,8 +60,16 @@ async def add_line():
                 lines = json.load(f)
                 line = next((line for line in lines if line.get('name') == data["name"]), None)
                 if not line:
-                    logger.error(f'[@{session.get("user")["username"]}] Line not found')
-                    return {'error': 'Line not found'}, 404
+                    logger.error(
+                        f'[@{session.get("user")["username"]}] Line "{data["name"]}" not found after adding. '
+                        'Possible write error or corrupted lines.json.'
+                    )
+                    return {
+                        'error': (
+                            f'Line "{data["name"]}" was not found after adding. '
+                            'Please check if lines.json is valid and writable.'
+                        )
+                    }, 500
                     
             operator = next((op for op in operators if op['uid'] == line['operator_uid']), None)
             if not operator:

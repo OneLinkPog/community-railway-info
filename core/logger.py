@@ -18,12 +18,12 @@ class Logger:
 
         file_handler = RotatingFileHandler(log_file, maxBytes=1024*1024, backupCount=5)
         file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - [%(levelname)s] - %(message)s', 
-                                                  datefmt='%Y-%m-%d %H:%M:%S'))
+                                                  datefmt='%Y-%m-%d %H:%M:%S+UTC0'))
         self.logger.addHandler(file_handler)
 
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - [%(levelname)s] - %(message)s',
-                                                     datefmt='%Y-%m-%d %H:%M:%S'))
+                                                     datefmt='%Y-%m-%d %H:%M:%S+UTC0'))
         self.logger.addHandler(console_handler)
 
         def admin(self, message):
