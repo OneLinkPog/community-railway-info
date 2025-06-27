@@ -148,6 +148,13 @@ async function deleteLine(lineName) {
 
 async function handleLineSubmit(event, uid) {
     event.preventDefault();
+    if (window.noticeEditor) {
+        const noticeValue = window.noticeEditor.getValue();
+        const noticeTextarea = document.querySelector('textarea[name="notice"]');
+        if (noticeTextarea) {
+            noticeTextarea.value = noticeValue;
+        }
+    }
     const formData = new FormData(event.target);
     const lineId = document.getElementById('lineId').value;
 
