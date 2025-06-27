@@ -57,7 +57,7 @@
 .line-status {
     display: block;
     border-radius: 20px;
-    background-color: var(--color-background-deep);
+    background-color: var(--color-background);
     backdrop-filter: blur(15px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.35);
     padding-left: 15px;
