@@ -1,7 +1,10 @@
 from flask import Blueprint, session, redirect, url_for, request
 from requests_oauthlib import OAuth2Session
+from datetime import timedelta
 from core.config import config
 from core.url import DISCORD_AUTH_URL, DISCORD_TOKEN_URL, DISCORD_API_URL
+from core.logger import logger
+
 
 auth = Blueprint('auth', __name__)
 
@@ -52,7 +55,13 @@ async def callback():
         'avatar': user['avatar'],
         "global_name": user.get('global_name', user['username']),
     }
-    session.permanent = True  # Session bleibt erhalten
+    
+    session.permanent = True 
+    session.modified = True
+    if hasattr(session, 'app'):
+        session.app.permanent_session_lifetime = timedelta(days=14)
+        
+    logger.info(f"User {user['id']} ({user['username']}) logged in successfully.")
 
     return redirect(url_for('index.index_route'))
 
