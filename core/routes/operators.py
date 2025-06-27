@@ -1,13 +1,12 @@
-
 from flask import Blueprint, render_template, session, request, redirect, url_for
 from datetime import datetime
 from core import main_dir
 from core.config import config, allowed_tags, allowed_attributes
 from core.logger import Logger
+from bleach import clean
 
 import json
 import requests
-from bleach import clean
 import os
 import time
 
