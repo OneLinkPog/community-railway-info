@@ -32,10 +32,42 @@ allowed_tags = [
     'p', 'br', 'strong', 'em', 'a', 'ul', 'li', 'h1',
     'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div', 'b', 'i',
     'u', 's', 'mark', 'pre', 'blockquote', 'strong', "hr", 
-    "style", "center", "svg", "path"
+    "style", "center", "svg", "path", "g", "rect", "circle", 
+    "ellipse", "line", "polyline", "polygon", "title", "desc", "defs", "use"
 ]
 
 
 allowed_attributes = {
     "div": ["class", "style", "id"],
+    "svg": [
+        "width", "height", "viewBox", "fill", "xmlns", "class", "style", "id", "x", "y", "version",
+        "aria-hidden", "focusable", "role", "preserveAspectRatio"
+    ],
+    "path": [
+        "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "stroke-miterlimit",
+        "stroke-dasharray", "stroke-dashoffset", "opacity", "class", "style", "id", "fill-rule", "clip-rule"
+    ],
+    "g": ["class", "style", "id", "fill", "stroke", "stroke-width", "opacity"],
+    "rect": [
+        "x", "y", "width", "height", "rx", "ry", "fill", "stroke", "stroke-width", "opacity", "class", "style", "id"
+    ],
+    "circle": [
+        "cx", "cy", "r", "fill", "stroke", "stroke-width", "opacity", "class", "style", "id"
+    ],
+    "ellipse": [
+        "cx", "cy", "rx", "ry", "fill", "stroke", "stroke-width", "opacity", "class", "style", "id"
+    ],
+    "line": [
+        "x1", "y1", "x2", "y2", "stroke", "stroke-width", "opacity", "class", "style", "id"
+    ],
+    "polyline": [
+        "points", "fill", "stroke", "stroke-width", "opacity", "class", "style", "id"
+    ],
+    "polygon": [
+        "points", "fill", "stroke", "stroke-width", "opacity", "class", "style", "id"
+    ],
+    "title": ["class", "style", "id"],
+    "desc": ["class", "style", "id"],
+    "defs": ["class", "style", "id"],
+    "use": ["href", "xlink:href", "class", "style", "id"]
 }
