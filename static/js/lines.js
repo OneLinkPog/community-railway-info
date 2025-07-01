@@ -81,10 +81,13 @@ function fetchLines() {
                                 return 'Unknown Operator';
                             });
 
+                        const fgColor = getContrastColor(lineData.color);
+                        const operatorFgColor = getContrastColor(operatorColor);
+
                         modalContent.innerHTML = `
                             <div style="display: flex; align-items: center">
-                                <h1 class="line-modal" style="background-color: ${lineData.color}">${lineData.name}</h1>
-                                <span style="margin-left: 16px; background-color: ${operatorColor}" class="line-modal" onclick="window.location.href = '/operators/${lineData.operator_uid || ''}'">${operatorName || ''}</span>
+                                <h1 class="line-modal" style="background-color: ${lineData.color}; color: ${fgColor}">${lineData.name}</h1>
+                                <span style="margin-left: 16px; background-color: ${operatorColor}; color: ${operatorFgColor}" class="line-modal" onclick="window.location.href = '/operators/${lineData.operator_uid || ''}'">${operatorName || ''}</span>
                             </div>
                             <h3>${statusEmoji} ${lineData.status || 'No description available'}</h3>
                             <p>${(lineData.notice && lineData.notice.trim() !== '') ? lineData.notice.trim() : 'No notice available'}</p>
@@ -186,5 +189,21 @@ function setContrastColor(elementId, color) {
         element.style.color = brightness > 128 ? '#000000' : '#ffffff';
     } catch (error) {
         console.error(`Error setting colors for ${elementId}:`, error);
+    }
+}
+
+
+function getContrastColor(color) {
+    try {
+        const hex = color.replace('#', '');
+        const r = parseInt(hex.substr(0,2), 16);
+        const g = parseInt(hex.substr(2,2), 16);
+        const b = parseInt(hex.substr(4,2), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        
+        return brightness > 128 ? '#000000' : '#ffffff';
+    } catch (error) {
+        console.error('Error calculating contrast color:', error);
+        return '#000000'; 
     }
 }
