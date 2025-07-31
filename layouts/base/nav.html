@@ -8,7 +8,7 @@
     </a>
   </div>
 
-  <nav class="smd-layout_navbar">    
+  <nav class="smd-layout_navbar">
     <a href="/operators">Train Operators</a>
     <a href="/computercraft-setup">Setup station display</a>
   </nav>
@@ -19,7 +19,7 @@
     {% else %}
 
     <div class="smd-component_dropdown">
-<button class="smd-component_dropdown-dropbtn" onclick="toggleDropdown(this)">
+      <button class="smd-component_dropdown-dropbtn" onclick="toggleDropdown(this)">
         <span class="smd-layout_navbar-profile-name">{{ session.user.global_name }}</span>
         <div class="smd-layout_navbar-profile-picture">
           <img src="https://cdn.discordapp.com/avatars/{{ session.user.id }}/{{ session.user.avatar }}.png"
@@ -100,3 +100,5 @@
   </div>
   <hr>
 </header>
+
+<script src="/static/js/nav.js"></script>
