@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,slnt,wdth,wght,GRAD,XOPQ,XTRA,YOPQ,YTAS,YTFI,YTLC,YTUC@8..144,-10..0,25..151,100..1000,-200..150,27..175,323..603,25..135,649..854,560..788,416..570,528..760&display=swap');
+
+
 :root {
   --color-background: #454550;
   --color-surface: #262a35;
@@ -7,6 +10,19 @@
   --color-text: #e4e8ef;
   --color-text-muted: #a0aec0;
   --color-border: #3a4252;
+}
+
+.smd-layout_header-title {
+  font-family: "Roboto Flex", sans-serif !important;
+  font-optical-sizing: auto !important;
+  font-weight: bold !important;
+  font-style: normal !important;
+  font-variation-settings:
+    "wdth" 120,
+    "wght" 1000,
+    "YTAS" 800,
+    "XOPQ" 80,
+    "XTRA" 550;
 }
 
 .smd-layout_header {
