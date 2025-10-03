@@ -1,0 +1,10 @@
+services:
+  cri-web:
+    image: debian:trixie
+    container_name: cri-web
+    hostname: cri-web
+    ports:
+      - "30789:30789"
+    volumes:
+      - ./:/app
+    command: tail -f /dev/null
