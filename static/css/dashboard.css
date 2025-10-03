@@ -57,6 +57,7 @@
 .running { background: #4CAF50; color: white; }
 .possible-delays { background: #FFC107; color: black; }
 .suspended { background: #F44336; color: white; }
+.partially-suspended { background: #FF9800; color: white; }
 .no-scheduled-service { background: #9E9E9E; color: white; }
 
 .line-details {
