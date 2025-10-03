@@ -27,23 +27,59 @@
 
   {% for type, status in line_types.items() %}
   <div class="tab-content {% if type == 'public' %}active{% endif %}" id="{{ type }}">
-    <div id="suspended" class="line-status" {% if not status.suspended %}style="display: none;"{% endif %}>
-      <h1>🚫 Suspended</h1>
-      <div class="lines">
-        {% for line in status.suspended %}
-        <div class="line-item line" data-line="{{ line.name }}" id="line-{{ line.name }}">
-          {{ line.name }}
+    <div class="possible-delays-no-scheduled-service-container">
+      <div id="suspended" class="line-status" style="flex: 1;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h1>🚫 Suspended</h1>
+          <p>Service is currently suspended</p>
         </div>
-        <script>
-            setContrastColor('line-{{ line.name }}', '{{ line.color }}');
-        </script>
-        {% endfor %}
+
+        {% if not status.suspended %}
+        <p>No suspended lines</p>
+        {% else %}
+        <div class="lines">
+          {% for line in status.suspended %}
+          <div class="line-item line" data-line="{{ line.name }}" id="line-{{ line.name }}">
+            {{ line.name }}
+          </div>
+          <script>
+              setContrastColor('line-{{ line.name }}', '{{ line.color }}');
+          </script>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div id="partially-suspended" class="line-status" style="flex: 1;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h1>〽️ Partially Suspended</h1>
+            <p>Service may be affected (e.g. unserviced stations)</p>
+        </div>
+        
+        {% if not status.partially_suspended %}
+        <p>No partially suspended lines</p>
+        {% else %}
+        <div class="lines">
+          {% for line in status.partially_suspended %}
+          <div class="line-item line" data-line="{{ line.name }}" id="line-{{ line.name }}">
+            {{ line.name }}
+          </div>
+          <script>
+              setContrastColor('line-{{ line.name }}', '{{ line.color }}');
+          </script>
+          {% endfor %}
+        </div>
+        {% endif %}
       </div>
     </div>
-
+    
     <div class="possible-delays-no-scheduled-service-container">
       <div id="possibledelays" class="line-status" style="flex: 1;">
-        <h1>⚠️ Possible delays</h1>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h1>⚠️ Possible delays</h1>
+          <p>Services may be delayed</p>
+        </div>
+
         {% if not status.possible_delays %}
         <p>No delays reported</p>
         {% endif %}
@@ -60,9 +96,13 @@
       </div>
 
       <div id="noscheduledservice" class="line-status" style="flex: 1;">
-        <h1>🌙 No scheduled service</h1>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h1>🌙 No scheduled service</h1>
+          <p>Lines with no scheduled service</p>
+        </div>
+
         {% if not status.no_scheduled %}
-        <p>No scheduled service available</p>
+        <p>All lines have scheduled service</p>
         {% endif %}
         <div class="lines">
           {% for line in status.no_scheduled %}
@@ -78,7 +118,11 @@
     </div>
 
     <div id="running" class="line-status">
-      <h1>{% if status.running %}🚄 Running service{% else %}❌ No active service{% endif %}</h1>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <h1>{% if status.running %}🚄 Running service{% else %}❌ No active service{% endif %}</h1>
+        <p>{% if status.running %}Lines with active service{% else %}No service is currently running{% endif %}</p>
+      </div>
+      
       <div class="lines">
         {% if not status.running %}
         <p>No active service available</p>
