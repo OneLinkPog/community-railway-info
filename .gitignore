@@ -212,6 +212,7 @@ config.yml
 server.log
 
 lines.json
+outdated_lines.json
 operators.json
 operator_requests.json
 operator_avatar_cache.json
