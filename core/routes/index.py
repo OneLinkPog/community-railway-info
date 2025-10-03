@@ -27,11 +27,11 @@ def index_route():
         admin = True
     
     line_types = {
-        'public': {'suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
-        'private': {'suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
-        'metro': {'suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
-        'tram': {'suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
-        "bus": {'suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
+        'public': {'suspended': [], 'partially_suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
+        'private': {'suspended': [], 'partially_suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
+        'metro': {'suspended': [], 'partially_suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
+        'tram': {'suspended': [], 'partially_suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
+        "bus": {'suspended': [], 'partially_suspended': [], 'running': [], 'possible_delays': [], 'no_scheduled': []},
     }
     
     for line in lines:
@@ -46,6 +46,7 @@ def index_route():
         line_type = line.get('type', 'public')
         status_key = {
             'Suspended': 'suspended',
+            'Partially suspended': 'partially_suspended',
             'Running': 'running',
             'Possible delays': 'possible_delays',
             'No scheduled service': 'no_scheduled'

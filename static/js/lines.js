@@ -63,6 +63,7 @@ function fetchLines() {
                                 case 'Running': return '✅';
                                 case 'Possible delays': return '⚠️';
                                 case 'No scheduled service': return '🌙';
+                                case 'Partially suspended': return '〽️';
                                 case 'Suspended': return '🚫';
                                 default: return '';
                             }
