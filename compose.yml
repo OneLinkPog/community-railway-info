@@ -1,10 +1,11 @@
 services:
   cri-web:
-    image: debian:trixie
+    build: .
     container_name: cri-web
     hostname: cri-web
     ports:
       - "30789:30789"
     volumes:
       - ./:/app
-    command: tail -f /dev/null
+    command: >
+      bash -c "uv run __main__.py"
