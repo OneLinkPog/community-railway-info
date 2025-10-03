@@ -291,16 +291,16 @@
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 300px;
+  width: 500px;
   background-color: #555;
   color: #fff;
   text-align: left;
   border-radius: 6px;
   padding: 10px;
   position: absolute;
-  z-index: 101; /* Higher z-index */
-  top: -5px; /* Position it above */
-  left: 105%; /* Position it to the right */
+  z-index: 101;
+  top: 32px;
+  left: -150px;
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -309,14 +309,13 @@
     content: "";
     position: absolute;
     top: 50%;
-    right: 100%; /* At the left of the tooltip */
+    right: 100%;
     margin-top: -5px;
     border-width: 5px;
     border-style: solid;
     border-color: transparent #555 transparent transparent;
 }
 
-/* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;

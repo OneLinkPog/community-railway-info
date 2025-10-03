@@ -126,16 +126,31 @@ function fetchLines() {
                         // Add train composition(s)
                         const compositions = lineData.compositions || (lineData.composition ? [lineData.composition] : []);
                         
-                        if (compositions.length > 0 && compositions.some(c => c && c.trim() !== '')) {
+                        if (compositions.length > 0 && compositions.some(c => {
+                            if (typeof c === 'string') return c.trim() !== '';
+                            if (typeof c === 'object') return c.parts && c.parts.trim() !== '';
+                            return false;
+                        })) {
                             const compositionDiv = document.createElement("div");
                             compositionDiv.style.marginTop = "20px";
                             compositionDiv.innerHTML = `<h2>Train Composition${compositions.length > 1 ? 's' : ''}</h2>`;
                             
                             compositions.forEach((composition, index) => {
-                                if (composition && composition.trim() !== '') {
-                                    if (compositions.length > 1) {
+                                let parts = '';
+                                let variantName = '';
+                                
+                                // Handle both old format (string) and new format (object)
+                                if (typeof composition === 'string') {
+                                    parts = composition;
+                                } else if (composition && typeof composition === 'object') {
+                                    parts = composition.parts || '';
+                                    variantName = composition.name || '';
+                                }
+                                
+                                if (parts && parts.trim() !== '') {
+                                    if (compositions.length > 1 || variantName) {
                                         const variantLabel = document.createElement("h3");
-                                        variantLabel.textContent = `#${index + 1}`;
+                                        variantLabel.textContent = variantName || `Variant ${index + 1}`;
                                         variantLabel.style.marginTop = index > 0 ? "15px" : "0";
                                         variantLabel.style.marginBottom = "8px";
                                         compositionDiv.appendChild(variantLabel);
@@ -144,7 +159,7 @@ function fetchLines() {
                                     const compositionDisplay = document.createElement("div");
                                     compositionDisplay.className = "composition-display";
                                     
-                                    composition.split(',').forEach(part => {
+                                    parts.split(',').forEach(part => {
                                         const partDiv = document.createElement("div");
                                         partDiv.className = "composition-part-display";
                                         partDiv.style.backgroundImage = `url('/static/assets/icons/${part}.png')`;

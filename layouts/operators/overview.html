@@ -102,11 +102,24 @@
                             {% else %}
                                 {# New: array of compositions #}
                                 {% for composition in line.compositions %}
-                                <div class="composition-display" style="margin-bottom: 8px;">
-                                    {% for part in composition.split(',') %}
-                                    <div class="composition-part-display" style="background-image: url('/static/assets/icons/{{ part }}.png')" title="{{ part|upper }}"></div>
-                                    {% endfor %}
-                                </div>
+                                    {% if composition is string %}
+                                        {# Old array format: just parts #}
+                                        <div class="composition-display" style="margin-bottom: 8px;">
+                                            {% for part in composition.split(',') %}
+                                            <div class="composition-part-display" style="background-image: url('/static/assets/icons/{{ part }}.png')" title="{{ part|upper }}"></div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {# New object format: with name and parts #}
+                                        {% if composition.name %}
+                                        <h4 style="margin-top: 8px; margin-bottom: 4px;">{{ composition.name }}</h4>
+                                        {% endif %}
+                                        <div class="composition-display" style="margin-bottom: 8px;">
+                                            {% for part in composition.parts.split(',') %}
+                                            <div class="composition-part-display" style="background-image: url('/static/assets/icons/{{ part }}.png')" title="{{ part|upper }}"></div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                             {% endif %}
                         {% elif line.composition %}
@@ -157,21 +170,57 @@
 
                 <div class="form-group">
                     <div style="display: flex; align-items: center; gap: 5px;">
-                        <label for="composition-builder">Train compositions (Multiple variants)</label>
+                        <label for="composition-builder">Train compositions</label>
                         <span class="tooltip">
                             <span class="material-symbols-outlined">help</span>
-                            <span class="tooltiptext">
-                                <strong>Train Composition Key, for debugging:</strong><br>
-                                E = Empty carriage<br>
-                                L = Locomotive<br>
-                                FH/FH1/FH2 = Front High<br>
-                                FL1/FL2 = Front Low<br>
-                                1/1W = 1st class (with/without WC)<br>
-                                2/2W = 2nd class (with/without WC)<br>
-                                1-2/1-2W = Combined 1st & 2nd class (with/without WC)<br>
-                                W = WC<br>
-                                B/BH1/BH2/BL1/BL2 = Back High/Back High 1/Back High 2/Back Low 1/Back Low 2<br>
-                                J = Eat
+                            <span class="tooltiptext" style="width: 380px; max-height: 400px; overflow-y: auto;">
+                                <strong>Train Composition Reference:</strong><br>
+                                <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #666; font-size: 12px; color: #999;">
+                                    💡 Tip: Simply drag and drop the icons into the drop zone <br>
+                                    🗑️ To delete, click on the icon
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 32px 1fr; gap: 6px; margin-top: 8px; align-items: center; font-size: 13px;">
+                                    <!-- Basic Elements -->
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/e.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>E</b> Empty | <b>L</b> Locomotive <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/l.png'); background-size: contain; display: inline-block; vertical-align: middle; margin-left: 4px;"></div></span>
+                                    
+                                    <!-- Front Section -->
+                                    <div style="grid-column: 1 / -1; margin-top: 6px; font-weight: bold; color: #aaa;">↓ Front (Head)</div>
+                                    
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/fh.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>FH/FH1/FH2</b> Front High (none/1st/2nd class)</span>
+                                    
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/fl.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>FL/FL1/FL2</b> Front Low (none/1st/2nd class)</span>
+                                    
+                                    <!-- Middle Section -->
+                                    <div style="grid-column: 1 / -1; margin-top: 6px; font-weight: bold; color: #aaa;">↓ Middle</div>
+                                    
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/1.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>1/1W</b> 1st class (none/with WC)</span>
+                                    
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/2.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>2/2W</b> 2nd class (none/with WC)</span>
+                                    
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/1-2.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>1-2/1-2W</b> Combined 1st+2nd (none/with WC)</span>
+
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/1-2d.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>1-2D/...</b> Double-decker</span>
+                                    
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/w.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>W</b> WC only | <b>J</b> Restaurant <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/j.png'); background-size: contain; display: inline-block; vertical-align: middle; margin-left: 4px;"></div></span>
+                                    
+                                    <!-- Back Section -->
+                                    <div style="grid-column: 1 / -1; margin-top: 6px; font-weight: bold; color: #aaa;">↓ Back (End)</div>
+                                    
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/bh.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>BH/BH1/BH2</b> Back High (none/1st/2nd class)</span>
+                                    
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/bl.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>BL/BL1/BL2</b> Back Low (none/1st/2nd class)</span>
+                                </div>
                             </span>
                         </span>
                     </div>
@@ -199,6 +248,11 @@
                             
                             <div class="composition-part" draggable="true" data-part="1"></div>
                             <div class="composition-part" draggable="true" data-part="2"></div>
+
+                            <div class="composition-part" draggable="true" data-part="1-1d"></div>
+                            <div class="composition-part" draggable="true" data-part="1-2d"></div>
+                            <div class="composition-part" draggable="true" data-part="2-1d"></div>
+                            <div class="composition-part" draggable="true" data-part="2-2d"></div>
 
                             <div class="composition-part" draggable="true" data-part="1w"></div>
                             <div class="composition-part" draggable="true" data-part="2w"></div>

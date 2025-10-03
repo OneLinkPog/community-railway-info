@@ -95,6 +95,16 @@
     "XTRA" 450;
 }
 
+.line-status--header {
+    display: flex;
+    flex-direction: column;
+}
+
+.line-status--header p {
+    margin-top: -14px;
+    margin-left: 48px;
+}
+
 .lines {
     display: flex;
     flex-wrap: wrap;

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isFromSource = false;
     let compositionVariants = [];
 
-    window.addCompositionVariant = function() {
+    window.addCompositionVariant = function(variantName = '') {
         const variantIndex = compositionVariants.length;
         const variantDiv = document.createElement('div');
         variantDiv.className = 'composition-variant';
@@ -22,8 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         variantDiv.innerHTML = `
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-                <label><b>Variant ${variantIndex + 1}</b></label>
-                <button type="button" class="btn-danger" onclick="removeCompositionVariant(${variantIndex})" style="padding: 4px 8px; font-size: 12px;">
+                <input type="text" class="variant-name-input form-make-this-shit-white poppins" 
+                       placeholder="Variant name (e.g., Peak Hours, Off-Peak)" 
+                       value="${variantName}" 
+                       data-variant="${variantIndex}"
+                       style="flex: 1; padding: 6px; border-radius: 4px; border: 1px solid #555; background: #1f2325; color: white;">
+                <button type="button" class="btn-small smd-component_button-small poppins btn-danger" onclick="removeCompositionVariant(${variantIndex})">
                     <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
                 </button>
             </div>
@@ -31,9 +35,17 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         compositionsContainer.appendChild(variantDiv);
-        compositionVariants.push([]);
+        compositionVariants.push({ name: variantName, parts: [] });
         
         const dropzone = variantDiv.querySelector('.composition-dropzone');
+        const nameInput = variantDiv.querySelector('.variant-name-input');
+        
+        // Update name on input change
+        nameInput.addEventListener('input', (e) => {
+            compositionVariants[variantIndex].name = e.target.value;
+            updateCompositionInput();
+        });
+        
         setupDropzone(dropzone, variantIndex);
         updateCompositionInput();
     };
@@ -141,10 +153,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!compositionsContainer || !lineCompositionInput) return;
         
         const allCompositions = [];
-        document.querySelectorAll('.composition-dropzone').forEach(dropzone => {
+        document.querySelectorAll('.composition-variant').forEach((variantDiv, index) => {
+            const dropzone = variantDiv.querySelector('.composition-dropzone');
+            const nameInput = variantDiv.querySelector('.variant-name-input');
             const parts = Array.from(dropzone.children).map(p => p.getAttribute('data-part'));
+            
             if (parts.length > 0) {
-                allCompositions.push(parts.join(','));
+                allCompositions.push({
+                    name: nameInput ? nameInput.value : '',
+                    parts: parts.join(',')
+                });
             }
         });
         
@@ -168,20 +186,33 @@ document.addEventListener('DOMContentLoaded', function() {
             // Legacy: single composition string or JSON array
             try {
                 const parsed = JSON.parse(compositions);
-                compositionsArray = Array.isArray(parsed) ? parsed : [compositions];
+                compositionsArray = Array.isArray(parsed) ? parsed : [{ name: '', parts: compositions }];
             } catch {
-                compositionsArray = [compositions];
+                compositionsArray = [{ name: '', parts: compositions }];
             }
         }
         
         // Load each composition variant
         if (compositionsArray.length > 0) {
             compositionsArray.forEach((composition, index) => {
-                window.addCompositionVariant();
+                // Handle both old format (string) and new format (object with name and parts)
+                let variantName = '';
+                let parts = '';
+                
+                if (typeof composition === 'string') {
+                    // Legacy format: just the parts string
+                    parts = composition;
+                } else if (composition && typeof composition === 'object') {
+                    // New format: object with name and parts
+                    variantName = composition.name || '';
+                    parts = composition.parts || '';
+                }
+                
+                window.addCompositionVariant(variantName);
                 const dropzone = document.querySelector(`.composition-dropzone[data-variant="${index}"]`);
-                if (dropzone && composition) {
-                    const parts = composition.split(',');
-                    parts.forEach(partId => {
+                
+                if (dropzone && parts) {
+                    parts.split(',').forEach(partId => {
                         if (partId) {
                             const originalPart = document.querySelector(`#composition-parts .composition-part[data-part="${partId}"]`);
                             if (originalPart) {
