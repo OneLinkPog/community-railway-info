@@ -4,7 +4,7 @@ services:
     container_name: cri-web
     hostname: cri-web
     ports:
-      - "30789:30789"
+      - "127.0.0.1:30789:30789"
     volumes:
       - ./:/app
     command: >
