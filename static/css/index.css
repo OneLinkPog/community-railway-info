@@ -19,10 +19,10 @@
     font-style: normal !important;
     font-variation-settings: 
         "wdth" 125,
-        "wght" 1000,
+        "wght" 900,
         "YTAS" 800,
         "XOPQ" 80,
-        "XTRA" 500;
+        "XTRA" 450;
 }
 
 .tabs {
@@ -89,7 +89,7 @@
   font-style: normal !important;
   font-variation-settings: 
     "wdth" 125,
-    "wght" 1000,
+    "wght" 850,
     "YTAS" 800,
     "XOPQ" 80,
     "XTRA" 450;
@@ -131,9 +131,6 @@
     transform: translateY(-5px);
 }
 
-
-
-
 .possible-delays-no-scheduled-service-container {
     display: flex;
     flex-grow: 1;
@@ -151,7 +148,7 @@
 /* Train Composition Styles */
 .composition-display {
     display: flex;
-    gap: 2px;
+    gap: 4px;
     flex-wrap: wrap;
     margin-top: 10px;
 }

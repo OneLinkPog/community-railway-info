@@ -42,6 +42,15 @@ async def add_line():
                 f'[@{session.get("user")["username"]}] Invalid line type: {data["type"]}')
             return {'error': f'Invalid line type. Must be one of: {", ".join(allowed_types)}'}, 400
 
+        # Handle both old 'composition' and new 'compositions' format
+        if 'composition' in data and 'compositions' not in data:
+            # Convert old single composition to new array format
+            if data['composition']:
+                data['compositions'] = [data['composition']]
+            else:
+                data['compositions'] = []
+            del data['composition']
+
         with open(main_dir + '/lines.json', 'r+') as f:
             lines = json.load(f)
 
@@ -82,7 +91,7 @@ async def add_line():
 
         return {'success': True}, 200
     except Exception as e:
-        logger.error(f"[@{session.get("user")["username"]}] Error while adding line: {str(e)}")
+        logger.error(f"[@{session.get('user')['username']}] Error while adding line: {str(e)}")
         return {'error': str(e)}, 500
 
 
@@ -112,6 +121,13 @@ async def update_line(name):
 
     try:
         data = request.json
+
+        if 'composition' in data and 'compositions' not in data:
+            if data['composition']:
+                data['compositions'] = [data['composition']]
+            else:
+                data['compositions'] = []
+            del data['composition']
 
         with open(main_dir + '/lines.json', 'r+') as f:
             lines = json.load(f)
@@ -194,8 +210,7 @@ async def delete_line(name):
         return {'success': True}, 200
 
     except Exception as e:
-        logger.error(
-            f"[@{session.get("user")["username"]}] Error while deleting line {name}: {str(e)}")
+        logger.error(f"[@{session.get('user')['username']}] Error while deleting line {name}: {str(e)}")
         return {'error': str(e)}, 500
 
 

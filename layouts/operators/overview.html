@@ -91,12 +91,31 @@
                     </div>
                     <div class="line-composition">
                         <h3>Train composition:</h3>
-                        {% if line.composition %}
-                        <div class="composition-display">
-                            {% for part in line.composition.split(',') %}
-                            <div class="composition-part-display" style="background-image: url('/static/assets/icons/{{ part }}.png')" title="{{ part|upper }}"></div>
-                            {% endfor %}
-                        </div>
+                        {% if line.compositions %}
+                            {% if line.compositions is string %}
+                                {# Legacy support: single composition as string #}
+                                <div class="composition-display">
+                                    {% for part in line.compositions.split(',') %}
+                                    <div class="composition-part-display" style="background-image: url('/static/assets/icons/{{ part }}.png')" title="{{ part|upper }}"></div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {# New: array of compositions #}
+                                {% for composition in line.compositions %}
+                                <div class="composition-display" style="margin-bottom: 8px;">
+                                    {% for part in composition.split(',') %}
+                                    <div class="composition-part-display" style="background-image: url('/static/assets/icons/{{ part }}.png')" title="{{ part|upper }}"></div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% elif line.composition %}
+                            {# Backward compatibility: old 'composition' field #}
+                            <div class="composition-display">
+                                {% for part in line.composition.split(',') %}
+                                <div class="composition-part-display" style="background-image: url('/static/assets/icons/{{ part }}.png')" title="{{ part|upper }}"></div>
+                                {% endfor %}
+                            </div>
                         {% else %}
                         <div>No composition set</div>
                         {% endif %}
@@ -138,7 +157,7 @@
 
                 <div class="form-group">
                     <div style="display: flex; align-items: center; gap: 5px;">
-                        <label for="composition-builder">Train compositions</label>
+                        <label for="composition-builder">Train compositions (Multiple variants)</label>
                         <span class="tooltip">
                             <span class="material-symbols-outlined">help</span>
                             <span class="tooltiptext">
@@ -191,9 +210,13 @@
                             
                             <div class="composition-part" draggable="true" data-part="j"></div>
                         </div>
-                        <div id="composition-dropzone" class="form-make-this-shit-white"></div>
+                        <div id="compositions-container"></div>
+                        <button type="button" class="btn-secondary smd-component_button-medium poppins" onclick="addCompositionVariant()" style="margin-top: 10px;">
+                            <span style="position: absolute" class="material-symbols-outlined">add</span>
+                            <span style="margin-left: 30px;">Add variant</span>
+                        </button>
                     </div>
-                    <input type="hidden" id="lineComposition" name="composition">
+                    <input type="hidden" id="lineComposition" name="compositions">
                 </div>
 
                 <div class="form-group">

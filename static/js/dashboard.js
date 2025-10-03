@@ -4,18 +4,54 @@ document.addEventListener('DOMContentLoaded', function() {
         operatorForm.addEventListener('submit', handleOperatorSubmit);
     }
 
-    // Drag and Drop for Train Composition
+    // Drag and Drop for Train Composition - Multiple variants support
     const compositionPartContainer = document.getElementById('composition-parts');
-    const dropzone = document.getElementById('composition-dropzone');
+    const compositionsContainer = document.getElementById('compositions-container');
     const lineCompositionInput = document.getElementById('lineComposition');
 
     let draggedItem = null;
     let isFromSource = false;
+    let compositionVariants = [];
+
+    window.addCompositionVariant = function() {
+        const variantIndex = compositionVariants.length;
+        const variantDiv = document.createElement('div');
+        variantDiv.className = 'composition-variant';
+        variantDiv.style.marginBottom = '15px';
+        variantDiv.dataset.index = variantIndex;
+        
+        variantDiv.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                <label><b>Variant ${variantIndex + 1}</b></label>
+                <button type="button" class="btn-danger" onclick="removeCompositionVariant(${variantIndex})" style="padding: 4px 8px; font-size: 12px;">
+                    <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+                </button>
+            </div>
+            <div class="composition-dropzone form-make-this-shit-white" data-variant="${variantIndex}"></div>
+        `;
+        
+        compositionsContainer.appendChild(variantDiv);
+        compositionVariants.push([]);
+        
+        const dropzone = variantDiv.querySelector('.composition-dropzone');
+        setupDropzone(dropzone, variantIndex);
+        updateCompositionInput();
+    };
+
+    window.removeCompositionVariant = function(index) {
+        const variantDiv = document.querySelector(`.composition-variant[data-index="${index}"]`);
+        if (variantDiv) {
+            variantDiv.remove();
+            compositionVariants[index] = null; // Mark as deleted
+            updateCompositionInput();
+        }
+    };
 
     function setupDraggable(item) {
         item.addEventListener('dragstart', (e) => {
             draggedItem = item;
-            isFromSource = !item.parentElement.isEqualNode(dropzone);
+            const dropzone = item.parentElement;
+            isFromSource = !dropzone.classList.contains('composition-dropzone');
             e.dataTransfer.setData('text/plain', item.dataset.part);
             setTimeout(() => {
                 item.classList.add('dragging');
@@ -30,14 +66,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    compositionPartContainer.querySelectorAll('.composition-part').forEach(setupDraggable);
-
-    if (dropzone) {
+    function setupDropzone(dropzone, variantIndex) {
         dropzone.addEventListener('dragover', (e) => {
             e.preventDefault();
             const afterElement = getDragAfterElement(dropzone, e.clientX);
             const draggable = document.querySelector('.dragging');
-            // Only move elements that are already in the dropzone (reordering)
+            // Only move elements that are already in this dropzone (reordering)
             if (draggable && draggable.parentElement === dropzone) {
                 if (afterElement == null) {
                     dropzone.appendChild(draggable);
@@ -87,6 +121,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    compositionPartContainer.querySelectorAll('.composition-part').forEach(setupDraggable);
+
     function getDragAfterElement(container, x) {
         const draggableElements = [...container.querySelectorAll('.composition-part:not(.dragging)')];
 
@@ -102,35 +138,73 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateCompositionInput() {
-        if (!dropzone || !lineCompositionInput) return;
-        const parts = Array.from(dropzone.children).map(p => p.getAttribute('data-part'));
-        lineCompositionInput.value = parts.join(',');
-        console.log("Composition updated:", lineCompositionInput.value);
+        if (!compositionsContainer || !lineCompositionInput) return;
+        
+        const allCompositions = [];
+        document.querySelectorAll('.composition-dropzone').forEach(dropzone => {
+            const parts = Array.from(dropzone.children).map(p => p.getAttribute('data-part'));
+            if (parts.length > 0) {
+                allCompositions.push(parts.join(','));
+            }
+        });
+        
+        lineCompositionInput.value = JSON.stringify(allCompositions);
+        console.log("Compositions updated:", lineCompositionInput.value);
     }
 
-    window.loadComposition = function(composition) {
-        if (!dropzone) return;
-        dropzone.innerHTML = '';
-        if (composition && typeof composition === 'string') {
-            const parts = composition.split(',');
-            parts.forEach(partId => {
-                if (partId) {
-                    const originalPart = document.querySelector(`#composition-parts .composition-part[data-part="${partId}"]`);
-                    if (originalPart) {
-                        const newPart = originalPart.cloneNode(true);
-                        newPart.style.backgroundImage = `url('/static/assets/icons/${partId}.png')`;
-                        newPart.addEventListener('click', () => {
-                            dropzone.removeChild(newPart);
-                            updateCompositionInput();
-                        });
-                        setupDraggable(newPart);
-                        dropzone.appendChild(newPart);
-                    }
+    window.loadCompositions = function(compositions) {
+        if (!compositionsContainer) return;
+        
+        // Clear existing variants
+        compositionsContainer.innerHTML = '';
+        compositionVariants = [];
+        
+        // Handle different data formats
+        let compositionsArray = [];
+        
+        if (Array.isArray(compositions)) {
+            compositionsArray = compositions;
+        } else if (typeof compositions === 'string' && compositions.trim() !== '') {
+            // Legacy: single composition string or JSON array
+            try {
+                const parsed = JSON.parse(compositions);
+                compositionsArray = Array.isArray(parsed) ? parsed : [compositions];
+            } catch {
+                compositionsArray = [compositions];
+            }
+        }
+        
+        // Load each composition variant
+        if (compositionsArray.length > 0) {
+            compositionsArray.forEach((composition, index) => {
+                window.addCompositionVariant();
+                const dropzone = document.querySelector(`.composition-dropzone[data-variant="${index}"]`);
+                if (dropzone && composition) {
+                    const parts = composition.split(',');
+                    parts.forEach(partId => {
+                        if (partId) {
+                            const originalPart = document.querySelector(`#composition-parts .composition-part[data-part="${partId}"]`);
+                            if (originalPart) {
+                                const newPart = originalPart.cloneNode(true);
+                                newPart.style.backgroundImage = `url('/static/assets/icons/${partId}.png')`;
+                                newPart.addEventListener('click', () => {
+                                    dropzone.removeChild(newPart);
+                                    updateCompositionInput();
+                                });
+                                setupDraggable(newPart);
+                                dropzone.appendChild(newPart);
+                            }
+                        }
+                    });
                 }
             });
+        } else {
+            // Add one empty variant if none exist
+            window.addCompositionVariant();
         }
+        
         updateCompositionInput();
-    }
+    };
 });
 
 async function handleOperatorSubmit(event) {
@@ -183,7 +257,7 @@ function showAddLineModal() {
     if (window.noticeEditor) {
         window.noticeEditor.setValue("");
     }
-    window.loadComposition(""); // Clear composition
+    window.loadCompositions([]); // Load with empty array
     modal.style.display = 'block';
     setTimeout(() => {
         modal.classList.add('show');
@@ -213,7 +287,8 @@ async function editLine(lineName) {
         window.noticeEditor.setValue(line.notice || "");
     }
     
-    window.loadComposition(line.composition);
+    // Load compositions - supports both old 'composition' and new 'compositions'
+    window.loadCompositions(line.compositions || line.composition || []);
 
     document.getElementById('lineId').value = line.name;
     var stationsField = document.getElementById('lineStations');
@@ -297,6 +372,17 @@ async function handleLineSubmit(event, uid) {
     const formData = new FormData(event.target);
     const lineId = document.getElementById('lineId').value;
 
+    // Parse compositions from JSON string
+    let compositions = [];
+    try {
+        const compositionsValue = formData.get('compositions');
+        if (compositionsValue) {
+            compositions = JSON.parse(compositionsValue);
+        }
+    } catch (e) {
+        console.error('Error parsing compositions:', e);
+    }
+
     const data = {
         name: formData.get('name'),
         color: formData.get('color'),
@@ -304,7 +390,7 @@ async function handleLineSubmit(event, uid) {
         type: formData.get('type'),       
         notice: formData.get('notice'),
         stations: formData.get('stations').split('\n').filter(s => s.trim()),
-        composition: formData.get('composition'),
+        compositions: compositions,
         operator: window.operatorName,
         operator_uid: window.operatorUid    
     };
