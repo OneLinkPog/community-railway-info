@@ -1,6 +1,6 @@
 [project]
 name = "community-railway-info"
-version = "1.0.0"
+version = "1.1.0"
 description = "A project for MrJulsen's Community Minecraft Server enabling users to view the status of any railway line quickly and conveniently."
 readme = "README.md"
 requires-python = ">=3.11"
