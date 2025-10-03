@@ -1,57 +1,195 @@
 document.addEventListener('DOMContentLoaded', function() {
-    async function handleOperatorSubmit(event) {
-        event.preventDefault();
-        console.log('handleOperatorSubmit called');
-
-        const formData = new FormData(event.target);
-        const operatorId = window.operatorUid;
-
-        const data = {
-            name: formData.get('name'),
-            color: formData.get('color'),
-            users: formData.get('users').split('\n').filter(s => s.trim()),
-            short: formData.get('short'),
-        };
-
-        try {
-            const method = operatorId ? 'PUT' : 'POST';
-            const url = operatorId ? `/api/operators/${operatorId}` : '/api/operators';
-
-            console.log('Sending request:', { method, url, data });
-
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                const error = await response.json();
-                alert('[Server] Error while saving: ' + (error.error || 'Unknown Error'));
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error while saving: ' + error);
-        }
-    }
-
     const operatorForm = document.getElementById('operatorForm');
     if (operatorForm) {
         operatorForm.addEventListener('submit', handleOperatorSubmit);
     }
+
+    // Drag and Drop for Train Composition
+    const compositionPartContainer = document.getElementById('composition-parts');
+    const dropzone = document.getElementById('composition-dropzone');
+    const lineCompositionInput = document.getElementById('lineComposition');
+
+    let draggedItem = null;
+    let isFromSource = false;
+
+    function setupDraggable(item) {
+        item.addEventListener('dragstart', (e) => {
+            draggedItem = item;
+            isFromSource = !item.parentElement.isEqualNode(dropzone);
+            e.dataTransfer.setData('text/plain', item.dataset.part);
+            setTimeout(() => {
+                item.classList.add('dragging');
+            }, 0);
+        });
+
+        item.addEventListener('dragend', () => {
+            if (draggedItem) {
+                draggedItem.classList.remove('dragging');
+            }
+            draggedItem = null;
+        });
+    }
+
+    compositionPartContainer.querySelectorAll('.composition-part').forEach(setupDraggable);
+
+    if (dropzone) {
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(dropzone, e.clientX);
+            const draggable = document.querySelector('.dragging');
+            // Only move elements that are already in the dropzone (reordering)
+            if (draggable && draggable.parentElement === dropzone) {
+                if (afterElement == null) {
+                    dropzone.appendChild(draggable);
+                } else {
+                    dropzone.insertBefore(draggable, afterElement);
+                }
+            }
+        });
+
+        dropzone.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dropzone.style.border = '2px solid #007bff';
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.style.border = '2px dashed #ccc';
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (!draggedItem) return;
+
+            if (isFromSource) {
+                const newPart = draggedItem.cloneNode(true);
+                newPart.classList.remove('dragging');
+                const partName = newPart.getAttribute('data-part');
+                newPart.style.backgroundImage = `url('/static/assets/icons/${partName}.png')`;
+                newPart.addEventListener('click', () => {
+                    dropzone.removeChild(newPart);
+                    updateCompositionInput();
+                });
+                setupDraggable(newPart);
+                
+                const afterElement = getDragAfterElement(dropzone, e.clientX);
+                if (afterElement == null) {
+                    dropzone.appendChild(newPart);
+                } else {
+                    dropzone.insertBefore(newPart, afterElement);
+                }
+            }
+            
+            if (draggedItem) {
+                draggedItem.classList.remove('dragging');
+            }
+            updateCompositionInput();
+            dropzone.style.border = '2px dashed #ccc';
+        });
+    }
+
+    function getDragAfterElement(container, x) {
+        const draggableElements = [...container.querySelectorAll('.composition-part:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = x - box.left - box.width / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function updateCompositionInput() {
+        if (!dropzone || !lineCompositionInput) return;
+        const parts = Array.from(dropzone.children).map(p => p.getAttribute('data-part'));
+        lineCompositionInput.value = parts.join(',');
+        console.log("Composition updated:", lineCompositionInput.value);
+    }
+
+    window.loadComposition = function(composition) {
+        if (!dropzone) return;
+        dropzone.innerHTML = '';
+        if (composition && typeof composition === 'string') {
+            const parts = composition.split(',');
+            parts.forEach(partId => {
+                if (partId) {
+                    const originalPart = document.querySelector(`#composition-parts .composition-part[data-part="${partId}"]`);
+                    if (originalPart) {
+                        const newPart = originalPart.cloneNode(true);
+                        newPart.style.backgroundImage = `url('/static/assets/icons/${partId}.png')`;
+                        newPart.addEventListener('click', () => {
+                            dropzone.removeChild(newPart);
+                            updateCompositionInput();
+                        });
+                        setupDraggable(newPart);
+                        dropzone.appendChild(newPart);
+                    }
+                }
+            });
+        }
+        updateCompositionInput();
+    }
 });
+
+async function handleOperatorSubmit(event) {
+    event.preventDefault();
+    console.log('handleOperatorSubmit called');
+
+    const formData = new FormData(event.target);
+    const operatorId = window.operatorUid;
+
+    const data = {
+        name: formData.get('name'),
+        color: formData.get('color'),
+        users: formData.get('users').split('\n').filter(s => s.trim()),
+        short: formData.get('short'),
+    };
+
+    try {
+        const method = operatorId ? 'PUT' : 'POST';
+        const url = operatorId ? `/api/operators/${operatorId}` : '/api/operators';
+
+        console.log('Sending request:', { method, url, data });
+
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            const error = await response.json();
+            alert('[Server] Error while saving: ' + (error.error || 'Unknown Error'));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error while saving: ' + error);
+    }
+}
 
 let currentLine = null;
 
 function showAddLineModal() {
     const modal = document.getElementById('lineModal');
+    document.getElementById('lineForm').reset();
+    document.getElementById('modalTitle').textContent = 'Add New Line';
+    document.getElementById('lineId').value = '';
+    if (window.noticeEditor) {
+        window.noticeEditor.setValue("");
+    }
+    window.loadComposition(""); // Clear composition
     modal.style.display = 'block';
     setTimeout(() => {
         modal.classList.add('show');
+        if (window.noticeEditor) {
+            window.noticeEditor.refresh();
+        }
     }, 10);
 }
 
@@ -73,10 +211,9 @@ async function editLine(lineName) {
 
     if (window.noticeEditor) {
         window.noticeEditor.setValue(line.notice || "");
-        setTimeout(() => {
-            window.noticeEditor.refresh();
-        }, 10);
     }
+    
+    window.loadComposition(line.composition);
 
     document.getElementById('lineId').value = line.name;
     var stationsField = document.getElementById('lineStations');
@@ -95,6 +232,7 @@ async function editLine(lineName) {
 }
 
 async function editOperator(operatorName) {
+// ... existing code ...
     const operator = window.operatorName;
     if (!operator) {
         console.error('Operator not found:', operatorName);
@@ -128,6 +266,7 @@ async function editOperator(operatorName) {
 }
 
 async function deleteLine(lineName) {
+// ... existing code ...
     if (!confirm(`Are you sure you want to delete line ${lineName}?`)) return;
 
     try {
@@ -165,6 +304,7 @@ async function handleLineSubmit(event, uid) {
         type: formData.get('type'),       
         notice: formData.get('notice'),
         stations: formData.get('stations').split('\n').filter(s => s.trim()),
+        composition: formData.get('composition'),
         operator: window.operatorName,
         operator_uid: window.operatorUid    
     };
@@ -176,6 +316,7 @@ async function handleLineSubmit(event, uid) {
         console.log('Sending request:', { method, url, data });
 
         const response = await fetch(url, {
+// ... existing code ...
             method: method,
             headers: {
                 'Content-Type': 'application/json',
@@ -197,6 +338,7 @@ async function handleLineSubmit(event, uid) {
 
 
 function closeLineModal() {
+// ... existing code ...
     const modal = document.getElementById('lineModal');
     modal.classList.remove('show');
     setTimeout(() => {
@@ -220,6 +362,7 @@ window.addEventListener('keydown', (event) => {
 });
 
 function closeOperatorModal() {
+// ... existing code ...
     const modal = document.getElementById('operatorModal');
     modal.classList.remove('show');
     setTimeout(() => {

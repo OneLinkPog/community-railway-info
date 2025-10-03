@@ -1,4 +1,5 @@
 function openModal() {
+    const modal = document.getElementById("modal");
     modal.style.display = "block";
     modal.offsetHeight;
     requestAnimationFrame(() => {
@@ -8,6 +9,7 @@ function openModal() {
 }
 
 function closeModal() {
+    const modal = document.getElementById("modal");
     document.body.classList.remove('blur');
     modal.classList.remove('show');
     
@@ -19,8 +21,21 @@ function closeModal() {
     });
 }
 
+async function getOperatorColor(operatorUid) {
+    try {
+        const response = await fetch('/operators.json');
+        const operators = await response.json();
+        const operator = operators.find(op => op.uid === operatorUid);
+        return operator?.color || '#808080';
+    } catch (error) {
+        console.error('Error fetching operator color:', error);
+        return '#808080';
+    }
+}
+
+let linesData = [];
+
 function fetchLines() {
-    let linesData = [];
     fetch('/lines.json')
         .then(response => response.json())
         .then(linesArray => {
@@ -40,18 +55,14 @@ function fetchLines() {
             const modal = document.getElementById("modal");
             const modalContent = document.getElementById("modal-inner");
 
-            async function getOperatorColor(operatorUid) {
-                try {
-                    const response = await fetch('/operators.json');
-                    const operators = await response.json();
-                    const operator = operators.find(op => op.uid === operatorUid);
-                    return operator?.color || '#808080';
-                } catch (error) {
-                    console.error('Error fetching operator color:', error);
-                    return '#808080';
-                }
-            }
+            // Remove any existing event listeners to prevent duplicates
+            document.querySelectorAll(".line").forEach(lineElement => {
+                // Clone the element to remove all event listeners
+                const newElement = lineElement.cloneNode(true);
+                lineElement.parentNode.replaceChild(newElement, lineElement);
+            });
 
+            // Add fresh event listeners
             document.querySelectorAll(".line").forEach(lineElement => {
                 lineElement.addEventListener("click", async () => {
                     const clickedLineName = lineElement.dataset.line;
@@ -106,37 +117,36 @@ function fetchLines() {
                                 lineData.stations.forEach(station => {
                                     const li = document.createElement("li");
                                     li.innerHTML = station;
-                                    /* if (station.includes('<del>')) {
-                                        li.innerHTML = station;
-                                    } else {
-                                        li.textContent = station;
-                                    } */
                                     ul.appendChild(li);
                                 });
                                 modalContent.appendChild(ul);
                             }
                         }
 
+                        // Add train composition
+                        if (lineData.composition && lineData.composition.trim() !== '') {
+                            const compositionDiv = document.createElement("div");
+                            compositionDiv.style.marginTop = "20px";
+                            compositionDiv.innerHTML = `<h2>Train Composition</h2>`;
+                            
+                            const compositionDisplay = document.createElement("div");
+                            compositionDisplay.className = "composition-display";
+                            
+                            lineData.composition.split(',').forEach(part => {
+                                const partDiv = document.createElement("div");
+                                partDiv.className = "composition-part-display";
+                                partDiv.style.backgroundImage = `url('/static/assets/icons/${part}.png')`;
+                                partDiv.title = part.toUpperCase();
+                                compositionDisplay.appendChild(partDiv);
+                            });
+                            
+                            compositionDiv.appendChild(compositionDisplay);
+                            modalContent.appendChild(compositionDiv);
+                        }
+
                         openModal();
                     }
                 });
-            });
-
-            document.getElementById("close").onclick = (e) => {
-                e.stopPropagation();
-                closeModal();
-            };
-            
-            window.onclick = (event) => {
-                if (event.target === modal) {
-                    closeModal();
-                }
-            };
-            
-            window.addEventListener('keydown', (event) => {
-                if (event.key === "Escape") {
-                    closeModal();
-                }
             });
         })
         .catch(error => {
@@ -159,21 +169,42 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    function filterLinesByType(type) {
-        document.querySelectorAll('.line-item').forEach(line => {
-            const lineName = line.dataset.line;
-            const lineData = linesData.find(l => l.name === lineName);
-            
-            if (lineData && lineData.type === type) {
-                line.style.display = 'block';
-            } else {
-                line.style.display = 'none';
-            }
-        });
+    // Setup modal close handlers once
+    const modal = document.getElementById("modal");
+    const closeBtn = document.getElementById("close");
+    
+    if (closeBtn) {
+        closeBtn.onclick = (e) => {
+            e.stopPropagation();
+            closeModal();
+        };
     }
-
-    filterLinesByType('public');
+    
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+    
+    window.addEventListener('keydown', (event) => {
+        if (event.key === "Escape") {
+            closeModal();
+        }
+    });
 });
+
+function filterLinesByType(type) {
+    document.querySelectorAll('.line-item').forEach(line => {
+        const lineName = line.dataset.line;
+        const lineData = linesData.find(l => l.name === lineName);
+        
+        if (lineData && lineData.type === type) {
+            line.style.display = 'block';
+        } else {
+            line.style.display = 'none';
+        }
+    });
+}
 
 
 function setContrastColor(elementId, color) {

@@ -152,14 +152,17 @@
   {% endfor %}
 
   <div id="modal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content" style="margin-top: 40px">
       <span id="close">&times;</span>
       <div id="modal-inner"></div>
     </div>
   </div>
-
-  <script>
-    fetchLines();
-  </script>
 </div>
+
+<script src="/static/js/lines.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchLines();
+  });
+</script>
 {% endblock content %}

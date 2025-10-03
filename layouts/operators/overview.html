@@ -89,6 +89,18 @@
                         <div>No notice available</div>
                         {% endif %}
                     </div>
+                    <div class="line-composition">
+                        <h3>Train composition:</h3>
+                        {% if line.composition %}
+                        <div class="composition-display">
+                            {% for part in line.composition.split(',') %}
+                            <div class="composition-part-display" style="background-image: url('/static/assets/icons/{{ part }}.png')" title="{{ part|upper }}"></div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div>No composition set</div>
+                        {% endif %}
+                    </div>
                 </div>
                 {% if admin or member %}
                 <div class="line-actions">
@@ -122,6 +134,66 @@
                 <div class="form-group">
                     <label for="lineColor">Line Color</label>
                     <input type="color" id="lineColor" name="color" required style="width: 50px; height: 50px;">
+                </div>
+
+                <div class="form-group">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <label for="composition-builder">Train compositions</label>
+                        <span class="tooltip">
+                            <span class="material-symbols-outlined">help</span>
+                            <span class="tooltiptext">
+                                <strong>Train Composition Key, for debugging:</strong><br>
+                                E = Empty carriage<br>
+                                L = Locomotive<br>
+                                FH/FH1/FH2 = Front High<br>
+                                FL1/FL2 = Front Low<br>
+                                1/1W = 1st class (with/without WC)<br>
+                                2/2W = 2nd class (with/without WC)<br>
+                                1-2/1-2W = Combined 1st & 2nd class (with/without WC)<br>
+                                W = WC<br>
+                                B/BH1/BH2/BL1/BL2 = Back High/Back High 1/Back High 2/Back Low 1/Back Low 2<br>
+                                J = Eat
+                            </span>
+                        </span>
+                    </div>
+                    <div id="composition-builder">
+                        <div id="composition-parts">
+                            <div class="composition-part" draggable="true" data-part="e"></div>
+                            <div class="composition-part" draggable="true" data-part="l"></div>
+
+                            <div class="composition-part" draggable="true" data-part="fh"></div>
+                            <div class="composition-part" draggable="true" data-part="fh1"></div>
+                            <div class="composition-part" draggable="true" data-part="fh2"></div>
+
+                            <div class="composition-part" draggable="true" data-part="bh"></div>
+                            <div class="composition-part" draggable="true" data-part="bh1"></div>
+                            <div class="composition-part" draggable="true" data-part="bh2"></div>
+
+                            <div class="composition-part" draggable="true" data-part="fl"></div>
+                            <div class="composition-part" draggable="true" data-part="fl1"></div>
+                            <div class="composition-part" draggable="true" data-part="fl2"></div>
+
+                            <div class="composition-part" draggable="true" data-part="bl"></div>
+                            <div class="composition-part" draggable="true" data-part="bl1"></div>
+                            <div class="composition-part" draggable="true" data-part="bl2"></div>
+
+                            
+                            <div class="composition-part" draggable="true" data-part="1"></div>
+                            <div class="composition-part" draggable="true" data-part="2"></div>
+
+                            <div class="composition-part" draggable="true" data-part="1w"></div>
+                            <div class="composition-part" draggable="true" data-part="2w"></div>
+                            
+                            <div class="composition-part" draggable="true" data-part="1-2"></div>
+                            <div class="composition-part" draggable="true" data-part="1-2w"></div>
+                            <div class="composition-part" draggable="true" data-part="w"></div>
+                            
+                            
+                            <div class="composition-part" draggable="true" data-part="j"></div>
+                        </div>
+                        <div id="composition-dropzone" class="form-make-this-shit-white"></div>
+                    </div>
+                    <input type="hidden" id="lineComposition" name="composition">
                 </div>
 
                 <div class="form-group">
@@ -220,6 +292,12 @@
     });
 
     window.noticeEditor.setSize("100%", "150px");
+    
+    // Apply icons to composition parts
+    document.querySelectorAll('.composition-part').forEach(part => {
+        const partName = part.getAttribute('data-part');
+        part.style.backgroundImage = `url('/static/assets/icons/${partName}.png')`;
+    });
 </script>
 
 {% endblock content %}

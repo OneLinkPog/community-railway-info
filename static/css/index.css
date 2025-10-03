@@ -147,3 +147,26 @@
         flex-direction: column;
     }
 }
+
+/* Train Composition Styles */
+.composition-display {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.composition-part-display {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 0px;
+    background-color: transparent;
+    user-select: none;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}

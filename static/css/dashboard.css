@@ -279,3 +279,126 @@
 .form-make-this-shit-white {
     color: white !important;
 }
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 300px;
+  background-color: #555;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 101; /* Higher z-index */
+  top: -5px; /* Position it above */
+  left: 105%; /* Position it to the right */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%; /* At the left of the tooltip */
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #555 transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+#composition-builder {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-top: 5px;
+}
+
+#composition-parts {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    padding: 5px;
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+
+.composition-part {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #555;
+    border-radius: 4px;
+    cursor: grab;
+    background-color: #333;
+    user-select: none;
+    transition: opacity 0.2s ease;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-size: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.composition-part.dragging {
+    opacity: 0.5;
+}
+
+#composition-dropzone {
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    min-height: 44px;
+    display: flex;
+    gap: 5px;
+    flex-grow: 1;
+    flex-wrap: wrap;
+}
+
+#composition-dropzone .composition-part {
+    cursor: grab;
+}
+
+.line-composition {
+    margin-top: 10px;
+}
+
+.composition-display {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.composition-part-display {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #333;
+    user-select: none;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
