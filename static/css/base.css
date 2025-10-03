@@ -4,6 +4,9 @@
 :root {
   --color-background: #454550;
   --color-surface: #262a35;
+  --color-success: #4caf50;
+  --color-failed: #da6868;
+  --color-warning: #f0ae58;
 
   --color-accent: #a3c9f7;
   --color-accent-strong: #7ea7d8;
@@ -17,12 +20,12 @@
   font-optical-sizing: auto !important;
   font-weight: bold !important;
   font-style: normal !important;
-  font-variation-settings:
-    "wdth" 120,
+  font-variation-settings: 
+    "wdth" 125,
     "wght" 1000,
     "YTAS" 800,
     "XOPQ" 80,
-    "XTRA" 550;
+    "XTRA" 500;
 }
 
 .smd-layout_header {
@@ -33,7 +36,6 @@
     background-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     backdrop-filter 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 
-  border: #323638 solid 1px;
   will-change: transform, box-shadow, border-radius, margin;
 }
 
@@ -47,6 +49,15 @@
   -webkit-backdrop-filter: blur(24px) saturate(1.3) brightness(1.05);
 }
 
+.smd-layout_header-logo img {
+  width: 60px !important;
+  transition: transform 0.2s ease, filter 0.3s ease;
+}
+
+.smd-layout_header-logo img:hover {
+  transform: scale(1.1) rotate(2deg);
+  filter: brightness(1.1);
+}
 
 .body-gradient {
   background: linear-gradient(45deg, var(--color-background), var(--color-surface), var(--color-background));

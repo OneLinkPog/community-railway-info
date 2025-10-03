@@ -10,20 +10,18 @@
     <p>Check the status of all lines in the system</p>
   </div>
   <div class="tabs" style="display: flex; gap: 10px;">
-    <button class="tab-btn active" data-tab="public"><b>Public</b></button>
-    <button class="tab-btn" data-tab="private"><b>Private</b></button>
-    <button class="tab-btn" data-tab="metro"><b>Metro</b></button>
-    <button class="tab-btn" data-tab="tram"><b>Tram</b></button>
-    <button class="tab-btn" data-tab="bus"><b>Bus</b></button>
+    <button class="tab-btn active" data-tab="public"><b>🌍 Public</b></button>
+    <button class="tab-btn" data-tab="private"><b>🔒 Private</b></button>
+    <button class="tab-btn" data-tab="metro"><b>🚇 Metro</b></button>
+    <button class="tab-btn" data-tab="tram"><b>🚋 Tram</b></button>
+    <button class="tab-btn" data-tab="bus"><b>🚌 Bus</b></button>
   </div>
   {% if maintenance_mode %}
   <div class="line-status" style="background-color: rgb(255, 115, 0);">
-    <h1>🚧 Maintenance </h1> <!-- <span class="line" style="background-color: red">v1.2.0</span> -->
+    <h1>🚧 Maintenance </h1>
     <p>We are currently performing maintenance on the system. Please check back later.</p>
 
     <p>{{ maintenance_message | safe }}</p>
-
-    <!-- <span class="line" style="background-color: orange">Started by @juliandev02</span> -->
   </div>
   {% endif %}
 
