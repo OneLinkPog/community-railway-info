@@ -110,6 +110,7 @@
   background: linear-gradient(45deg, var(--color-background), var(--color-surface), var(--color-background));
   background-size: 200% 200%;
   animation: gradient-animation 25s ease infinite;
+  min-height: 80vh;
 }
 
 @keyframes gradient-animation {
