@@ -36,6 +36,7 @@
 .tab-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    background: #2c2b2b;
 }
 
 .tab-btn:nth-of-type(1).active { background: var(--color-success); }
@@ -59,13 +60,13 @@
 .line-status {
     display: block;
     border-radius: 20px;
-    background-color: var(--color-background);
-    backdrop-filter: blur(15px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.35);
-    padding-left: 15px;
-    padding-top: 5px;
-    padding-bottom: 15px;
+    background: rgba(168, 155, 155, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    padding: 15px 15px 15px 15px;
     margin: 20px;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1.5px solid rgba(14, 14, 14, 0.18);
 }
 
 .lines {
@@ -105,63 +106,7 @@
 }
 
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 100;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    backdrop-filter: blur(5px);
-    transition: opacity 0.3s ease-in-out;
-}
 
-.modal.show {
-    opacity: 1;
-}
-
-.modal-content {
-    z-index: 100;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 20px;
-    background-color: var(--color-background-deep);
-    backdrop-filter: blur(15px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.35);
-    width: 80%;
-    transform: translateY(-100px);
-    opacity: 0;
-    transition: all 0.3s ease-in-out;
-    margin-top: 150px;
-}
-
-.modal.show .modal-content {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-#close {
-    color: #fff;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    -webkit-transition: all 0.4s ease;
-    transition: all 0.4s ease;
-    transform: translateY(0);
-}
-
-#close:hover,
-#close:focus {
-    box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.35), 0 25px 65px 0 rgba(0, 0, 0, 0.30);
-    transform: translateY(-5px);
-    color: red;
-    text-decoration: none;
-    cursor: pointer;
-}
 
 .possible-delays-no-scheduled-service-container {
     display: flex;
