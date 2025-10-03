@@ -12,6 +12,19 @@
     gap: 20px;
 }
 
+.header h1 {
+    font-family: "Roboto Flex", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: bold !important;
+    font-style: normal !important;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 1000,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 500;
+}
+
 .tabs {
     display: flex;
     gap: 10px;
@@ -67,6 +80,19 @@
     backdrop-filter: blur(12px) saturate(180%);
     -webkit-backdrop-filter: blur(12px) saturate(180%);
     border: 1.5px solid rgba(14, 14, 14, 0.18);
+}
+
+.line-status h1 {
+  font-family: "Roboto Flex", sans-serif !important;
+  font-optical-sizing: auto !important;
+  font-weight: bold !important;
+  font-style: normal !important;
+  font-variation-settings: 
+    "wdth" 125,
+    "wght" 1000,
+    "YTAS" 800,
+    "XOPQ" 80,
+    "XTRA" 450;
 }
 
 .lines {

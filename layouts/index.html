@@ -6,8 +6,19 @@
 {% block content %}
 <div class="content">
   <div class="header">
-    <h1>🚆 Line Status</h1>
-    <p>Check the status of all lines in the system</p>
+    <h1>🚆 Line Status - <span id="current-tab">🌍 Public</span></h1>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const currentTabElement = document.getElementById('current-tab');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+        currentTabElement.textContent = button.textContent.trim();
+        });
+      });
+      });
+    </script>
   </div>
   <div class="tabs" style="display: flex; gap: 10px;">
     <button class="tab-btn active" data-tab="public"><b>🌍 Public</b></button>
@@ -53,7 +64,7 @@
       <div id="partially-suspended" class="line-status" style="flex: 1;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <h1>〽️ Partially Suspended</h1>
-            <p>Service may be affected (e.g. unserviced stations)</p>
+          <p>Service may be affected (e.g. unserviced stations)</p>
         </div>
         
         {% if not status.partially_suspended %}
