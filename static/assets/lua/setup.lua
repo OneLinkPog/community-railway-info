@@ -25,12 +25,28 @@ local files = {
         path = "/startup.lua"
     },
     {
-        url = "https://dl.strawberryfoundations.org/content/computercraft/railway_status/display.lua",
-        path = "/display.lua"
+        url = "https://dl.strawberryfoundations.org/content/computercraft/railway_status/config.lua",
+        path = "/rinfo/config.lua"
+    },
+    {
+        url = "https://dl.strawberryfoundations.org/content/computercraft/railway_status/displayutils.lua",
+        path = "/rinfo/displayutils.lua"
+    },
+    {
+        url = "https://dl.strawberryfoundations.org/content/computercraft/railway_status/theme.lua",
+        path = "/rinfo/theme.lua"
+    },
+    {
+        url = "https://dl.strawberryfoundations.org/content/computercraft/railway_status/json.lua",
+        path = "/rinfo/json.lua"
+    },
+    {
+        url = "https://dl.strawberryfoundations.org/content/computercraft/railway_status/client.lua",
+        path = "/rinfo/client.lua"
     }
 }
 
-print("Railway Status Display Setup")
+print("Railway Info Display Setup")
 print("===========================")
 
 -- Check if HTTP API is available
