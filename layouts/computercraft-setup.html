@@ -8,28 +8,66 @@
 <div class="content">
     <div class="page-layout">
         <div class="image-container">
-            <img src="/static/assets/png/overview.png" alt="Overview">
+            <img src="/static/assets/png/railinfo_cc_setup/overview.png" alt="Overview">
         </div>
         <div class="setup-container">
-            <h1>ComputerCraft Station Display Setup <span class="line" style="background-color: red">v1.1.2 BETA</span></h1>
+            <h1>ComputerCraft Station Display Setup</h1>
+
+            <div style="display: flex; flex-direction: row; margin-top: -24px">
+                <h2><span class="line" style="background-color: red">v2.0.0</span></h2>
+                <h2><span class="line" style="background-color: green">Last update: 2025-10-04</span></h2>
+            </div>
+            
             <p>Welcome to the ComputerCraft station display setup page! This guide will help you set up your station
-                display using ComputerCraft in Minecraft.</p>
+                display using ComputerCraft in Minecraft.
+            </p>
+
+            <h2>Features</h2>
+            <ul>
+                <li>Displays up-to-date train information for your station</li>
+                <li>Color-coded lines for easy identification</li>
+                <li>Touchscreen support for interactive features</li>
+                <li>Automatic updates every 6 hours (via server restart, so this is actually not a real featurer)</li>
+                <li>Customizable display size</li>
+                <li>Supports multiple monitor setups</li>
+                <li>Displays relevant status information, e.g. Running services, Suspended services, Partially Suspended and Possible delays</li>
+
+                <img src="/static/assets/png/railinfo_cc_setup/variations.png" alt="Variations" style="border-radius: 0px;" class="setup-image">
+
+            </ul>
+
+            <h2>Requirements</h2>
+            <ul>
+                <li>At least 6 advanced monitors and 1 (advanced) computer</li>
+                <li>Internet connection for fetching train data</li>
+                <li>Basic knowledge of using ComputerCraft and Lua scripting</li>
+            </ul>
 
             <h2>Instructions</h2>
             <p>To set up the ComputerCraft station display, follow these steps:</p>
             <div class="instructions">
                 <ol>
-                    <li>You need 6 (advanced) monitors and 1 (advanced) computer</li>
-                    <ul>→ Preferably use <b>advanced monitors</b> and a <b>standard computer</b>, as the extended
-                        monitors support color and touch. The computer only serves as an interface and therefore does
+                    <li>You need at least 6 advanced monitors   and 1 (advanced) computer</li>
+                    <ul>→ I do <b>NOT</b> recommend using a standard monitor since they do not support color and touch.
+                        The computer only serves as an interface and therefore does
                         not require a modem or extended functions</ul>
 
-                    <li>Place the monitors in a <b>3x2</b> grid, with the computer <b>under the monitors</b></li>
-                    <img src="/static/assets/png/setup-pt1.png" alt="Setup Step 1" class="setup-image">
+                    <li>Place the monitors in a <b>2x3</b> grid, with the computer <b>under the monitors</b></li>
+                    <img src="/static/assets/png/railinfo_cc_setup/place_under_the_display.png" alt="Setup Step 1" class="setup-image">
+
+                    <span class="material-symbols-outlined material-symbols-outlined--ul" style="vertical-align: middle;">info</span>
+                    Starting with version <b>2.0.0</b>, it is also possible to upsize the display to a 3x2 grid or bigger. Please do notice that I only
+                    tested the 2x3 and 3x2 setups myself, so if you run into any issues with bigger setups, please let me know via Discord.
+
+                    <img src="/static/assets/png/railinfo_cc_setup/dynamic_sizes.png" alt="Setup Step 1" class="setup-image">
+                    <br><br>
 
                     <li>Open the ComputerCraft terminal in your Minecraft game.</li>
                     <li>Type the following command to download and run the setup script:</li>
-                    <pre>wget run https://railinfo.juliandev02.me/setup.lua</pre>
+                    <div class="codeblock">
+                        <pre>wget run https://railinfo.juliandev02.me/setup.lua</pre>
+                    </div>
+                    
                     <li>Wait for the setup to complete. It should automatically reboot</li>
                     <li>After the reboot, the script will automatically start and display the station information on the
                         monitors.</li>
