@@ -5,7 +5,6 @@
 - [ ] Add station section #28
   - [ ] Connect it with the lines
 
-
 ## Interface
 - [ ] Fix navbar (more mobile friendly)
 
@@ -18,6 +17,9 @@
   
 ## Admin
 - Currently nothing to do
+
+## Bugs
+- [ ] Proper URL en- & decoding for all API targets (so that something like S5/R51 works)
 
 # Done
 - [x] Add admin panel for adding new companies
