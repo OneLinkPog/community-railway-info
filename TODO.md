@@ -20,6 +20,7 @@
 
 ## Bugs
 - [ ] Proper URL en- & decoding for all API targets (so that something like S5/R51 works)
+- [ ] Migrate from avatar-cyan.vercel.app #44
 
 # Done
 - [x] Add admin panel for adding new companies
