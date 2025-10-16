@@ -1,8 +1,8 @@
 # Community Railway Info - TODOs
 
 ## General
-- [ ] Migrate to SQL (#38, #26)
-- [ ] Add station section #28
+- [ ] Migrate to SQL ([#38](https://github.com/OneLinkPog/community-railway-info/issues/38), [#26](https://github.com/OneLinkPog/community-railway-info/issues/26))
+- [ ] Add station section ([#28](https://github.com/OneLinkPog/community-railway-info/issues/28))
   - [ ] Connect it with the lines
 
 ## Interface
@@ -10,7 +10,7 @@
 
 ## Company Management
 - [ ] Support lines having multiple operators
-- [ ] Logo next to company name (#32)
+- [ ] Logo next to company name ([#32](https://github.com/OneLinkPog/community-railway-info/issues/32))
 
 ## Documentation
 - Currently nothing to do
@@ -20,7 +20,7 @@
 
 ## Bugs
 - [ ] Proper URL en- & decoding for all API targets (so that something like S5/R51 works)
-- [ ] Migrate from avatar-cyan.vercel.app #44
+- [ ] Migrate from avatar-cyan.vercel.app ([#44](https://github.com/OneLinkPog/community-railway-info/issues/44))
 
 # Done
 - [x] Add admin panel for adding new companies
