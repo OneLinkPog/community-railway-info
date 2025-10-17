@@ -73,6 +73,12 @@
     "YTAS" 800,
     "XOPQ" 80,
     "XTRA" 500;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.smd-layout_header-title:hover {
+  transform: scale(1.03);
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .smd-layout_header {
@@ -125,3 +131,35 @@
   }
 }
 
+.smd-layout_navbar a {
+  transition: color 0.3s ease, transform 0.3s ease;
+  margin-bottom: 1px;
+}
+
+.smd-layout_navbar a:hover {
+  transform: scale(1.05);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.smd-layout_navbar a span.material-symbols-outlined {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.smd-component_dropdown-dropbtn {
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.smd-component_dropdown-dropbtn:hover {
+  transform: scale(1.05);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.smd-component_dropdown-content-main a {
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.smd-component_dropdown-content-main a:hover {
+  background-color: var(--brand-primary-dark);
+  color: #fff;
+}
