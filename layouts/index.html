@@ -28,11 +28,9 @@
     <button class="tab-btn" data-tab="bus"><b>🚌 Bus</b></button>
   </div>
   {% if maintenance_mode %}
-  <div class="line-status" style="background-color: rgb(255, 115, 0);">
-    <h1>🚧 Maintenance </h1>
-    <p>We are currently performing maintenance on the system. Please check back later.</p>
-
-    <p>{{ maintenance_message | safe }}</p>
+  <div class="line-status maintenance-mode" style="background-color: rgb(255, 115, 0);">
+    <h3>🚧 Maintenance</h3>
+    {{ maintenance_message | safe }}
   </div>
   {% endif %}
 
