@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, session, request, redirect, url_for
-from datetime import datetime
 from core import main_dir
 from core.config import config, allowed_tags, allowed_attributes
 from core.logger import Logger
+from datetime import datetime
 from bleach import clean
 
 import json
@@ -11,7 +11,6 @@ import os
 import time
 
 logger = Logger("requests")
-
 operators = Blueprint('operators', __name__)
 
 
@@ -21,6 +20,7 @@ operators = Blueprint('operators', __name__)
     - /operators/<string:uid>
     - /operators/request
 """
+
 
 @operators.route('/operators')
 def operators_route():
@@ -33,15 +33,15 @@ def operators_route():
         operators = json.load(f)
 
     for operator in operators:
-        train_count = sum(1 for line in lines if line.get(
-            'operator_uid') == operator['uid'])
+        train_count = sum(1 for line in lines if line.get('operator_uid') == operator['uid'])
         operator['train_count'] = train_count
 
     operator = None
+    admin = False
+
     if user and 'id' in user:
         operator = [op for op in operators if user['id'] in op['users']]
 
-    admin = False
     if user and user["id"] in config.web_admins:
         admin = True
 
@@ -64,19 +64,20 @@ def operator_route(uid):
 
     with open(main_dir + '/operators.json') as f:
         operators = json.load(f)
-        
+
     operator = next((op for op in operators if op['uid'] == uid), None)
 
     user_operator = None
+    admin = False
+    member = False
+    
     if user and 'id' in user:
         user_operator = [op for op in operators if user['id'] in op['users']]
-        
-    member = False
+    
     operator_obj = next((op for op in operators if op['uid'] == uid), None)
     if operator_obj and user and user['id'] in operator_obj['users']:
         member = True
-
-    admin = False
+    
     if user and user["id"] in config.web_admins:
         admin = True
 
@@ -89,7 +90,7 @@ def operator_route(uid):
     default_avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
 
     AVATAR_CACHE_FILE = os.path.join(main_dir, "operator_avatar_cache.json")
-    AVATAR_CACHE_TTL = 60 * 60 * 24 
+    AVATAR_CACHE_TTL = 60 * 60 * 24
 
     def get_cached_user_data(user_id):
         if not os.path.exists(AVATAR_CACHE_FILE):
@@ -119,14 +120,21 @@ def operator_route(uid):
 
     if operator and 'users' in operator:
         operator['user_datas'] = []
+        
         for user_id in operator['users']:
             user_data = get_cached_user_data(user_id)
+            
             if not user_data:
                 try:
-                    user_data = requests.get(f"https://avatar-cyan.vercel.app/api/{user_id}", timeout=2).json()
+                    user_data = requests.get(f"https://avatar-cyan.vercel.app/api/{user_id}", timeout=4).json()
                 except Exception:
-                    user_data = {"avatarUrl": default_avatar, "username": user_id, "display_name": user_id}
+                    user_data = {
+                        "avatarUrl": default_avatar,
+                        "username": user_id,
+                        "display_name": user_id
+                    }
                 set_cached_user_data(user_id, user_data)
+                
             operator['user_datas'].append({
                 'id': user_id,
                 'avatar_url': user_data.get("avatarUrl", default_avatar).replace("?size=512", "?size=32"),
@@ -141,13 +149,12 @@ def operator_route(uid):
             attributes=allowed_attributes,
             strip=True
         )
-        
+
         line['notice'] = line['notice'].rstrip()
 
-
         if 'stations' in line:
-            line['stations'] = [clean(station, tags=allowed_tags, attributes=allowed_attributes, 
-            strip=True) for station in line['stations']]
+            line['stations'] = [clean(station, tags=allowed_tags, attributes=allowed_attributes,
+                                      strip=True) for station in line['stations']]
 
     return render_template(
         'operators/overview.html',
@@ -170,8 +177,7 @@ def request_operator_page():
     with open(main_dir + '/operators.json') as f:
         operators = json.load(f)
 
-    operator = next(
-        (op for op in operators if user['id'] in op['users']), None)
+    operator = next((op for op in operators if user['id'] in op['users']), None)
 
     if operator:
         return render_template('operators/request.html', error="You are already part of an operator")
@@ -183,6 +189,7 @@ def request_operator_page():
     --- API Endpoints ---
     - /api/operators/request
 """
+
 
 @operators.route('/api/operators/request', methods=['POST'])
 def request_operator():
