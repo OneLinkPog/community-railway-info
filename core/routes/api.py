@@ -6,7 +6,6 @@ from core.config import config
 import json
 
 api = Blueprint('api', __name__)
-
 logger = Logger("@api")
 
 """
