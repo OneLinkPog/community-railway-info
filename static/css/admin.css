@@ -144,13 +144,35 @@ button[type="submit"]:active {
     padding: 20px;
 }
 
-.admin-header h1 {
+
+.admin-header-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.admin-header-title h1 {
     font-size: 2.5em;
     margin-bottom: 10px;
+}
+
+.admin-header-title-text {
     background: linear-gradient(45deg, #17a2b8, #6f42c1);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-family: "Roboto Flex", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: bold !important;
+    font-style: normal !important;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 1000,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 500;
 }
 
 .admin-subtitle {
@@ -168,19 +190,23 @@ button[type="submit"]:active {
 }
 
 .admin-card {
-    background: var(--color-background-deep);
-    border-radius: 16px;
+    border-radius: 20px;
+    background: rgba(168, 155, 155, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1.5px solid rgba(14, 14, 14, 0.18);
     padding: 25px;
     text-align: center;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    -webkit-transition: box-shadow 0.4s ease, transform 0.4s ease;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+    transform: translateY(0);
+    cursor: pointer;;
 }
 
 .admin-card:hover {
+    box-shadow: 0 16px 24px 0 rgba(44, 44, 44, 0.6), 0 25px 65px 0 rgba(0, 0, 0, 0.30);
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    border-color: #17a2b8;
 }
 
 .card-icon {
@@ -195,7 +221,7 @@ button[type="submit"]:active {
 }
 
 .admin-card p {
-    color: #8e9297;
+    color: #c4c7ca;
     font-size: 0.9em;
 }
 
@@ -215,16 +241,14 @@ button[type="submit"]:active {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
 .admin-card {
-    animation: fadeIn 0.5s ease-out forwards;
+    animation: fadeIn 0.5s ease-out;
 }
 
 .admin-card:nth-child(2) {

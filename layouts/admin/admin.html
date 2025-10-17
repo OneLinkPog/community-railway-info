@@ -7,15 +7,19 @@
 {% block content %}
 <div class="content">
     <div class="admin-header">
-        <h1>Admin Panel</h1>
-        <p class="admin-subtitle">Manage your Railway-Info instance</p>
+        <div class="admin-header-title">
+            <h1>🛡️</h1>
+            <h1 class="admin-header-title-text">Admin Management Console</h1>
+        </div>
+        
+        <p class="admin-subtitle">Manage your Railway Info instance</p>
     </div>
     
     <div class="admin-grid">
         <div class="admin-card" onclick="window.location.href='/admin/settings'">
             <div class="card-icon">⚙️</div>
             <h3>Settings</h3>
-            <p>Manage system settings</p>
+            <p>General configuration of your instancer</p>
         </div>
         
         <div class="admin-card" onclick="window.location.href='/admin/logs'">
@@ -27,13 +31,13 @@
         <div class="admin-card" onclick="window.location.href='/admin/companies'">
             <div class="card-icon">🚆</div>
             <h3>Companies</h3>
-            <p>Manage train companies, view requests and create new companies</p>
+            <p>Manage train companies and view requests</p>
         </div>
 
         <div class="admin-card" onclick="window.location.href='/admin/trains'">
             <div class="card-icon">🚄</div>
             <h3>Trains</h3>
-            <p>Manage train information</p>
+            <p>Manage train lines</p>
         </div>
     </div>
 </div>
