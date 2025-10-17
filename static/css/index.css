@@ -178,3 +178,17 @@
     background-repeat: no-repeat;
     background-position: center;
 }
+
+.maintenance-mode h3 {
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 1000,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 500;
+    margin: 10px;
+}

@@ -16,11 +16,34 @@
     gap: 20px;
 }
 
+.dashboard-header h1 {
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 1000,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 500;
+}
+
 .operator-badge {
     color: white;
-    padding: 4px 8px;
+    padding: 8px 8px;
     border-radius: 4px;
     margin-left: 10px;
+    font-family: "Roboto Flex", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: bold !important;
+    font-style: normal !important;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 1000,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 500;
 }
 
 .operator-badge.admin {
@@ -48,10 +71,34 @@
     margin-bottom: 15px;
 }
 
+.line-header h2 {
+    font-family: "Roboto Flex", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: bold !important;
+    font-style: normal !important;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 1000,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 500;
+}
+
 .line-status-badge {
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.9em;
+    font-family: "Roboto Flex", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: bold !important;
+    font-style: normal !important;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 1000,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 500;
+
 }
 
 .running { background: #4CAF50; color: white; }
@@ -229,8 +276,6 @@
     flex-wrap: wrap;
 }
 
-
-
 .member-avatar {
     width: 40px;
     height: 40px;
@@ -240,6 +285,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: transform 0.2s ease;
     position: relative; 
+    cursor: pointer;
 }
 
 .member-avatar::after {
