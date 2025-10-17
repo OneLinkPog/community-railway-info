@@ -7,7 +7,6 @@ import json
 import yaml
 
 admin = Blueprint('admin', __name__)
-
 logger = Logger('admin')
 
 
@@ -35,8 +34,8 @@ def admin_route():
         admin=True,
         lines=lines
     )
-    
-    
+
+
 @admin.route("/admin/settings")
 def admin_settings():
     user = session.get('user')
@@ -46,7 +45,7 @@ def admin_settings():
 
     with open(main_dir + '/config.yml') as f:
         settings = yaml.safe_load(f)
-        
+
     with open(main_dir + '/operators.json') as f:
         operators = json.load(f)
 
@@ -72,9 +71,9 @@ def admin_logs():
 
     with open(main_dir + '/server.log') as f:
         logs = f.readlines()
-        
+
     logs = [log.strip() for log in logs if log.strip()]
-    
+
     parsed_logs = []
     for log in logs:
         parts = log.split(' - ', 1)
@@ -87,7 +86,7 @@ def admin_logs():
             parsed_logs.append(('', log))
 
     logger.admin(f'[@{session.get("user")["username"]}] Accessed server logs')
-    
+
     with open(main_dir + '/operators.json') as f:
         operators = json.load(f)
 
@@ -102,14 +101,15 @@ def admin_logs():
         operator=operator,
         logs=parsed_logs
     )
-    
+
+
 @admin.route('/admin/companies')
 def admin_companies():
     user = session.get('user')
 
     if not user or user.get('id') not in config.web_admins:
         return redirect(url_for('index.index_route'))
-    
+
     with open(main_dir + '/operators.json') as f:
         operators = json.load(f)
 
@@ -120,9 +120,9 @@ def admin_companies():
     try:
         with open(main_dir + '/operator_requests.json', 'r') as f:
             requests = json.load(f)
-        
+
         requests.sort(key=lambda x: x['timestamp'], reverse=True)
-        
+
         with open(main_dir + '/operators.json') as f:
             operators = json.load(f)
 
@@ -141,18 +141,18 @@ def admin_companies():
             operator=operator,
             requests=[]
         )
-        
-    
+
+
 @admin.route('/admin/settings/update', methods=['POST'])
 def save_settings():
     user = session.get('user')
-    
+
     if not user or user.get('id') not in config.web_admins:
         return jsonify({'error': 'Unauthorized'}), 403
 
     try:
         data = request.json
-        
+
         if not isinstance(data.get('port'), int) or data['port'] < 1 or data['port'] > 65535:
             return jsonify({'error': 'Invalid port number'}), 400
 
@@ -170,33 +170,38 @@ def save_settings():
 
         with open(main_dir + '/config.yml', 'w') as f:
             yaml.safe_dump(config_data, f, default_flow_style=False)
-            
+
         config.load()
 
-        logger.admin(f'[@{session.get("user")["username"]}] Updated application settings')
+        logger.admin(
+            f'[@{session.get("user")["username"]}] Updated application settings')
         return jsonify({'success': True})
 
     except Exception as e:
-        logger.error(f'[@{session.get("user")["username"]}] Error updating settings: {str(e)}')
+        logger.error(
+            f'[@{session.get("user")["username"]}] Error updating settings: {str(e)}')
         return jsonify({'error': str(e)}), 500
-    
+
+
 @admin.route('/admin/clear-logs', methods=['POST'])
 def clear_logs():
     user = session.get('user')
-    
+
     if not user or user.get('id') not in config.web_admins:
         return jsonify({'success': False, 'error': 'Unauthorized'}), 403
 
     try:
         open(main_dir + '/server.log', 'w').close()
-        logger.admin(f'[@{session.get("user")["username"]}] Server logs cleared successfully.')
+        logger.admin(
+            f'[@{session.get("user")["username"]}] Server logs cleared successfully.')
         return jsonify({'success': True})
-    
+
     except Exception as e:
-        logger.admin(f'[@{session.get("user")["username"]}] Error clearing server logs: {str(e)}')
+        logger.admin(
+            f'[@{session.get("user")["username"]}] Error clearing server logs: {str(e)}')
         return jsonify({'success': False, 'error': str(e)}), 500
-    
-    
+
+
 @admin.route('/admin/update-logs')
 def update_logs():
     user = session.get('user')
@@ -207,20 +212,22 @@ def update_logs():
     try:
         with open(main_dir + '/server.log') as f:
             logs = f.readlines()
-            
+
         logs = [log.strip() for log in logs if log.strip()]
         logs = [log.split(' - ', 1) for log in logs]
-        logs = [(log[0], log[1].split(' - ', 1)[1] if len(log) > 1 else '') for log in logs]
-        
+        logs = [(log[0], log[1].split(' - ', 1)[1] if len(log) > 1 else '')
+                for log in logs]
+
         return jsonify({'success': True, 'logs': logs})
-    
+
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
 
 @admin.route('/admin/companies/handle-request', methods=['POST'])
 def handle_company_request():
     user = session.get('user')
-    
+
     if not user or user.get('id') not in config.web_admins:
         return jsonify({'error': 'Unauthorized'}), 403
 
@@ -235,8 +242,9 @@ def handle_company_request():
         with open(main_dir + '/operator_requests.json', 'r') as f:
             requests = json.load(f)
 
-        request_data = next((req for req in requests if req['timestamp'] == timestamp), None)
-        
+        request_data = next(
+            (req for req in requests if req['timestamp'] == timestamp), None)
+
         if not request_data:
             return jsonify({'error': 'Request not found'}), 404
 
@@ -257,13 +265,15 @@ def handle_company_request():
                 f.truncate()
 
         request_data['status'] = 'accepted' if action == 'accept' else 'rejected'
-        
+
         with open(main_dir + '/operator_requests.json', 'w') as f:
             json.dump(requests, f, indent=2)
 
-        logger.admin(f"[@{user['username']}] {action.capitalize()}ed operator request for {request_data['company_name']}")
+        logger.admin(
+            f"[@{user['username']}] {action.capitalize()}ed operator request for {request_data['company_name']}")
         return jsonify({'success': True})
 
     except Exception as e:
-        logger.error(f"[@{user['username']}] Error handling operator request: {str(e)}")
+        logger.error(
+            f"[@{user['username']}] Error handling operator request: {str(e)}")
         return jsonify({'error': str(e)}), 500
