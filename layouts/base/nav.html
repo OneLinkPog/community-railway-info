@@ -4,15 +4,16 @@
       <img src="/static/favicon.png" alt="Logo">
     </a>
     <a class="smd-layout_header-title" style="cursor: pointer; text-decoration: none" href="/">
-      Community Railway Info
+      Railway Info
     </a>
   </div>
 
   <nav class="smd-layout_navbar">
     <a href="/operators"><span class="material-symbols-outlined">train</span> Operators</a>
     <a href="/computercraft-setup"><span class="material-symbols-outlined">monitor</span> Station display</a>
-    <a href="/stationsr"><span class="material-symbols-outlined">train</span> Train stations</a>
+    <a href="/stations"><span class="material-symbols-outlined">train</span> Train stations</a>
     <a href="https://github.com/OneLinkPog/community-railway-info"><span class="material-symbols-outlined">code</span> GitHub</a>
+    <a href="/library"><span class="material-symbols-outlined">script</span> Library</a>
   </nav>
 
   <div class="smd-layout_navbar-right">
@@ -58,6 +59,12 @@
           {% endfor %}
           <hr>
           {% endif %}
+
+          <a href="/me">
+            <span class="material-symbols-outlined material-symbols-outlined--ul"
+              style="color: rgb(67, 180, 255)">person</span>
+            <span class="smd-component_dropdown-content-main-text">My profile & library</span>
+          </a>
           {% if admin %}
           <a href="/admin">
             <span class="material-symbols-outlined material-symbols-outlined--ul"
@@ -65,6 +72,7 @@
             <span class="smd-component_dropdown-content-main-text">Admin</span>
           </a>
           {% endif %}
+
           <a href="{{ url_for('auth.logout') }}">
             <span class="material-symbols-outlined material-symbols-outlined--ul"
               style="color: rgb(146, 146, 146)">logout</span>

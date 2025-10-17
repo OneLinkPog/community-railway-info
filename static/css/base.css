@@ -131,6 +131,10 @@
   }
 }
 
+.smd-layout_navbar {
+  margin-left: 64px !important;
+}
+
 .smd-layout_navbar a {
   transition: color 0.3s ease, transform 0.3s ease;
   margin-bottom: 1px;
@@ -162,4 +166,13 @@
 .smd-component_dropdown-content-main a:hover {
   background-color: var(--brand-primary-dark);
   color: #fff;
+}
+
+.smd-component_dropdown-content-main p {
+  margin-left: 12px;
+  margin-top: 1px;
+  margin-bottom: 4px;
+  font-weight: bold;
+  font-size: 13px;
+  color: var(--text-secondary);
 }
