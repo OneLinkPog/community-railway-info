@@ -29,8 +29,46 @@
   </div>
   {% if maintenance_mode %}
   <div class="line-status maintenance-mode" style="background-color: rgb(255, 115, 0);">
-    <h3>🚧 Maintenance</h3>
-    {{ maintenance_message | safe }}
+    <h3 id="maintenance-toggle" style="cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px;">
+      🚧 Maintenance <span id="maintenance-arrow" style="transition: transform 0.3s; display: inline-block;">▼</span>
+    </h3>
+    <div id="maintenance-message-static"></div>
+    <div id="maintenance-message-collapsible" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s; opacity: 0;"></div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const rawHtml = `{{ maintenance_message | safe }}`;
+        let staticPart = '';
+        let collapsiblePart = rawHtml;
+        const h1Match = rawHtml.match(/<h1[^>]*>.*?<\/h1>/i);
+
+        if (h1Match) {
+          staticPart = h1Match[0];
+          collapsiblePart = rawHtml.replace(h1Match[0], '');
+        }
+
+        document.getElementById('maintenance-message-static').innerHTML = staticPart;
+        document.getElementById('maintenance-message-collapsible').innerHTML = collapsiblePart;
+
+        const toggle = document.getElementById('maintenance-toggle');
+        const collapsible = document.getElementById('maintenance-message-collapsible');
+        const arrow = document.getElementById('maintenance-arrow');
+        let expanded = false;
+        
+        toggle.addEventListener('click', function() {
+          expanded = !expanded;
+          if (expanded) {
+            collapsible.style.maxHeight = collapsible.scrollHeight + 'px';
+            collapsible.style.opacity = '1';
+            arrow.style.transform = 'rotate(180deg)';
+          } else {
+            collapsible.style.maxHeight = '0';
+            collapsible.style.opacity = '0';
+            arrow.style.transform = 'rotate(0deg)';
+          }
+        });
+      });
+    </script>
   </div>
   {% endif %}
 
