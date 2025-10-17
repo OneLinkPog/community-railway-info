@@ -25,20 +25,23 @@
             <h1>{{ operator_overview.name }}</h1>
 
             {% if admin %}
-            <span class="operator-badge admin">Admin</span>
+            <span class="operator-badge admin">🛡️ Admin</span>
             {% endif %}
 
             {% if member %}
-            <span class="operator-badge member">Member</span>
+            <span class="operator-badge member">👥 Member</span>
             {% endif %}
 
             <div class="operator-members">
                 {% if operator_overview.user_datas %}
                 <div class="member-avatars">
                     {% for user_data in operator_overview.user_datas %}
-                    <div class="member-avatar" data-tooltip="{{ user_data.display_name }} (@{{ user_data.username }})">
-                        <img src="{{ user_data.avatar_url }}" alt="Member Avatar">
-                    </div>
+                    <a href="/users/{{ user_data.id }}">
+                        <div class="member-avatar" data-tooltip="{{ user_data.display_name }} (@{{ user_data.username }})">
+                            <img src="{{ user_data.avatar_url }}" alt="Member Avatar">
+                        </div>
+                    </a>
+                    
                     {% endfor %}
                 </div>
                 {% endif %}
