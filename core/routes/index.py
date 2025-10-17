@@ -85,18 +85,12 @@ def computercraft_setup_route():
         operators = json.load(f)
     
     operator = None
-    admin = False
-    
     if user and 'id' in user:
-        operator = next((op for op in operators if user['id'] in op['users']), None)
-        
-    if user and user["id"] in config.web_admins:
-        admin = True
+        operator = [op for op in operators if user['id'] in op['users']]
     
     return render_template(
         'computercraft-setup.html',
         user=user,
         operator=operator,
-        admin=admin,
         lines=lines
     )
