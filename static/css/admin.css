@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&display=swap');
+
 .content {
     margin-top: 100px;
     color: white;
@@ -60,7 +62,9 @@
 }
 
 .log-entry {
-    font-family: monospace;
+    font-family: "Google Sans Code", monospace;
+    font-optical-sizing: auto;
+    font-size: 13px;
     padding: 8px;
     margin: 4px 0;
     border-radius: 8px;

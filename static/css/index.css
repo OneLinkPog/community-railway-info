@@ -112,6 +112,15 @@
 }
 
 .line {
+    font-family: "Roboto Flex", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-variation-settings: 
+        "wdth" 135,
+        "wght" 700,
+        "YTAS" 800,
+        "XOPQ" 100,
+        "XTRA" 450;
+    font-size: 17px;
     border-radius: 8px;
     margin: 5px;
     padding: 5px;
