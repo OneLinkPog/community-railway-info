@@ -145,7 +145,7 @@
 
     function clearLogs() {
         if (confirm('Are you sure you want to clear all logs? This action cannot be undone.')) {
-            fetch('/admin/clear-logs', { method: 'POST' })
+            fetch('/api/admin/logs/clear', { method: 'POST' })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -164,7 +164,7 @@
         const refreshBtn = document.querySelector('.refresh-btn');
         refreshBtn.classList.add('loading');
 
-        fetch('/admin/update-logs')
+        fetch('/api/admin/logs')
             .then(response => response.json())
             .then(data => {
                 if (data.success) {

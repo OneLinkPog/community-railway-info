@@ -183,7 +183,7 @@ def save_settings():
         return jsonify({'error': str(e)}), 500
 
 
-@admin.route('/admin/clear-logs', methods=['POST'])
+@admin.route('/api/admin/logs/clear', methods=['POST'])
 def clear_logs():
     user = session.get('user')
 
@@ -202,7 +202,7 @@ def clear_logs():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-@admin.route('/admin/update-logs')
+@admin.route('/api/admin/logs')
 def update_logs():
     user = session.get('user')
 
