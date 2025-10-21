@@ -102,12 +102,12 @@
   -webkit-backdrop-filter: blur(24px) saturate(1.3) brightness(1.05);
 }
 
-.smd-layout_header-logo img {
+.smd-layout_header-branding img {
   width: 60px !important;
   transition: transform 0.2s ease, filter 0.3s ease;
 }
 
-.smd-layout_header-logo img:hover {
+.smd-layout_header-branding img:hover {
   transform: scale(1.1) rotate(2deg);
   filter: brightness(1.1);
 }
@@ -136,36 +136,12 @@
 }
 
 .smd-layout_navbar a {
-  transition: color 0.3s ease, transform 0.3s ease;
   margin-bottom: 1px;
-}
-
-.smd-layout_navbar a:hover {
-  transform: scale(1.05);
-  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .smd-layout_navbar a span.material-symbols-outlined {
   vertical-align: middle;
   margin-right: 6px;
-}
-
-.smd-component_dropdown-dropbtn {
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.smd-component_dropdown-dropbtn:hover {
-  transform: scale(1.05);
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.smd-component_dropdown-content-main a {
-  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.smd-component_dropdown-content-main a:hover {
-  background-color: var(--brand-primary-dark);
-  color: #fff;
 }
 
 .smd-component_dropdown-content-main p {
