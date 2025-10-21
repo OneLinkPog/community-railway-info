@@ -53,11 +53,8 @@
                     <span id="filteredCount">{{ logs|length }}</span> entries shown
                 </div>
                 <div class="auto-refresh">
-                    <label class="switch">
-                        <input type="checkbox" id="autoRefresh">
-                        <span class="slider"></span>
-                    </label>
-                    <span>Auto-refresh</span>
+                    <div class="smd-component_toggle" onclick="toggleSwitch(this)" id="autoRefresh"></div>
+                    <p>Auto-refresh</p>
                 </div>
             </div>
         </div>
@@ -97,13 +94,19 @@
     document.getElementById('logLevel').addEventListener('change', filterLogs);
 
     let autoRefreshInterval;
-    document.getElementById('autoRefresh').addEventListener('change', function () {
-        if (this.checked) {
+    
+    function toggleSwitch(element) {
+        element.classList.toggle('smd-component_toggle--active');
+        
+        // Check if auto-refresh is now enabled
+        const isActive = element.classList.contains('smd-component_toggle--active');
+        
+        if (isActive) {
             autoRefreshInterval = setInterval(updateLogs, 5000);
         } else {
             clearInterval(autoRefreshInterval);
         }
-    });
+    }
 
     function updateStats() {
         const entries = document.querySelectorAll('.log-entry');
