@@ -74,16 +74,15 @@
 
   {% for type, status in line_types.items() %}
   <div class="tab-content {% if type == 'public' %}active{% endif %}" id="{{ type }}">
+    {% if status.suspended or status.partially_suspended %}
     <div class="possible-delays-no-scheduled-service-container">
+      {% if status.suspended %}
       <div id="suspended" class="line-status" style="flex: 1;">
         <div class="line-status--header">
           <h1>🚫 Suspended</h1>
           <p>Service is currently suspended</p>
         </div>
 
-        {% if not status.suspended %}
-        <p>No suspended lines</p>
-        {% else %}
         <div class="lines">
           {% for line in status.suspended %}
           <div class="line-item line" data-line="{{ line.name }}" id="line-{{ line.name }}">
@@ -94,18 +93,16 @@
           </script>
           {% endfor %}
         </div>
-        {% endif %}
       </div>
+      {% endif %}
 
+      {% if status.partially_suspended %}
       <div id="partially-suspended" class="line-status" style="flex: 1;">
         <div class="line-status--header">
           <h1>〽️ Partially Suspended</h1>
           <p>Service may be affected (e.g. unserviced stations)</p>
         </div>
         
-        {% if not status.partially_suspended %}
-        <p>No partially suspended lines</p>
-        {% else %}
         <div class="lines">
           {% for line in status.partially_suspended %}
           <div class="line-item line" data-line="{{ line.name }}" id="line-{{ line.name }}">
@@ -116,20 +113,20 @@
           </script>
           {% endfor %}
         </div>
-        {% endif %}
       </div>
+      {% endif %}
     </div>
+    {% endif %}
     
+    {% if status.possible_delays or status.no_scheduled %}
     <div class="possible-delays-no-scheduled-service-container">
+      {% if status.possible_delays %}
       <div id="possibledelays" class="line-status" style="flex: 1;">
         <div class="line-status--header">
           <h1>⚠️ Possible delays</h1>
           <p>Services may be delayed</p>
         </div>
 
-        {% if not status.possible_delays %}
-        <p>No delays reported</p>
-        {% endif %}
         <div class="lines">
           {% for line in status.possible_delays %}
           <div class="line-item line" data-line="{{ line.name }}" id="line-{{ line.name }}">
@@ -141,16 +138,15 @@
           {% endfor %}
         </div>
       </div>
+      {% endif %}
 
+      {% if status.no_scheduled %}
       <div id="noscheduledservice" class="line-status" style="flex: 1;">
         <div class="line-status--header">
           <h1>🌙 No scheduled service</h1>
           <p>Lines with no scheduled service</p>
         </div>
 
-        {% if not status.no_scheduled %}
-        <p>All lines have scheduled service</p>
-        {% endif %}
         <div class="lines">
           {% for line in status.no_scheduled %}
           <div class="line-item line" data-line="{{ line.name }}" id="line-{{ line.name }}">
@@ -162,7 +158,9 @@
           {% endfor %}
         </div>
       </div>
+      {% endif %}
     </div>
+    {% endif %}
 
     <div id="running" class="line-status">
       <div class="line-status--header">
