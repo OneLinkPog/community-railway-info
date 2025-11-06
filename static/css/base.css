@@ -62,6 +62,10 @@
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+.monospace {
+  font-family: "Google Sans Code", monospace !important;
+}
+
 .smd-layout_header-title {
   font-family: "Roboto Flex", sans-serif !important;
   font-optical-sizing: auto !important;

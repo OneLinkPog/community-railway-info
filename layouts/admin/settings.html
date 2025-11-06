@@ -10,7 +10,7 @@
     <form id="settingsForm" onsubmit="handleSettingsSubmit(event)">
         <div class="form-group">
             <label for="port">Port:</label>
-            <input type="number" id="port" name="port" value="{{ config.port }}">
+            <input type="number" id="port" name="port" value="{{ config.port }}" class="monospace">
         </div>
         <div class="form-group">
             <label for="debug">Debug Mode:</label>
@@ -18,7 +18,7 @@
         </div>
         <div class="form-group">
             <label for="web_admins">Web Admins (comma-separated IDs):</label>
-            <input type="text" id="web_admins" name="web_admins" value="{{ config.web_admins|join(',') }}">
+            <input type="text" id="web_admins" name="web_admins" value="{{ config.web_admins|join(',') }}" class="monospace">
         </div>
         <div class="form-group">
             <label for="maintenance_mode">Maintenance Mode:</label>
@@ -26,7 +26,7 @@
         </div>
         <div class="form-group">
             <label for="maintenance_message">Maintenance Message:</label>
-            <textarea id="maintenance_message" name="maintenance_message">{{ config.maintenance_message }}</textarea>
+            <textarea id="maintenance_message" name="maintenance_message" class="monospace">{{ config.maintenance_message }}</textarea>
         </div>
         <button type="submit" class="smd-component_button-medium" style="font-family: Poppins;">Save Settings</button>
     </form>
