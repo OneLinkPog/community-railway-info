@@ -17,7 +17,13 @@
                 <div class="request-card" data-status="{{ request.status }}">
                     <div class="request-header">
                         <h3>{{ request.company_name }}</h3>
-                        <span class="status-badge status-{{ request.status }}">{{ request.status }}</span>
+                        {% if request.status == "pending" %}
+                            <span class="status-badge status-pending">⏳ Pending</span>
+                        {% elif request.status == "accepted" %}
+                            <span class="status-badge status-accepted">✅ Accepted</span>
+                        {% elif request.status == "rejected" %}
+                            <span class="status-badge status-rejected">❌ Rejected</span>
+                        {% endif %}
                     </div>
                     
                     <div class="request-details">
