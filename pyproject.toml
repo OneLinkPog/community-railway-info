@@ -5,7 +5,7 @@ description = "A project for MrJulsen's Community Minecraft Server enabling user
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "bleach>=6.2.0",
+    "bleach>=6.3.0",
     "flask[async]>=3.1.2",
     "pyyaml>=6.0.3",
     "requests-oauthlib>=2.0.0",
