@@ -1,12 +1,219 @@
 {% extends "base/base.html" %}
 {% block stylesheet %}
 <link rel="stylesheet" href="/static/css/index.css">
+<link rel="stylesheet" href="/static/css/stations.css">
 {% endblock stylesheet %}
 
 {% block content %}
 <div class="content">
-    <div class="header">
-        <h1>🚉 Stations</h1>
+    <div class="stations-hero">
+        <h1><span class="emoji">🚉</span> <span class="gradient-text">Railway Stations</span></h1>
+        <p>Discover all stations in our network. From busy central terminals to charming regional stops - every station tells its own story.</p>
+        
+        <div class="search-container">
+            <input type="text" id="stationSearch" class="search-input" placeholder="Search stations...">
+            <span class="material-symbols-outlined search-icon">search</span>
+        </div>
+    </div>
+
+    <div class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-number" id="totalStations">42</span>
+                <span class="stat-label">Total Stations</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="activeStations">38</span>
+                <span class="stat-label">Active Stations</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="mainStations">8</span>
+                <span class="stat-label">Main Terminals</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="connectingLines">156</span>
+                <span class="stat-label">Line Connections</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stations-grid" id="stationsGrid">
+        <div class="station-card" data-name="Central Station" style="background-image: url('/static/troll.png');">
+            <div class="station-name">
+                <span class="material-symbols-outlined">apartment</span>
+                Toblerone Central
+            </div>
+            <div class="station-info">
+                Toblerone tobleroned Toblerone gerne. Also will Toblerone gerne von Toblerone tobleroned werden.
+                Toblerone tobleroned Toblerone.
+            </div>
+            <div class="station-lines">
+                <span class="line-badge" style="background: #e74c3c;">Too much lines</span>
+            </div>
+            <div class="station-status">
+                <div class="status-dot"></div>
+                <span>Operational • 24/7 Service</span>
+            </div>
+        </div>
+        
+
+        <div class="station-card" data-name="Central Station" style="background-image: url('/static/2.webp');">
+            <div class="station-name">
+                <span class="material-symbols-outlined">apartment</span>
+                Toblerone Central
+            </div>
+            <div class="station-info">
+                Toblerone tobleroned Toblerone gerne. Also will Toblerone gerne von Toblerone tobleroned werden.
+                Toblerone tobleroned Toblerone.
+            </div>
+            <div class="station-lines">
+                <span class="line-badge" style="background: #e74c3c;">Too much lines</span>
+            </div>
+            <div class="station-status">
+                <div class="status-dot"></div>
+                <span>Operational • 24/7 Service</span>
+            </div>
+        </div>
+
+        <div class="station-card" data-name="Central Station" style="background-image: url('/static/1.png');">
+            <div class="station-name">
+                <span class="material-symbols-outlined">apartment</span>
+                Toblerone Central
+            </div>
+            <div class="station-info">
+                Toblerone tobleroned Toblerone gerne. Also will Toblerone gerne von Toblerone tobleroned werden.
+                Toblerone tobleroned Toblerone.
+            </div>
+            <div class="station-lines">
+                <span class="line-badge" style="background: #e74c3c;">Too much lines</span>
+            </div>
+            <div class="station-status">
+                <div class="status-dot"></div>
+                <span>Operational • 24/7 Service</span>
+            </div>
+        </div>
+
+        <div class="station-card" data-name="Old Town Heritage" style="background-image: url('/static/salz.jpeg');">
+            <div class="station-name">
+                <span class="material-symbols-outlined">museum</span>
+                Salzingen Hbf
+            </div>
+            <div class="station-info">
+                Too dangerous for normal trains.
+            </div>
+            <div class="station-lines">
+                <span class="line-badge" style="background: #8e44ad;">R51</span>
+            </div>
+            <div class="station-status">
+                <div class="status-dot maintenance"></div>
+                <span>Maintenance • Reopening: Q5 2039</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="no-stations" id="noStationsFound" style="display: none;">
+        <span class="material-symbols-outlined">search_off</span>
+        <h3>No Stations Found</h3>
+        <p>Try searching with a different term.</p>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('stationSearch');
+    const stationsGrid = document.getElementById('stationsGrid');
+    const noStationsFound = document.getElementById('noStationsFound');
+    const stationCards = document.querySelectorAll('.station-card');
+
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        let visibleStations = 0;
+
+        stationCards.forEach(card => {
+            const stationName = card.dataset.name.toLowerCase();
+            const stationInfo = card.querySelector('.station-info').textContent.toLowerCase();
+            const lines = Array.from(card.querySelectorAll('.line-badge')).map(badge => badge.textContent.toLowerCase()).join(' ');
+
+            if (stationName.includes(searchTerm) || stationInfo.includes(searchTerm) || lines.includes(searchTerm)) {
+                card.style.display = 'block';
+                visibleStations++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        if (visibleStations === 0 && searchTerm.length > 0) {
+            noStationsFound.style.display = 'block';
+            stationsGrid.style.display = 'none';
+        } else {
+            noStationsFound.style.display = 'none';
+            stationsGrid.style.display = 'grid';
+        }
+    });
+
+    stationCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const stationName = this.dataset.name;
+            console.log(`Station selected: ${stationName}`);
+            
+            const notification = document.createElement('div');
+            notification.textContent = `Station "${stationName}" selected`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(78, 205, 196, 0.9);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                backdrop-filter: blur(10px);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        });
+    });
+
+    function animateStats() {
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(stat => {
+            const target = parseInt(stat.textContent);
+            let current = 0;
+            const increment = target / 50;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    stat.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    stat.textContent = Math.floor(current);
+                }
+            }, 30);
+        });
+    }
+
+    setTimeout(animateStats, 500);
+});
+
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+`;
+document.head.appendChild(style);
+</script>
 {% endblock content %}
