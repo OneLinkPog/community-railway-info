@@ -6,41 +6,51 @@
 
 {% block content %}
 <div class="content">
-    <h1>⚙️ Settings</h1>
     <form id="settingsForm" onsubmit="handleSettingsSubmit(event)">
+        <h1>⚙️ Settings</h1>
+
         <div class="form-group">
-            <label for="port">Port:</label>
+            <label for="port">Port</label>
             <input type="number" id="port" name="port" value="{{ config.port }}" class="monospace">
         </div>
         <div class="form-group">
-            <label for="debug">Debug Mode:</label>
-            <input type="checkbox" id="debug" name="debug" {% if config.debug %}checked{% endif %}>
+            <label for="debug">Debug Mode</label>
+            <div class="smd-component_toggle{% if config.debug %} smd-component_toggle--active{% endif %}" onclick="toggleSwitch(this)" id="debug"></div>
         </div>
         <div class="form-group">
-            <label for="web_admins">Web Admins (comma-separated IDs):</label>
+            <label for="web_admins">Administrators</label>
             <input type="text" id="web_admins" name="web_admins" value="{{ config.web_admins|join(',') }}" class="monospace">
         </div>
         <div class="form-group">
-            <label for="maintenance_mode">Maintenance Mode:</label>
-            <input type="checkbox" id="maintenance_mode" name="maintenance_mode" {% if config.maintenance_mode %}checked{% endif %}>
+            <label for="maintenance_mode">Maintenance Mode</label>
+            <div class="smd-component_toggle{% if config.maintenance_mode %} smd-component_toggle--active{% endif %}" onclick="toggleSwitch(this)" id="maintenance_mode"></div>
         </div>
         <div class="form-group">
-            <label for="maintenance_message">Maintenance Message:</label>
+            <label for="maintenance_message">Maintenance Message</label>
             <textarea id="maintenance_message" name="maintenance_message" class="monospace">{{ config.maintenance_message }}</textarea>
         </div>
-        <button type="submit" class="smd-component_button-medium" style="font-family: Poppins;">Save Settings</button>
+        <button type="submit" class="smd-component_button-medium smd-component_button-flex">
+            <div class="smd-component_button-inner">
+                <span class="material-symbols-outlined">save</span>
+                Save
+            </div>
+        </button>
     </form>
 </div>
 
 <script>
+function toggleSwitch(element) {
+    element.classList.toggle('smd-component_toggle--active');
+}
+
 async function handleSettingsSubmit(event) {
     event.preventDefault();
     
     const formData = {
         port: parseInt(document.getElementById('port').value),
-        debug: document.getElementById('debug').checked,
+        debug: document.getElementById('debug').classList.contains('smd-component_toggle--active'),
         web_admins: document.getElementById('web_admins').value.split(',').map(id => id.trim()),
-        maintenance_mode: document.getElementById('maintenance_mode').checked,
+        maintenance_mode: document.getElementById('maintenance_mode').classList.contains('smd-component_toggle--active'),
         maintenance_message: document.getElementById('maintenance_message').value
     };
 

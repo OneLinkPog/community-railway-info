@@ -473,11 +473,18 @@ input:checked + .slider:before {
 
 #settingsForm {
     width: 100%;
-    max-width: 600px;
+    max-width: 700px;
     background: var(--color-background-deep);
     padding: 25px;
     border-radius: 16px;
     margin: 20px auto;
+    margin-top: 0px;
+}
+
+#settingsForm h1 {
+    margin-top: 0px;
+    font-size: 2em;
+    text-align: center;
 }
 
 .form-group {
