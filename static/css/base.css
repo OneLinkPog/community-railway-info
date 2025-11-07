@@ -206,7 +206,30 @@
 
 .smd-layout_navbar a {
   margin-bottom: 1px;
+  font-family: "Roboto Flex", sans-serif !important;
+  font-optical-sizing: auto !important;
+  font-style: normal !important;
+  font-variation-settings: 
+    "wdth" 115,
+    "wght" 600,
+    "YTAS" 800,
+    "XOPQ" 80,
+    "XTRA" 500;
 }
+
+.smd-layout_navbar-profile-name {
+  font-family: "Roboto Flex", sans-serif !important;
+  font-optical-sizing: auto !important;
+  font-style: normal !important;
+  font-variation-settings: 
+    "wdth" 125,
+    "wght" 700,
+    "YTAS" 800,
+    "XOPQ" 80,
+    "XTRA" 500;
+}
+
+
 
 .smd-layout_navbar a span.material-symbols-outlined {
   vertical-align: middle;
