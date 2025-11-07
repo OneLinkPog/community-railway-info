@@ -1,8 +1,7 @@
-from flask import Blueprint, render_template, session, request, redirect, url_for
+from flask import Blueprint, render_template, session, redirect, url_for
 from core import main_dir
 from core.config import config, allowed_tags, allowed_attributes
 from core.logger import Logger
-from datetime import datetime
 from bleach import clean
 
 import json
@@ -22,6 +21,7 @@ operators = Blueprint('operators', __name__)
 """
 
 
+# GET /operators
 @operators.route('/operators')
 def operators_route():
     user = session.get('user')
@@ -55,6 +55,7 @@ def operators_route():
     )
 
 
+# GET /operators/<string:uid>
 @operators.route('/operators/<string:uid>')
 def operator_route(uid):
     user = session.get('user')
@@ -166,7 +167,7 @@ def operator_route(uid):
         member=member,
     )
 
-
+# GET /operators/request
 @operators.route('/request')
 def request_operator_page():
     user = session.get('user')
@@ -183,53 +184,3 @@ def request_operator_page():
         return render_template('operators/request.html', error="You are already part of an operator")
 
     return render_template('operators/request.html', user=user)
-
-
-"""
-    --- API Endpoints ---
-    - /api/operators/request
-"""
-
-
-@operators.route('/api/operators/request', methods=['POST'])
-def request_operator():
-    if not session.get('user'):
-        return {'error': 'Not authorized'}, 401
-
-    try:
-        data = request.json
-        user = session.get('user')
-
-        request_data = {
-            'timestamp': datetime.now().isoformat(),
-            'status': 'pending',
-            'requester': {
-                'id': user['id'],
-                'username': user['username']
-            },
-            'company_name': data['companyName'],
-            'short_code': data['shortCode'],
-            'color': data['color'],
-            'additional_users': data['additionalUsers'],
-            'company_uid': data['companyUid']
-        }
-
-        requests_file = main_dir + '/operator_requests.json'
-
-        try:
-            with open(requests_file, 'r') as f:
-                requests = json.load(f)
-        except FileNotFoundError:
-            requests = []
-
-        requests.append(request_data)
-
-        with open(requests_file, 'w') as f:
-            json.dump(requests, f, indent=2)
-
-        logger.info(f"New Company request by @{user['username']}")
-        return {'success': True}, 200
-
-    except Exception as e:
-        logger.error(f"Error while requesting new company: {str(e)}")
-        return {'error': str(e)}, 500

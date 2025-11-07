@@ -28,6 +28,7 @@ class Logger:
 
         def admin(self, message):
             self.log(ADMIN_LEVEL, message)
+            
         logging.Logger.admin = admin
 
     def debug(self, message):

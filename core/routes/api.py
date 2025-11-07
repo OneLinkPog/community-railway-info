@@ -1,9 +1,11 @@
-from flask import Blueprint, session, request
+from flask import Blueprint, jsonify, session, request
 from core import main_dir
 from core.logger import Logger
 from core.config import config
+from datetime import datetime
 
 import json
+import yaml
 
 api = Blueprint('api', __name__)
 logger = Logger("@api")
@@ -14,9 +16,19 @@ logger = Logger("@api")
     - /api/lines/<name> [PUT]
     - /api/lines/<name> [DELETE]
     - /api/operators/<name> [PUT]
+    - /api/operators/request [POST]
+    - /api/admin/logs/clear [POST]
+    - /api/admin/logs [GET]     
+    - /api/admin/settings/update [POST]
+    - /api/admin/companies/handle-request [POST]
 """
 
 
+"""
+    --- LINE ROUTES ---
+"""
+
+# POST /api/lines
 @api.route('/api/lines', methods=['POST'])
 async def add_line():
     if not session.get('user'):
@@ -94,6 +106,7 @@ async def add_line():
         return {'error': str(e)}, 500
 
 
+# PUT /api/lines/<name>
 @api.route('/api/lines/<name>', methods=['PUT'])
 async def update_line(name):
     if not session.get('user'):
@@ -172,6 +185,7 @@ async def update_line(name):
         return {'error': str(e)}, 500
 
 
+# DELETE /api/lines/<name>
 @api.route('/api/lines/<name>', methods=['DELETE'])
 async def delete_line(name):
     if not session.get('user'):
@@ -213,6 +227,12 @@ async def delete_line(name):
         return {'error': str(e)}, 500
 
 
+
+"""
+    --- OPERATOR ROUTES ---
+"""
+
+# PUT /api/operators/<name>
 @api.route('/api/operators/<name>', methods=['PUT'])
 async def update_operator(name):
     if not session.get('user'):
@@ -263,3 +283,193 @@ async def update_operator(name):
         logger.error(
             f"[@{session.get('user')['username']}] Error while updating operator {name}: {str(e)}")
         return {'error': str(e)}, 500
+    
+
+# POST /api/operators/request
+@api.route('/api/operators/request', methods=['POST'])
+def request_operator():
+    if not session.get('user'):
+        return {'error': 'Not authorized'}, 401
+
+    try:
+        data = request.json
+        user = session.get('user')
+
+        request_data = {
+            'timestamp': datetime.now().isoformat(),
+            'status': 'pending',
+            'requester': {
+                'id': user['id'],
+                'username': user['username']
+            },
+            'company_name': data['companyName'],
+            'short_code': data['shortCode'],
+            'color': data['color'],
+            'additional_users': data['additionalUsers'],
+            'company_uid': data['companyUid']
+        }
+
+        requests_file = main_dir + '/operator_requests.json'
+
+        try:
+            with open(requests_file, 'r') as f:
+                requests = json.load(f)
+        except FileNotFoundError:
+            requests = []
+
+        requests.append(request_data)
+
+        with open(requests_file, 'w') as f:
+            json.dump(requests, f, indent=2)
+
+        logger.info(f"New Company request by @{user['username']}")
+        return {'success': True}, 200
+
+    except Exception as e:
+        logger.error(f"Error while requesting new company: {str(e)}")
+        return {'error': str(e)}, 500
+
+
+
+"""
+    --- ADMIN ROUTES ---
+"""
+
+# POST /api/admin/logs/clear
+@api.route('/api/admin/logs/clear', methods=['POST'])
+def clear_logs():
+    user = session.get('user')
+
+    if not user or user.get('id') not in config.web_admins:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+
+    try:
+        open(main_dir + '/server.log', 'w').close()
+        logger.admin(
+            f'[@{session.get("user")["username"]}] Server logs cleared successfully.')
+        return jsonify({'success': True})
+
+    except Exception as e:
+        logger.admin(
+            f'[@{session.get("user")["username"]}] Error clearing server logs: {str(e)}')
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# GET /api/admin/logs
+@api.route('/api/admin/logs')
+def update_logs():
+    user = session.get('user')
+
+    if not user or user.get('id') not in config.web_admins:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+
+    try:
+        with open(main_dir + '/server.log') as f:
+            logs = f.readlines()
+
+        logs = [log.strip() for log in logs if log.strip()]
+        logs = [log.split(' - ', 1) for log in logs]
+        logs = [(log[0], log[1].split(' - ', 1)[1] if len(log) > 1 else '')
+                for log in logs]
+
+        return jsonify({'success': True, 'logs': logs})
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# POST /api/admin/companies/handle-request
+@api.route('/api/admin/companies/handle-request', methods=['POST'])
+def handle_company_request():
+    user = session.get('user')
+
+    if not user or user.get('id') not in config.web_admins:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        data = request.json
+        timestamp = data.get('timestamp')
+        action = data.get('action')
+
+        if not timestamp or action not in ['accept', 'reject']:
+            return jsonify({'error': 'Invalid request'}), 400
+
+        with open(main_dir + '/operator_requests.json', 'r') as f:
+            requests = json.load(f)
+
+        request_data = next(
+            (req for req in requests if req['timestamp'] == timestamp), None)
+
+        if not request_data:
+            return jsonify({'error': 'Request not found'}), 404
+
+        if action == 'accept':
+            new_operator = {
+                'name': request_data['company_name'],
+                'short_code': request_data['short_code'],
+                'uid': request_data['company_uid'].lower(),
+                'color': request_data['color'],
+                'users': [request_data['requester']['id']] + request_data['additional_users']
+            }
+
+            with open(main_dir + '/operators.json', 'r+') as f:
+                operators = json.load(f)
+                operators.append(new_operator)
+                f.seek(0)
+                json.dump(operators, f, indent=2)
+                f.truncate()
+
+        request_data['status'] = 'accepted' if action == 'accept' else 'rejected'
+
+        with open(main_dir + '/operator_requests.json', 'w') as f:
+            json.dump(requests, f, indent=2)
+
+        logger.admin(f"[@{user['username']}] {action.capitalize()}ed operator request for {request_data['company_name']}")
+        return jsonify({'success': True})
+
+    except Exception as e:
+        logger.error(f"[@{user['username']}] Error handling operator request: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+# POST /api/admin/settings/update
+@api.route('/api/admin/settings/update', methods=['POST'])
+def save_settings():
+    user = session.get('user')
+
+    if not user or user.get('id') not in config.web_admins:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        data = request.json
+
+        if not isinstance(data.get('port'), int) or data['port'] < 1 or data['port'] > 65535:
+            return jsonify({'error': 'Invalid port number'}), 400
+
+        if not isinstance(data.get('web_admins'), list):
+            return jsonify({'error': 'Invalid web_admins format'}), 400
+
+        with open(main_dir + '/config.yml', 'r') as f:
+            config_data = yaml.safe_load(f)
+
+        config_data['port'] = data['port']
+        config_data['debug'] = data['debug']
+        config_data['web_admins'] = data['web_admins']
+        config_data['maintenance_mode'] = data['maintenance_mode']
+        config_data['maintenance_message'] = data['maintenance_message']
+
+        with open(main_dir + '/config.yml', 'w') as f:
+            yaml.safe_dump(config_data, f, default_flow_style=False)
+
+        config.load()
+
+        logger.admin(
+            f'[@{session.get("user")["username"]}] Updated application settings')
+        return jsonify({'success': True})
+
+    except Exception as e:
+        logger.error(
+            f'[@{session.get("user")["username"]}] Error updating settings: {str(e)}')
+        return jsonify({'error': str(e)}), 500
+
+

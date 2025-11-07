@@ -55,7 +55,7 @@ async function handleSettingsSubmit(event) {
     };
 
     try {
-        const response = await fetch('/admin/settings/update', {
+        const response = await fetch('/api/admin/settings/update', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
