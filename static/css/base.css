@@ -80,6 +80,28 @@
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
+.smd-component_button-flex {
+  font-family: "Roboto Flex", sans-serif !important;
+  font-optical-sizing: auto !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  font-variation-settings: 
+    "wdth" 105,
+    "wght" 500,
+    "YTAS" 800,
+    "XOPQ" 90,
+    "XTRA" 520;
+}
+
+.smd-component_button-flex .material-symbols-outlined {
+  margin-right: 8px;
+}
+
+.smd-component_button-inner {
+  display: flex;
+  align-items: center;
+}
+
 .smd-layout_header-title:hover {
   transform: scale(1.03);
   transition: color 0.3s ease, transform 0.3s ease;

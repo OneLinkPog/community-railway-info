@@ -50,15 +50,18 @@
 
         {% if admin or member %}
         <div class="dashboard-controls">
-            <button onclick="showAddLineModal()" class="smd-component_button-medium btn-primary poppins">
-                <span style="position: absolute" class="material-symbols-outlined">add</span>
-                <span style="margin-left: 30px;">Add Line</span>
+            <button onclick="showAddLineModal()" class="smd-component_button-medium btn-primary smd-component_button-flex">
+                <div class="smd-component_button-inner">
+                    <span class="material-symbols-outlined">add</span>
+                    Add Line
+                </div>
             </button>
 
-            <button onclick="editOperator('{{ operator_overview.name }}')"
-                class="smd-component_button-medium btn-primary poppins">
-                <span style="position: absolute" class="material-symbols-outlined">edit</span>
-                <span style="margin-left: 30px;">Edit operator</span>
+            <button onclick="editOperator('{{ operator_overview.name }}')" class="smd-component_button-medium btn-primary smd-component_button-flex">
+                <div class="smd-component_button-inner">
+                    <span class="material-symbols-outlined">edit</span>
+                    Edit operator
+                </div>
             </button>
         </div>
         {% endif %}
@@ -268,9 +271,12 @@
                             <div class="composition-part" draggable="true" data-part="j"></div>
                         </div>
                         <div id="compositions-container"></div>
-                        <button type="button" class="btn-secondary smd-component_button-medium poppins" onclick="addCompositionVariant()" style="margin-top: 10px;">
-                            <span style="position: absolute" class="material-symbols-outlined">add</span>
-                            <span style="margin-left: 30px;">Add variant</span>
+                        <button type="button" class="btn-secondary smd-component_button-medium smd-component_button-flex" onclick="addCompositionVariant()" style="margin-top: 10px;">
+                            <div class="smd-component_button-inner"r>
+                                <span class="material-symbols-outlined">add</span>
+                                <span>Add variant</span>
+                            </div>
+                            
                         </button>
                     </div>
                     <input type="hidden" id="lineComposition" name="compositions">
@@ -310,7 +316,12 @@
                 </div>
 
                 <input type="hidden" id="lineId" name="id">
-                <button type="submit" class="btn-primary smd-component_button-medium poppins">Save Line</button>
+                <button type="submit" class="btn-primary smd-component_button-medium smd-component_button-flex">
+                    <div class="smd-component_button-inner">
+                        <span class="material-symbols-outlined">save</span>
+                        Save Line
+                    </div>
+                </button>
             </form>
         </div>
     </div>
@@ -324,12 +335,12 @@
             <form id="operatorForm">
                 <div class="form-group">
                     <label for="operatorName">Operator Name</label>
-                    <input type="text" id="operatorName" name="name" required class="form-make-this-shit-white">
+                    <input type="text" id="operatorName" name="name" required class="form-make-this-shit-white monospace">
                 </div>
 
                 <div class="form-group">
                     <label for="operatorShort">Short Name</label>
-                    <input type="text" id="operatorShort" name="short" required class="form-make-this-shit-white">
+                    <input type="text" id="operatorShort" name="short" required class="form-make-this-shit-white monospace">
                 </div>
 
                 <div class="form-group">
@@ -339,15 +350,19 @@
 
                 <div class="form-group">
                     <label for="operatorUsers">Users (one per Line)</label>
-                    <textarea id="operatorUsers" name="users" rows="4"
-                        placeholder="Enter usernames, one per line" class="form-make-this-shit-white"></textarea>
+                    <textarea id="operatorUsers" name="users" rows="4" placeholder="Enter usernames, one per line" class="form-make-this-shit-white"></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="operatorAvatar">Operator UID</label>
-                    <input type="text" id="operatorUid" name="avatar" required readonly class="form-make-this-shit-white">
+                    <input type="text" id="operatorUid" name="avatar" required readonly class="form-make-this-shit-white monospace">
                 </div>
-                <button type="submit" class="btn-primary smd-component_button-medium poppins">Save Changes</button>
+                <button type="submit" class="btn-primary smd-component_button-medium smd-component_button-flex">
+                    <div class="smd-component_button-inner">
+                        <span class="material-symbols-outlined">save</span>
+                        Save Changes
+                    </div>
+                </button>
             </form>
         </div>
     </div>

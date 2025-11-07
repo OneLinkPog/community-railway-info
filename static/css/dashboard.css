@@ -160,7 +160,18 @@
     transition: all 0.3s ease-in-out;
     max-height: 80vh; 
     overflow-y: auto; 
+    font-family: "Roboto Flex", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: bold !important;
+    font-style: normal !important;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 1000,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 500;
 }
+
 
 .modal.show .modal-content {
     transform: translateY(0);
