@@ -1,11 +1,12 @@
-discord_client_id: "YOUR_APP_CLIENT_ID"
-discord_client_secret: "YOUR_CLIENT_TOKEN"
-discord_redirect_uri: "YOUR_REDIRECT_URL"
+discord_client_id: "YOUR_CLIENT_ID_HERE"
+discord_client_secret: "YOUR_CLIENT_SECRET_HERE"
+discord_redirect_uri: "YOUR_REDIRECT_URI_HERE"
 
-host: "0.0.0.0"
-port: 30789
+host: 0.0.0.0
 debug: true
+port: 30789
 
-web_admins: ["your_user_id", "another_user_id"]
-maintenance_mode: false
-maintenance_message: "I'm currently working on the next update. Please check back later!"
+maintenance_message: "<h1>Your maintenance_message goes here</h1><p>It even supports basic HTML!</p>"
+maintenance_mode: true
+web_admins:
+    - "YOUR_DISCORD_USER_ID_HERE"
