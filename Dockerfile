@@ -1,3 +1,4 @@
+# Dockerfile for Python 3.13 with uv installed
 FROM python:3.13-slim-trixie
 
 WORKDIR /app
