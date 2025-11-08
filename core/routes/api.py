@@ -34,6 +34,11 @@ async def add_line():
     if not session.get('user'):
         return {'error': 'Unauthorized'}, 401
     
+    # Check if readonly mode is enabled (not for admins)
+    if config.readonly and session.get('user')['id'] not in config.web_admins:
+        logger.warning(f'[@{session.get("user")["username"]}] Attempted to add line in readonly mode')
+        return {'error': 'System is in readonly mode'}, 403
+    
     with open(main_dir + '/operators.json', 'r') as f:
         operators = json.load(f)
 
@@ -111,6 +116,11 @@ async def add_line():
 async def update_line(name):
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
+    
+    # Check if readonly mode is enabled (not for admins)
+    if config.readonly and session.get('user')['id'] not in config.web_admins:
+        logger.warning(f'[@{session.get("user")["username"]}] Attempted to update line in readonly mode')
+        return {'error': 'System is in readonly mode'}, 403
     
     with open(main_dir + '/operators.json', 'r') as f:
         operators = json.load(f)
@@ -191,6 +201,11 @@ async def delete_line(name):
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
     
+    # Check if readonly mode is enabled (not for admins)
+    if config.readonly and session.get('user')['id'] not in config.web_admins:
+        logger.warning(f'[@{session.get("user")["username"]}] Attempted to delete line in readonly mode')
+        return {'error': 'System is in readonly mode'}, 403
+    
     with open(main_dir + '/operators.json', 'r') as f:
         operators = json.load(f)
         
@@ -237,6 +252,11 @@ async def delete_line(name):
 async def update_operator(name):
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
+    
+    # Check if readonly mode is enabled (not for admins)
+    if config.readonly and session.get('user')['id'] not in config.web_admins:
+        logger.warning(f'[@{session.get("user")["username"]}] Attempted to update operator in readonly mode')
+        return {'error': 'System is in readonly mode'}, 403
     
     with open(main_dir + '/operators.json', 'r') as f:
         operators = json.load(f)
@@ -290,6 +310,11 @@ async def update_operator(name):
 def request_operator():
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
+
+    # Check if readonly mode is enabled (not for admins)
+    if config.readonly and session.get('user')['id'] not in config.web_admins:
+        logger.warning(f'[@{session.get("user")["username"]}] Attempted to request operator in readonly mode')
+        return {'error': 'System is in readonly mode'}, 403
 
     try:
         data = request.json
