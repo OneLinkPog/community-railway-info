@@ -769,6 +769,236 @@
     opacity: 0.7;
 }
 
+/* Sort Controls */
+.sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sort-btn {
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 700,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 450;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    margin-top: -32px;
+}
+
+.sort-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.sort-btn.active {
+    background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+    border-color: #4ecdc4;
+    box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
+}
+
+.sort-btn.active:hover {
+    background: linear-gradient(135deg, #5ed3d4, #55c7e1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+}
+
+.sort-icon {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.sort-btn.reverse .sort-icon {
+    transform: rotate(180deg);
+}
+
+.sort-text {
+    font-size: 14px;
+}
+
+/* Alphabetical List View */
+.stations-list-view {
+    padding: 0 20px;
+    margin-bottom: 40px;
+}
+
+.alphabet-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.alphabet-section {
+    margin-bottom: 40px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    padding: 25px;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.alphabet-header {
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 900,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 450;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #4ecdc4;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(78, 205, 196, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.alphabet-header::before {
+    content: '';
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    color: white;
+    flex-shrink: 0;
+}
+
+.alphabet-header[data-letter="A"]::before { content: 'A'; }
+.alphabet-header[data-letter="B"]::before { content: 'B'; }
+.alphabet-header[data-letter="C"]::before { content: 'C'; }
+.alphabet-header[data-letter="D"]::before { content: 'D'; }
+.alphabet-header[data-letter="E"]::before { content: 'E'; }
+.alphabet-header[data-letter="F"]::before { content: 'F'; }
+.alphabet-header[data-letter="G"]::before { content: 'G'; }
+.alphabet-header[data-letter="H"]::before { content: 'H'; }
+.alphabet-header[data-letter="I"]::before { content: 'I'; }
+.alphabet-header[data-letter="J"]::before { content: 'J'; }
+.alphabet-header[data-letter="K"]::before { content: 'K'; }
+.alphabet-header[data-letter="L"]::before { content: 'L'; }
+.alphabet-header[data-letter="M"]::before { content: 'M'; }
+.alphabet-header[data-letter="N"]::before { content: 'N'; }
+.alphabet-header[data-letter="O"]::before { content: 'O'; }
+.alphabet-header[data-letter="P"]::before { content: 'P'; }
+.alphabet-header[data-letter="Q"]::before { content: 'Q'; }
+.alphabet-header[data-letter="R"]::before { content: 'R'; }
+.alphabet-header[data-letter="S"]::before { content: 'S'; }
+.alphabet-header[data-letter="T"]::before { content: 'T'; }
+.alphabet-header[data-letter="U"]::before { content: 'U'; }
+.alphabet-header[data-letter="V"]::before { content: 'V'; }
+.alphabet-header[data-letter="W"]::before { content: 'W'; }
+.alphabet-header[data-letter="X"]::before { content: 'X'; }
+.alphabet-header[data-letter="Y"]::before { content: 'Y'; }
+.alphabet-header[data-letter="Z"]::before { content: 'Z'; }
+.alphabet-header[data-letter="#"]::before { content: '#'; }
+
+.alphabet-stations {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.list-station-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.list-station-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(78, 205, 196, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.list-station-icon {
+    font-size: 2em;
+    color: #4ecdc4;
+    flex-shrink: 0;
+}
+
+.list-station-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.list-station-name {
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 700,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 450;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.list-station-alt-name {
+    font-size: 0.9em;
+    opacity: 0.7;
+    margin-bottom: 8px;
+    color: #4ecdc4;
+}
+
+.list-station-description {
+    font-size: 0.85em;
+    opacity: 0.8;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.list-station-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8em;
+    opacity: 0.9;
+}
+
+.list-station-status .status-dot {
+    width: 6px;
+    height: 6px;
+}
+
 /* Add Station Button */
 .add-station-btn {
     padding: 15px 30px;
@@ -817,6 +1047,59 @@
     
     .search-container {
         margin: 0 20px 40px 20px;
+    }
+    
+    /* Mobile responsive for sort controls */
+    .sort-controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .sort-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+    
+    .sort-text {
+        font-size: 12px;
+    }
+    
+    /* Mobile responsive for list view */
+    .stations-list-view {
+        padding: 0 10px;
+    }
+    
+    .alphabet-section {
+        padding: 20px 15px;
+    }
+    
+    .alphabet-header {
+        font-size: 2em;
+        gap: 10px;
+    }
+    
+    .alphabet-header::before {
+        width: 40px;
+        height: 40px;
+        font-size: 1em;
+    }
+    
+    .alphabet-stations {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .list-station-item {
+        padding: 15px;
+        gap: 12px;
+    }
+    
+    .list-station-icon {
+        font-size: 1.5em;
+    }
+    
+    .list-station-name {
+        font-size: 1.1em;
     }
 
     .station-modal-card {

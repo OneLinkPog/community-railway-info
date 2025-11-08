@@ -8,25 +8,62 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchTerm = this.value.toLowerCase();
         let visibleStations = 0;
 
-        stationCards.forEach(card => {
-            const stationName = card.dataset.name.toLowerCase();
-            const stationInfo = card.querySelector('.station-info').textContent.toLowerCase();
-            const lines = Array.from(card.querySelectorAll('.line-badge')).map(badge => badge.textContent.toLowerCase()).join(' ');
-
-            if (stationName.includes(searchTerm) || stationInfo.includes(searchTerm) || lines.includes(searchTerm)) {
-                card.style.display = 'block';
-                visibleStations++;
+        if (isListView) {
+            // Search in list view
+            const listItems = document.querySelectorAll('.list-station-item');
+            const alphabetSections = document.querySelectorAll('.alphabet-section');
+            
+            listItems.forEach(item => {
+                const stationName = item.dataset.name.toLowerCase();
+                const stationInfo = item.querySelector('.list-station-description')?.textContent.toLowerCase() || '';
+                
+                if (stationName.includes(searchTerm) || stationInfo.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                    visibleStations++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Hide/show alphabet sections based on whether they have visible items
+            alphabetSections.forEach(section => {
+                const visibleItems = section.querySelectorAll('.list-station-item[style*="flex"]');
+                if (visibleItems.length > 0 || searchTerm.length === 0) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+            
+            if (visibleStations === 0 && searchTerm.length > 0) {
+                noStationsFound.style.display = 'block';
+                document.getElementById('stationsListView').style.display = 'none';
             } else {
-                card.style.display = 'none';
+                noStationsFound.style.display = 'none';
+                document.getElementById('stationsListView').style.display = 'block';
             }
-        });
-
-        if (visibleStations === 0 && searchTerm.length > 0) {
-            noStationsFound.style.display = 'block';
-            stationsGrid.style.display = 'none';
         } else {
-            noStationsFound.style.display = 'none';
-            stationsGrid.style.display = 'grid';
+            // Search in grid view (original functionality)
+            stationCards.forEach(card => {
+                const stationName = card.dataset.name.toLowerCase();
+                const stationInfo = card.querySelector('.station-info').textContent.toLowerCase();
+                const lines = Array.from(card.querySelectorAll('.line-badge')).map(badge => badge.textContent.toLowerCase()).join(' ');
+
+                if (stationName.includes(searchTerm) || stationInfo.includes(searchTerm) || lines.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    visibleStations++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (visibleStations === 0 && searchTerm.length > 0) {
+                noStationsFound.style.display = 'block';
+                stationsGrid.style.display = 'none';
+            } else {
+                noStationsFound.style.display = 'none';
+                stationsGrid.style.display = 'grid';
+            }
         }
     });
 
@@ -364,6 +401,232 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setTimeout(animateStats, 500);
 
+    // Station Sorting Functions
+    let sortOrder = 'default'; // 'default', 'asc', 'desc'
+    let originalStationOrder = [];
+    
+    function initializeSorting() {
+        // Store original order of stations
+        const stationCards = Array.from(document.querySelectorAll('.station-card'));
+        originalStationOrder = stationCards.map(card => ({
+            element: card.cloneNode(true),
+            name: card.dataset.name
+        }));
+    }
+    
+    function sortStations() {
+        const stationsGrid = document.getElementById('stationsGrid');
+        const stationCards = Array.from(stationsGrid.querySelectorAll('.station-card'));
+        const sortBtn = document.getElementById('sortStationsBtn');
+        const sortIcon = sortBtn.querySelector('.sort-icon');
+        const sortText = sortBtn.querySelector('.sort-text');
+        
+        // Cycle through sort states: default -> asc -> desc -> default
+        switch (sortOrder) {
+            case 'default':
+                // Sort A-Z
+                stationCards.sort((a, b) => {
+                    return a.dataset.name.localeCompare(b.dataset.name, 'de', { numeric: true });
+                });
+                sortOrder = 'asc';
+                sortBtn.classList.add('active');
+                sortBtn.classList.remove('reverse');
+                sortIcon.textContent = 'sort_by_alpha';
+                sortText.textContent = 'A-Z';
+                break;
+                
+            case 'asc':
+                // Sort Z-A
+                stationCards.sort((a, b) => {
+                    return b.dataset.name.localeCompare(a.dataset.name, 'de', { numeric: true });
+                });
+                sortOrder = 'desc';
+                sortBtn.classList.add('active', 'reverse');
+                sortIcon.textContent = 'sort_by_alpha';
+                sortText.textContent = 'Z-A';
+                break;
+                
+            case 'desc':
+                // Reset to original order
+                restoreOriginalOrder();
+                sortOrder = 'default';
+                sortBtn.classList.remove('active', 'reverse');
+                sortIcon.textContent = 'sort_by_alpha';
+                sortText.textContent = 'Sort A-Z';
+                return;
+        }
+        
+        // Clear and re-append sorted stations
+        stationsGrid.innerHTML = '';
+        stationCards.forEach(card => {
+            stationsGrid.appendChild(card);
+        });
+        
+        // Add smooth animation
+        stationCards.forEach((card, index) => {
+            card.style.animation = `slideInSort 0.3s ease-out ${index * 0.05}s both`;
+        });
+    }
+    
+    function restoreOriginalOrder() {
+        const stationsGrid = document.getElementById('stationsGrid');
+        stationsGrid.innerHTML = '';
+        
+        originalStationOrder.forEach((stationData, index) => {
+            const newCard = stationData.element.cloneNode(true);
+            
+            // Re-attach event listeners for the restored cards
+            newCard.addEventListener('click', function() {
+                const stationName = this.dataset.name;
+                openStationModal(this, stationName);
+            });
+            
+            stationsGrid.appendChild(newCard);
+            newCard.style.animation = `slideInSort 0.3s ease-out ${index * 0.05}s both`;
+        });
+    }
+    
+    // Initialize sorting when page loads
+    initializeSorting();
+    
+    // Sort button event listener
+    const sortStationsBtn = document.getElementById('sortStationsBtn');
+    if (sortStationsBtn) {
+        sortStationsBtn.addEventListener('click', sortStations);
+    }
+    
+    // List View Functions
+    let isListView = false;
+    
+    function toggleListView() {
+        const stationsGrid = document.getElementById('stationsGrid');
+        const stationsListView = document.getElementById('stationsListView');
+        const listViewBtn = document.getElementById('listViewBtn');
+        const listIcon = listViewBtn.querySelector('.material-symbols-outlined');
+        const listText = listViewBtn.querySelector('.sort-text');
+        
+        if (!isListView) {
+            // Switch to list view
+            stationsGrid.style.display = 'none';
+            stationsListView.style.display = 'block';
+            generateAlphabeticalList();
+            
+            listViewBtn.classList.add('active');
+            listIcon.textContent = 'grid_view';
+            listText.textContent = 'Grid View';
+            isListView = true;
+        } else {
+            // Switch back to grid view
+            stationsGrid.style.display = 'grid';
+            stationsListView.style.display = 'none';
+            
+            listViewBtn.classList.remove('active');
+            listIcon.textContent = 'view_list';
+            listText.textContent = 'List View';
+            isListView = false;
+        }
+    }
+    
+    function generateAlphabeticalList() {
+        const stationsListView = document.getElementById('stationsListView');
+        const alphabetContainer = stationsListView.querySelector('.alphabet-container');
+        const stationCards = Array.from(document.querySelectorAll('.station-card'));
+        
+        // Clear existing content
+        alphabetContainer.innerHTML = '';
+        
+        // Group stations by first letter
+        const stationsByLetter = {};
+        
+        stationCards.forEach(card => {
+            const stationName = card.dataset.name;
+            const firstLetter = stationName.charAt(0).toUpperCase();
+            
+            // Check if it's a letter or number/special character
+            const letter = /[A-Z]/.test(firstLetter) ? firstLetter : '#';
+            
+            if (!stationsByLetter[letter]) {
+                stationsByLetter[letter] = [];
+            }
+            
+            // Extract station data
+            const stationData = {
+                name: stationName,
+                altName: card.querySelector('.station-alt-name')?.textContent || '',
+                description: card.querySelector('.station-info')?.textContent || '',
+                icon: card.querySelector('.material-symbols-outlined')?.textContent || 'train',
+                status: card.querySelector('.station-status')?.innerHTML || '',
+                element: card
+            };
+            
+            stationsByLetter[letter].push(stationData);
+        });
+        
+        // Sort letters (# comes last)
+        const sortedLetters = Object.keys(stationsByLetter).sort((a, b) => {
+            if (a === '#') return 1;
+            if (b === '#') return -1;
+            return a.localeCompare(b);
+        });
+        
+        // Generate HTML for each letter section
+        sortedLetters.forEach(letter => {
+            const stations = stationsByLetter[letter];
+            
+            // Sort stations within the letter group
+            stations.sort((a, b) => a.name.localeCompare(b.name, 'de', { numeric: true }));
+            
+            const sectionHTML = `
+                <div class="alphabet-section">
+                    <div class="alphabet-header" data-letter="${letter}">
+                        ${letter === '#' ? 'Numbers & Symbols' : letter}
+                    </div>
+                    <div class="alphabet-stations">
+                        ${stations.map(station => `
+                            <div class="list-station-item" data-name="${station.name}">
+                                <div class="list-station-icon">
+                                    <span class="material-symbols-outlined">${station.icon}</span>
+                                </div>
+                                <div class="list-station-content">
+                                    <div class="list-station-name">${station.name}</div>
+                                    ${station.altName ? `<div class="list-station-alt-name">${station.altName}</div>` : ''}
+                                    ${station.description ? `<div class="list-station-description">${station.description}</div>` : ''}
+                                    <div class="list-station-status">${station.status}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            alphabetContainer.insertAdjacentHTML('beforeend', sectionHTML);
+        });
+        
+        // Add click event listeners to list items
+        const listItems = alphabetContainer.querySelectorAll('.list-station-item');
+        listItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const stationName = this.dataset.name;
+                const originalCard = stationCards.find(card => card.dataset.name === stationName);
+                if (originalCard) {
+                    openStationModal(originalCard, stationName);
+                }
+            });
+        });
+        
+        // Add smooth animation
+        const sections = alphabetContainer.querySelectorAll('.alphabet-section');
+        sections.forEach((section, index) => {
+            section.style.animation = `slideInSort 0.4s ease-out ${index * 0.1}s both`;
+        });
+    }
+    
+    // List view button event listener
+    const listViewBtn = document.getElementById('listViewBtn');
+    if (listViewBtn) {
+        listViewBtn.addEventListener('click', toggleListView);
+    }
+
     // Add Station Modal Functions
     function openAddStationModal() {
         const modal = document.getElementById('addStationModal');
@@ -485,6 +748,17 @@ style.textContent = `
         }
         to {
             transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideInSort {
+        from {
+            transform: translateY(20px) scale(0.9);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0) scale(1);
             opacity: 1;
         }
     }
