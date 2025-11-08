@@ -70,6 +70,53 @@
         <h3>No Stations Found</h3>
         <p>Try searching with a different term.</p>
     </div>
+
+    <!-- Station Detail Modal -->
+    <div id="stationModal" class="station-modal">
+        <div class="station-modal-backdrop"></div>
+        <div id="stationModalCard" class="station-modal-card">
+            <span class="close" id="closeStationModal">&times;</span>
+            
+            <div class="station-modal-content">
+                <div class="station-modal-header">
+                    <div class="station-modal-name">
+                        <span class="material-symbols-outlined" id="modalStationIcon">train</span>
+                        <h2 id="modalStationName">Station Name</h2>
+                    </div>
+                    <div class="station-modal-alt-name" id="modalStationAltName" style="display: none;"></div>
+                </div>
+                
+                <div class="station-modal-body">
+                    <div class="station-modal-description" id="modalStationDescription">
+                        Station description goes here...
+                    </div>
+                    
+                    <div class="station-modal-status" id="modalStationStatus">
+                        <div class="status-dot"></div>
+                        <span>Operational</span>
+                    </div>
+                    
+                    <div class="station-modal-lines" id="modalStationLines">
+                        <h3>Serving Lines</h3>
+                        <div class="modal-lines-grid" id="modalLinesGrid">
+                            <!-- Lines will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="station-modal-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Platform Count</span>
+                            <span class="detail-value" id="modalPlatformCount">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Station Type</span>
+                            <span class="detail-value" id="modalStationType">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -108,29 +155,165 @@ document.addEventListener('DOMContentLoaded', function() {
     stationCards.forEach(card => {
         card.addEventListener('click', function() {
             const stationName = this.dataset.name;
-            console.log(`Station selected: ${stationName}`);
-            
-            const notification = document.createElement('div');
-            notification.textContent = `Station "${stationName}" selected`;
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: rgba(78, 205, 196, 0.9);
-                color: white;
-                padding: 15px 20px;
-                border-radius: 10px;
-                backdrop-filter: blur(10px);
-                z-index: 1000;
-                animation: slideIn 0.3s ease;
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
+            openStationModal(this, stationName);
         });
+    });
+
+    // Station Modal Functions
+    async function openStationModal(cardElement, stationName) {
+        const modal = document.getElementById('stationModal');
+        const modalCard = document.getElementById('stationModalCard');
+        
+        // Get card position and size for animation
+        const cardRect = cardElement.getBoundingClientRect();
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        // Set initial position to match the card
+        modalCard.style.left = cardRect.left + 'px';
+        modalCard.style.top = cardRect.top + 'px';
+        modalCard.style.width = cardRect.width + 'px';
+        modalCard.style.height = cardRect.height + 'px';
+        modalCard.style.transform = 'scale(1)';
+        modalCard.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        
+        // Show modal
+        modal.classList.add('show');
+        
+        // Get station data from the card (for basic info)
+        const stationIcon = cardElement.querySelector('.material-symbols-outlined').textContent;
+        const stationAltName = cardElement.querySelector('.station-alt-name')?.textContent;
+        const stationInfo = cardElement.querySelector('.station-info').textContent;
+        const stationStatus = cardElement.querySelector('.station-status');
+        
+        // Populate basic modal content
+        document.getElementById('modalStationIcon').textContent = stationIcon;
+        document.getElementById('modalStationName').textContent = stationName;
+        document.getElementById('modalStationDescription').textContent = stationInfo;
+        
+        const altNameElement = document.getElementById('modalStationAltName');
+        if (stationAltName) {
+            altNameElement.textContent = stationAltName;
+            altNameElement.style.display = 'block';
+        } else {
+            altNameElement.style.display = 'none';
+        }
+        
+        // Copy status
+        const modalStatus = document.getElementById('modalStationStatus');
+        modalStatus.innerHTML = stationStatus.innerHTML;
+        
+        // Show loading state for API data
+        document.getElementById('modalPlatformCount').textContent = '...';
+        document.getElementById('modalStationType').textContent = '...';
+        document.getElementById('modalLinesGrid').innerHTML = '<div style="text-align: center; padding: 20px; opacity: 0.7;">Loading lines...</div>';
+        
+        // Fetch detailed station data from API
+        try {
+            const response = await fetch(`/api/stations/${encodeURIComponent(stationName)}`);
+            if (response.ok) {
+                const stationData = await response.json();
+                
+                // Update modal with real data
+                const station = stationData.station;
+                const lines = stationData.lines || [];
+                const stats = stationData.statistics || {};
+                
+                document.getElementById('modalPlatformCount').textContent = station.platform_count || stats.platform_count || 'Unknown';
+                document.getElementById('modalStationType').textContent = station.station_type || 'Regional Station';
+                
+                // Populate real lines data
+                populateStationLines(lines);
+            } else {
+                // Fallback to sample data if API fails
+                document.getElementById('modalPlatformCount').textContent = 'Unknown';
+                document.getElementById('modalStationType').textContent = 'Unknown';
+                populateSampleLines();
+            }
+        } catch (error) {
+            console.error('Failed to load station details:', error);
+            // Fallback to sample data
+            document.getElementById('modalPlatformCount').textContent = 'Unknown';
+            document.getElementById('modalStationType').textContent = 'Unknown';
+            populateSampleLines();
+        }
+        
+        // Animate to center with slight delay for smooth transition
+        requestAnimationFrame(() => {
+            const finalWidth = Math.min(600, windowWidth * 0.9);
+            const finalHeight = Math.min(windowHeight * 0.8, 800);
+            
+            modalCard.style.left = (windowWidth - finalWidth) / 2 + 'px';
+            modalCard.style.top = (windowHeight - finalHeight) / 2 + 'px';
+            modalCard.style.width = finalWidth + 'px';
+            modalCard.style.height = finalHeight + 'px';
+        });
+    }
+    
+    function populateStationLines(lines) {
+        const linesGrid = document.getElementById('modalLinesGrid');
+        
+        if (!lines || lines.length === 0) {
+            linesGrid.innerHTML = '<div style="text-align: center; padding: 20px; opacity: 0.7;">No lines serve this station</div>';
+            return;
+        }
+        
+        linesGrid.innerHTML = lines.map(line => `
+            <div class="modal-line-item" style="border-left-color: ${line.color || '#666'}">
+                <div class="modal-line-name" style="color: ${line.color || '#666'}">${line.name}</div>
+                <div class="modal-line-operator">${line.operator || 'Unknown Operator'}</div>
+                <div class="modal-line-status">${line.status || 'Unknown'}</div>
+            </div>
+        `).join('');
+    }
+    
+    function populateSampleLines() {
+        const sampleLines = [
+            { name: 'Loading...', operator: 'Please wait', status: 'Fetching data', color: '#666' }
+        ];
+        populateStationLines(sampleLines);
+    }
+    
+    function closeStationModal() {
+        const modal = document.getElementById('stationModal');
+        const modalCard = document.getElementById('stationModalCard');
+        
+        // Get the original card that was clicked
+        const originalCard = document.querySelector('.station-card[data-name="' + document.getElementById('modalStationName').textContent + '"]');
+        
+        if (originalCard) {
+            const cardRect = originalCard.getBoundingClientRect();
+            
+            // Animate back to original position
+            modalCard.style.transition = 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            modalCard.style.left = cardRect.left + 'px';
+            modalCard.style.top = cardRect.top + 'px';
+            modalCard.style.width = cardRect.width + 'px';
+            modalCard.style.height = cardRect.height + 'px';
+            modalCard.style.opacity = '0';
+            
+            // Wait for animation to complete before hiding modal
+            setTimeout(() => {
+                modal.classList.remove('show');
+                // Reset card styles for next opening
+                modalCard.style.opacity = '';
+                modalCard.style.transition = '';
+            }, 600);
+        } else {
+            // Fallback if original card not found
+            modal.classList.remove('show');
+        }
+    }
+    
+    // Close modal event listeners
+    document.getElementById('closeStationModal').addEventListener('click', closeStationModal);
+    document.querySelector('.station-modal-backdrop').addEventListener('click', closeStationModal);
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeStationModal();
+        }
     });
 
     function animateStats() {

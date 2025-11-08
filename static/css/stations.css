@@ -327,6 +327,249 @@
     opacity: 0.5;
 }
 
+/* Station Modal Styles */
+.station-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: none;
+    pointer-events: none;
+}
+
+.station-modal.show {
+    display: block;
+    pointer-events: all;
+}
+
+.station-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.station-modal.show .station-modal-backdrop {
+    opacity: 1;
+}
+
+.station-modal-card {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+    color: white;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform: scale(1);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.station-modal.show .station-modal-card {
+    opacity: 1;
+}
+
+.station-modal .close {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.3s ease;
+}
+
+.station-modal .close:hover,
+.station-modal .close:focus {
+    color: white;
+    text-decoration: none;
+}
+
+.station-modal-content {
+    padding: 30px;
+}
+
+.station-modal-header {
+    margin-bottom: 20px;
+}
+
+.station-modal-name {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.station-modal-name h2 {
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 800,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 450;
+    font-size: 2.2em;
+    margin: 0;
+    background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.station-modal-name .material-symbols-outlined {
+    font-size: 2.5em;
+    color: #4ecdc4;
+}
+
+.station-modal-alt-name {
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 400,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 450;
+    font-size: 1.1em;
+    opacity: 0.7;
+    margin-left: 60px;
+}
+
+.station-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.station-modal-description {
+    font-size: 1.1em;
+    line-height: 1.6;
+    opacity: 0.9;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border-left: 4px solid #4ecdc4;
+}
+
+.station-modal-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1em;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    width: fit-content;
+}
+
+.station-modal-lines h3 {
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 700,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 450;
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    color: #4ecdc4;
+}
+
+.modal-lines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.modal-line-item {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.modal-line-item:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-line-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.modal-line-operator {
+    opacity: 0.7;
+    font-size: 0.9em;
+}
+
+.modal-line-status {
+    font-size: 0.85em;
+    margin-top: 8px;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.station-modal-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.detail-item {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-label {
+    opacity: 0.8;
+    font-size: 0.95em;
+}
+
+.detail-value {
+    font-weight: bold;
+    color: #4ecdc4;
+    font-size: 1.1em;
+}
+
+/* Hide scroll bar for modal */
+.station-modal-card {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.station-modal-card::-webkit-scrollbar {
+    display: none; /* WebKit */
+}
+
 @media (max-width: 768px) {
     .stations-hero h1 {
         font-size: 2.5em;
@@ -339,5 +582,27 @@
     
     .search-container {
         margin: 0 20px 40px 20px;
+    }
+
+    .station-modal-card {
+        max-width: 95%;
+        max-height: 90vh;
+        margin: 20px;
+    }
+
+    .station-modal-content {
+        padding: 20px;
+    }
+
+    .station-modal-name h2 {
+        font-size: 1.8em;
+    }
+
+    .modal-lines-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .station-modal-details {
+        grid-template-columns: 1fr;
     }
 }
