@@ -2,9 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, session
 from core import main_dir
 from core.logger import Logger
 from core.config import config
-from core.controller import OperatorController
+from core.controller import OperatorController, OperatorRequestController
 
-import json
 import yaml
 
 admin = Blueprint('admin', __name__)
@@ -110,12 +109,8 @@ def admin_companies():
     if user and 'id' in user:
         operator = [op for op in operators if user['id'] in op['users']]
 
-    with open(main_dir + '/operator_requests.json', 'r') as f:
-        requests = json.load(f)
-
+    requests = OperatorRequestController.get_all_requests()
     requests.sort(key=lambda x: x['timestamp'], reverse=True)
-
-    operators = OperatorController.get_all_operators()
 
     return render_template(
         'admin/companies.html',
