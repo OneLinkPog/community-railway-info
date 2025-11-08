@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, session
 from core.config import config
-from core.controller import LineController, OperatorController
+from core.controller import LineController, OperatorController, StationController
 from core.logger import Logger
 
 import re
@@ -103,6 +103,9 @@ def stations_route():
     user = session.get('user')
 
     operators = OperatorController.get_all_operators()
+    stations = StationController.get_all_stations()
+    total_stations = len(stations)
+    active_stations = len([s for s in stations if s['status'] == 'open'])
 
     operator = None
     admin = False
@@ -118,4 +121,7 @@ def stations_route():
         user=user,
         admin=admin,
         operator=operator,
+        stations=stations,
+        total_stations=total_stations,
+        active_stations=active_stations
     )

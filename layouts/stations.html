@@ -16,18 +16,18 @@
         </div>
     </div>
 
-    <div class="stats-section">
+    <!-- <div class="stats-section">
         <div class="stats-grid">
             <div class="stat-item">
-                <span class="stat-number" id="totalStations">42</span>
+                <span class="stat-number" id="totalStations">{{ total_stations }}</span>
                 <span class="stat-label">Total Stations</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number" id="activeStations">38</span>
+                <span class="stat-number" id="activeStations">{{ active_stations }}</span>
                 <span class="stat-label">Active Stations</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number" id="mainStations">8</span>
+                <span class="stat-number" id="mainStations">79836792476</span>
                 <span class="stat-label">Main Terminals</span>
             </div>
             <div class="stat-item">
@@ -35,80 +35,35 @@
                 <span class="stat-label">Line Connections</span>
             </div>
         </div>
-    </div>
-
+    </div> -->
+    
     <div class="stations-grid" id="stationsGrid">
-        <div class="station-card" data-name="Central Station" style="background-image: url('/static/troll.png');">
+        {% for station in stations %}
+        <div class="station-card" data-name="{{ station.name }}" style="background-image: url('{{ station.image_path }}');">
             <div class="station-name">
-                <span class="material-symbols-outlined">apartment</span>
-                Toblerone Central
+                <span class="material-symbols-outlined">{{ station.symbol }}</span>
+                {{ station.name }}
             </div>
             <div class="station-info">
-                Toblerone tobleroned Toblerone gerne. Also will Toblerone gerne von Toblerone tobleroned werden.
-                Toblerone tobleroned Toblerone.
+                {{ station.description }}
             </div>
             <div class="station-lines">
                 <span class="line-badge" style="background: #e74c3c;">Too much lines</span>
             </div>
             <div class="station-status">
-                <div class="status-dot"></div>
-                <span>Operational • 24/7 Service</span>
+                {% if station.status == 'open' %}
+                    <div class="status-dot"></div>
+                    <span>Operational</span>
+                {% elif station.status == 'closed' %}
+                    <div class="status-dot closed"></div>
+                    <span>Closed</span>
+                {% else %}
+                    <div class="status-dot maintenance"></div>
+                    <span>Under Maintenance</span>
+                {% endif %}
             </div>
         </div>
-        
-
-        <div class="station-card" data-name="Central Station" style="background-image: url('/static/2.webp');">
-            <div class="station-name">
-                <span class="material-symbols-outlined">apartment</span>
-                Toblerone Central
-            </div>
-            <div class="station-info">
-                Toblerone tobleroned Toblerone gerne. Also will Toblerone gerne von Toblerone tobleroned werden.
-                Toblerone tobleroned Toblerone.
-            </div>
-            <div class="station-lines">
-                <span class="line-badge" style="background: #e74c3c;">Too much lines</span>
-            </div>
-            <div class="station-status">
-                <div class="status-dot"></div>
-                <span>Operational • 24/7 Service</span>
-            </div>
-        </div>
-
-        <div class="station-card" data-name="Central Station" style="background-image: url('/static/1.png');">
-            <div class="station-name">
-                <span class="material-symbols-outlined">apartment</span>
-                Toblerone Central
-            </div>
-            <div class="station-info">
-                Toblerone tobleroned Toblerone gerne. Also will Toblerone gerne von Toblerone tobleroned werden.
-                Toblerone tobleroned Toblerone.
-            </div>
-            <div class="station-lines">
-                <span class="line-badge" style="background: #e74c3c;">Too much lines</span>
-            </div>
-            <div class="station-status">
-                <div class="status-dot"></div>
-                <span>Operational • 24/7 Service</span>
-            </div>
-        </div>
-
-        <div class="station-card" data-name="Old Town Heritage" style="background-image: url('/static/salz.jpeg');">
-            <div class="station-name">
-                <span class="material-symbols-outlined">museum</span>
-                Salzingen Hbf
-            </div>
-            <div class="station-info">
-                Too dangerous for normal trains.
-            </div>
-            <div class="station-lines">
-                <span class="line-badge" style="background: #8e44ad;">R51</span>
-            </div>
-            <div class="station-status">
-                <div class="status-dot maintenance"></div>
-                <span>Maintenance • Reopening: Q5 2039</span>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 
     <div class="no-stations" id="noStationsFound" style="display: none;">

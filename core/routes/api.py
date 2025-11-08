@@ -3,7 +3,7 @@ from core import main_dir
 from core.logger import Logger
 from core.config import config
 from core.sql import sql
-from core.controller import LineController, OperatorController
+from core.controller import LineController, OperatorController, StationController
 from datetime import datetime
 
 import json
@@ -387,15 +387,49 @@ def request_operator():
 """
 
 # GET /api/stations
-@api.route('/api/stations')
+@api.route('/api/stations', methods=['GET'])
 def get_stations():
-    query = """SELECT * FROM station ORDER BY id"""
     try:
-        results = sql.execute_query(query)
-        return {'stations': results}, 200
+        stations = StationController.get_all_stations()
+        return jsonify({'stations': stations}), 200
     except Exception as e:
-        logger.error(f"[@{session.get('user')['username']}] Error while fetching stations: {str(e)}")
-        return {'error': str(e)}, 500
+        logger.error(f"Error while fetching stations: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+# GET /api/stations/<name>
+@api.route('/api/stations/<name>', methods=['GET'])
+def get_station_details(name):
+    try:
+        station = StationController.get_station_by_name(name)
+        if not station:
+            return jsonify({'error': 'Station not found'}), 404
+        
+        # Get lines at this station
+        lines = StationController.get_lines_at_station(name)
+        
+        # Get statistics
+        stats = StationController.get_station_statistics(name)
+        
+        return jsonify({
+            'station': station,
+            'lines': lines,
+            'statistics': stats
+        }), 200
+    except Exception as e:
+        logger.error(f"Error while fetching station details: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+# GET /api/stations/search/<term>
+@api.route('/api/stations/search/<term>', methods=['GET'])
+def search_stations(term):
+    try:
+        stations = StationController.search_stations(term)
+        return jsonify({'stations': stations}), 200
+    except Exception as e:
+        logger.error(f"Error while searching stations: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 
 
