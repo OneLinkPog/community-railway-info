@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, session, redirect, url_for
 from core import main_dir
 from core.config import config, allowed_tags, allowed_attributes
 from core.logger import Logger
+from core.controller import LineController, OperatorController
 from bleach import clean
 
 import json
@@ -26,11 +27,8 @@ operators = Blueprint('operators', __name__)
 def operators_route():
     user = session.get('user')
 
-    with open(main_dir + '/lines.json') as f:
-        lines = json.load(f)
-
-    with open(main_dir + '/operators.json') as f:
-        operators = json.load(f)
+    lines = LineController.get_all_lines()
+    operators = OperatorController.get_all_operators()
 
     for operator in operators:
         train_count = sum(1 for line in lines if line.get('operator_uid') == operator['uid'])
@@ -60,11 +58,8 @@ def operators_route():
 def operator_route(uid):
     user = session.get('user')
 
-    with open(main_dir + '/lines.json') as f:
-        lines = json.load(f)
-
-    with open(main_dir + '/operators.json') as f:
-        operators = json.load(f)
+    lines = LineController.get_all_lines()
+    operators = OperatorController.get_all_operators()
 
     operator = next((op for op in operators if op['uid'] == uid), None)
 

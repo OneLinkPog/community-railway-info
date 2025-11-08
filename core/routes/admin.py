@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, session
 from core import main_dir
 from core.logger import Logger
 from core.config import config
+from core.controller import LineController, OperatorController
 
 import json
 import yaml
@@ -17,11 +18,7 @@ def admin_route():
     if not user or user.get('id') not in config.web_admins:
         return redirect(url_for('index.index_route'))
 
-    with open(main_dir + '/lines.json') as f:
-        lines = json.load(f)
-
-    with open(main_dir + '/operators.json') as f:
-        operators = json.load(f)
+    operators = OperatorController.get_all_operators()
 
     operator = None
     if user and 'id' in user:
@@ -32,7 +29,6 @@ def admin_route():
         user=user,
         operator=operator,
         admin=True,
-        lines=lines
     )
 
 
@@ -46,8 +42,7 @@ def admin_settings():
     with open(main_dir + '/config.yml') as f:
         settings = yaml.load(f, Loader=yaml.SafeLoader)
 
-    with open(main_dir + '/operators.json') as f:
-        operators = json.load(f)
+    operators = OperatorController.get_all_operators()
 
     operator = None
     if user and 'id' in user:
@@ -87,8 +82,7 @@ def admin_logs():
 
     logger.admin(f'[@{session.get("user")["username"]}] Accessed server logs')
 
-    with open(main_dir + '/operators.json') as f:
-        operators = json.load(f)
+    operators = OperatorController.get_all_operators()
 
     operator = None
     if user and 'id' in user:
@@ -110,36 +104,26 @@ def admin_companies():
     if not user or user.get('id') not in config.web_admins:
         return redirect(url_for('index.index_route'))
 
-    with open(main_dir + '/operators.json') as f:
-        operators = json.load(f)
+    operators = OperatorController.get_all_operators()
 
     operator = None
     if user and 'id' in user:
         operator = [op for op in operators if user['id'] in op['users']]
 
-    try:
-        with open(main_dir + '/operator_requests.json', 'r') as f:
-            requests = json.load(f)
+    
+    with open(main_dir + '/operator_requests.json', 'r') as f:
+        requests = json.load(f)
 
-        requests.sort(key=lambda x: x['timestamp'], reverse=True)
+    requests.sort(key=lambda x: x['timestamp'], reverse=True)
 
-        with open(main_dir + '/operators.json') as f:
-            operators = json.load(f)
+    operators = OperatorController.get_all_operators()
 
-        return render_template(
-            'admin/companies.html',
-            user=user,
-            admin=True,
-            operator=operator,
-            requests=requests
-        )
-    except FileNotFoundError:
-        return render_template(
-            'admin/companies.html',
-            user=user,
-            admin=True,
-            operator=operator,
-            requests=[]
-        )
+    return render_template(
+        'admin/companies.html',
+        user=user,
+        admin=True,
+        operator=operator,
+        requests=requests
+    )
 
 
