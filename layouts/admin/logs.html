@@ -79,10 +79,6 @@
                     <span class="material-symbols-outlined">refresh</span>
                     <span>Refresh</span>
                 </button>
-                <button onclick="clearLogs()" class="action-btn clear-btn" title="Clear all logs">
-                    <span class="material-symbols-outlined">delete</span>
-                    <span>Clear</span>
-                </button>
             </div>
         </div>
 
@@ -144,23 +140,6 @@
         });
 
         document.getElementById('filteredCount').textContent = visibleCount;
-    }
-
-    function clearLogs() {
-        if (confirm('Are you sure you want to clear all logs? This action cannot be undone.')) {
-            fetch('/api/admin/logs/clear', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('logEntries').innerHTML = '<div class="no-logs">No logs available</div>';
-                        updateStats();
-                        showNotification('Logs cleared successfully', 'success');
-                    }
-                })
-                .catch(err => {
-                    showNotification('Failed to clear logs', 'error');
-                });
-        }
     }
 
     function updateLogs() {

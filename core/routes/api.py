@@ -18,7 +18,6 @@ logger = Logger("@api")
     - /api/lines/<name> [DELETE]
     - /api/operators/<name> [PUT]
     - /api/operators/request [POST]
-    - /api/admin/logs/clear [POST]
     - /api/admin/logs [GET]     
     - /api/admin/settings/update [POST]
     - /api/admin/companies/handle-request [POST]
@@ -372,26 +371,6 @@ def request_operator():
 """
     --- ADMIN ROUTES ---
 """
-
-# POST /api/admin/logs/clear
-@api.route('/api/admin/logs/clear', methods=['POST'])
-def clear_logs():
-    user = session.get('user')
-
-    if not user or user.get('id') not in config.web_admins:
-        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
-
-    try:
-        open(main_dir + '/server.log', 'w').close()
-        logger.admin(
-            f'[@{session.get("user")["username"]}] Server logs cleared successfully.')
-        return jsonify({'success': True})
-
-    except Exception as e:
-        logger.admin(
-            f'[@{session.get("user")["username"]}] Error clearing server logs: {str(e)}')
-        return jsonify({'success': False, 'error': str(e)}), 500
-
 
 # GET /api/admin/logs
 @api.route('/api/admin/logs')
