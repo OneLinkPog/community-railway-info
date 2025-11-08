@@ -81,7 +81,12 @@ async def add_line():
             logger.error(f'[@{session.get("user")["username"]}] Operator not found')
             return {'error': 'Operator not found'}, 404
         
-        if session.get('user')['id'] not in operator.get('users', []):
+        # Check if user is admin or member of the rail company
+        user_id = session.get('user')['id']
+        is_admin = user_id in config.web_admins
+        is_member = user_id in operator.get('users', [])
+        
+        if not is_admin and not is_member:
             logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
             return {'error': 'Not authorized - must be member of the rail company'}, 401
 
@@ -119,7 +124,12 @@ async def update_line(name):
             logger.error(f'[@{session.get("user")["username"]}] Operator not found')
             return {'error': 'Operator not found'}, 404
         
-        if session.get('user')['id'] not in operator.get('users', []):
+        # Check if user is admin or member of the rail company
+        user_id = session.get('user')['id']
+        is_admin = user_id in config.web_admins
+        is_member = user_id in operator.get('users', [])
+        
+        if not is_admin and not is_member:
             logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
             return {'error': 'Not authorized - must be member of the rail company'}, 401
 
@@ -178,7 +188,12 @@ async def delete_line(name):
             logger.error(f'[@{session.get("user")["username"]}] Operator not found')
             return {'error': 'Operator not found'}, 404
         
-        if session.get('user')['id'] not in operator.get('users', []):
+        # Check if user is admin or member of the rail company
+        user_id = session.get('user')['id']
+        is_admin = user_id in config.web_admins
+        is_member = user_id in operator.get('users', [])
+        
+        if not is_admin and not is_member:
             logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
             return {'error': 'Not authorized - must be member of the rail company'}, 401
 
@@ -227,7 +242,12 @@ async def update_operator(name):
             logger.error(f'[@{session.get("user")["username"]}] Operator not found')
             return {'error': 'Operator not found'}, 404
         
-        if session.get('user')['id'] not in operator.get('users', []):
+        # Check if user is admin or member of the rail company
+        user_id = session.get('user')['id']
+        is_admin = user_id in config.web_admins
+        is_member = user_id in operator.get('users', [])
+        
+        if not is_admin and not is_member:
             logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
             return {'error': 'Not authorized - must be member of the rail company'}, 401
 
