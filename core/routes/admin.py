@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, session
 from core import main_dir
 from core.logger import Logger
 from core.config import config
-from core.controller import LineController, OperatorController
+from core.controller import OperatorController
 
 import json
 import yaml
@@ -110,7 +110,6 @@ def admin_companies():
     if user and 'id' in user:
         operator = [op for op in operators if user['id'] in op['users']]
 
-    
     with open(main_dir + '/operator_requests.json', 'r') as f:
         requests = json.load(f)
 
@@ -127,3 +126,22 @@ def admin_companies():
     )
 
 
+@admin.route('/admin/database')
+def admin_database():
+    user = session.get('user')
+
+    if not user or user.get('id') not in config.web_admins:
+        return redirect(url_for('index.index_route'))
+
+    operators = OperatorController.get_all_operators()
+
+    operator = None
+    if user and 'id' in user:
+        operator = [op for op in operators if user['id'] in op['users']]
+
+    return render_template(
+        'admin/database.html',
+        user=user,
+        admin=True,
+        operator=operator,
+    )
