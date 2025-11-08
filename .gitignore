@@ -209,10 +209,11 @@ __marimo__/
 
 secret.key
 config.yml
-server.log
+server.log*
 
 
 operator_avatar_cache.json
 
 sql
 json
+/static/library

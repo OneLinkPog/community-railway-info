@@ -337,6 +337,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     closeStationModal();
                 }
+            } else if (document.getElementById('addStationModal').classList.contains('show')) {
+                closeAddStationModal();
             }
         }
     });
@@ -361,6 +363,117 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     setTimeout(animateStats, 500);
+
+    // Add Station Modal Functions
+    function openAddStationModal() {
+        const modal = document.getElementById('addStationModal');
+        const modalCard = modal.querySelector('.station-modal-card');
+        
+        // Set initial state - small and centered (GNOME style)
+        modalCard.style.transform = 'translate(-50%, -50%) scale(0.6)';
+        modalCard.style.opacity = '0';
+        modalCard.style.transition = 'all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        
+        // Show modal
+        modal.classList.add('show');
+        
+        // Animate to full size with GNOME-style bounce
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                modalCard.style.transform = 'translate(-50%, -50%) scale(1.02)';
+                modalCard.style.opacity = '1';
+                
+                // Second bounce phase
+                setTimeout(() => {
+                    modalCard.style.transition = 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    modalCard.style.transform = 'translate(-50%, -50%) scale(1)';
+                }, 400);
+            });
+        });
+    }
+    
+    function closeAddStationModal() {
+        const modal = document.getElementById('addStationModal');
+        const modalCard = modal.querySelector('.station-modal-card');
+        
+        // GNOME-style close animation - shrink and fade
+        modalCard.style.transition = 'all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        modalCard.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        modalCard.style.opacity = '0';
+        
+        // Wait for animation to complete before hiding modal
+        setTimeout(() => {
+            modal.classList.remove('show');
+            // Reset form
+            document.getElementById('addStationForm').reset();
+            // Reset styles for next opening
+            modalCard.style.transform = '';
+            modalCard.style.opacity = '';
+            modalCard.style.transition = '';
+        }, 300);
+    }
+    
+    async function saveNewStation(event) {
+        event.preventDefault();
+        
+        const form = document.getElementById('addStationForm');
+        const formData = new FormData(form);
+        
+        try {
+            const response = await fetch('/api/stations/create', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    // Close modal
+                    closeAddStationModal();
+                    
+                    // Show success message
+                    alert('Station created successfully!');
+                    
+                    // Reload page to show new station
+                    window.location.reload();
+                } else {
+                    alert('Failed to create station: ' + (result.error || 'Unknown error'));
+                }
+            } else {
+                alert('Failed to create station. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error creating station:', error);
+            alert('An error occurred while creating the station.');
+        }
+    }
+    
+    // Add Station Event Listeners
+    const addStationBtn = document.getElementById('addStationBtn');
+    if (addStationBtn) {
+        addStationBtn.addEventListener('click', openAddStationModal);
+    }
+    
+    const closeAddStationModalBtn = document.getElementById('closeAddStationModal');
+    if (closeAddStationModalBtn) {
+        closeAddStationModalBtn.addEventListener('click', closeAddStationModal);
+    }
+    
+    const cancelAddStationBtn = document.getElementById('cancelAddStation');
+    if (cancelAddStationBtn) {
+        cancelAddStationBtn.addEventListener('click', closeAddStationModal);
+    }
+    
+    const addStationForm = document.getElementById('addStationForm');
+    if (addStationForm) {
+        addStationForm.addEventListener('submit', saveNewStation);
+    }
+    
+    // Add backdrop click for add station modal
+    const addStationBackdrop = document.querySelector('#addStationModal .station-modal-backdrop');
+    if (addStationBackdrop) {
+        addStationBackdrop.addEventListener('click', closeAddStationModal);
+    }
 });
 
 const style = document.createElement('style');

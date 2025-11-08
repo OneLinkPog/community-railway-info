@@ -375,10 +375,17 @@
     max-width: 600px;
     max-height: 80vh;
     overflow-y: auto;
+    /* Default positioning for modal cards */
+    left: 50%;
+    top: 50%;
+    width: min(600px, 90vw);
+    height: fit-content;
+    transform: translate(-50%, -50%) scale(0.6);
 }
 
 .station-modal.show .station-modal-card {
     opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .station-modal-image-header {
@@ -760,6 +767,42 @@
     margin-top: 8px;
     font-size: 0.9em;
     opacity: 0.7;
+}
+
+/* Add Station Button */
+.add-station-btn {
+    padding: 15px 30px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 1000,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 500;
+    background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+    color: white;
+    box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+    margin-top: -32px;
+}
+
+.add-station-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(78, 205, 196, 0.4);
+    background: linear-gradient(135deg, #5ed3d4, #55c7e1);
+}
+
+.add-station-btn .material-symbols-outlined {
+    font-size: 24px;
 }
 
 @media (max-width: 768px) {

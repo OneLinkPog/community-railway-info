@@ -35,6 +35,13 @@
         </div> 
     </div>
     
+    <!-- Add Station Button -->
+    <div style="display: flex; justify-content: center; margin: 30px 0;">
+        <button id="addStationBtn" class="btn-primary add-station-btn">
+            <span class="material-symbols-outlined">add</span>
+            Add New Station
+        </button>
+    </div>
     
     <div class="stations-grid" id="stationsGrid">
         {% for station in stations %}
@@ -155,6 +162,7 @@
                         <label for="editStationType">Station Type</label>
                         <select id="editStationType" name="type" class="form-input">
                             <option value="public">Public</option>
+                            <option value="private">Private</option>
                             <option value="metro">Metro</option>
                             <option value="tram">Tram</option>
                             <option value="bus">Bus</option>
@@ -194,6 +202,83 @@
                         <button type="submit" class="btn-primary">
                             <span class="material-symbols-outlined">save</span>
                             Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Station Modal -->
+    <div id="addStationModal" class="station-modal">
+        <div class="station-modal-backdrop"></div>
+        <div class="station-modal-card">
+            <span class="close" id="closeAddStationModal">&times;</span>
+            
+            <div class="station-modal-content">
+                <div class="station-modal-header">
+                    <h2>Add New Station</h2>
+                </div>
+                
+                <form id="addStationForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="addStationName">Station Name *</label>
+                        <input type="text" id="addStationName" name="name" required class="form-input" placeholder="Enter station name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addStationAltName">Alternative Name</label>
+                        <input type="text" id="addStationAltName" name="alt_name" class="form-input" placeholder="Alternative or local name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addStationDescription">Description</label>
+                        <textarea id="addStationDescription" name="description" rows="3" class="form-input" placeholder="Describe this station..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addStationSymbol">Symbol (<a href="https://fonts.google.com/icons" target="_blank">Material Icon</a>)</label>
+                        <input type="text" id="addStationSymbol" name="symbol" class="form-input" value="train" placeholder="train">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addStationType">Station Type</label>
+                        <select id="addStationType" name="type" class="form-input">
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                            <option value="metro">Metro</option>
+                            <option value="tram">Tram</option>
+                            <option value="bus">Bus</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addStationStatus">Status</label>
+                        <select id="addStationStatus" name="status" class="form-input">
+                            <option value="open">Open</option>
+                            <option value="closed">Closed</option>
+                            <option value="maintenance">Under Maintenance</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addStationPlatforms">Number of Platforms</label>
+                        <input type="number" id="addStationPlatforms" name="platform_count" min="1" class="form-input" placeholder="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addStationImage">Station Image</label>
+                        <input type="file" id="addStationImage" name="image" accept="image/*" class="form-input">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="cancelAddStation" class="btn-secondary">
+                            <span class="material-symbols-outlined">close</span>
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <span class="material-symbols-outlined">add</span>
+                            Create Station
                         </button>
                     </div>
                 </form>

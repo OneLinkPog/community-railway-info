@@ -4,6 +4,7 @@ from core.logger import Logger
 from core.config import config
 from core.controller import LineController, OperatorController, StationController, OperatorRequestController
 
+import os
 import yaml
 
 api = Blueprint('api', __name__)
@@ -389,7 +390,7 @@ def update_station():
             'symbol': request.form.get('symbol', 'train'),
             'type': request.form.get('type', 'public'),
             'status': request.form.get('status', 'open'),
-            'platform_count': request.form.get('platform_count')
+            'platform_count': request.form.get('platform_count') or None
         }
 
         # Handle image upload
@@ -427,6 +428,117 @@ def update_station():
         logger.error(f"[@{session.get('user')['username']}] Error while updating station: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+
+# POST /api/stations/create
+@api.route('/api/stations/create', methods=['POST'])
+def create_station():
+    if not session.get('user'):
+        return jsonify({'error': 'Not authorized'}), 401
+
+    user = session.get('user')
+    
+    # Check if user is admin
+    if user.get('id') not in config.web_admins:
+        return jsonify({'error': 'Admin access required'}), 403
+
+    try:
+        # Get form data
+        station_data = {}
+        
+        # Required field
+        if 'name' not in request.form or not request.form['name'].strip():
+            return jsonify({'error': 'Station name is required'}), 400
+        
+        station_data['name'] = request.form['name'].strip()
+        
+        # Optional fields
+        if 'alt_name' in request.form and request.form['alt_name'].strip():
+            station_data['alt_name'] = request.form['alt_name'].strip()
+        
+        if 'description' in request.form and request.form['description'].strip():
+            station_data['description'] = request.form['description'].strip()
+        
+        if 'symbol' in request.form and request.form['symbol'].strip():
+            station_data['symbol'] = request.form['symbol'].strip()
+        else:
+            station_data['symbol'] = 'train'  # Default symbol
+        
+        if 'type' in request.form and request.form['type']:
+            station_data['type'] = request.form['type']
+        else:
+            station_data['type'] = 'public'  # Default type
+        
+        if 'status' in request.form and request.form['status']:
+            station_data['status'] = request.form['status']
+        else:
+            station_data['status'] = 'open'  # Default status
+        
+        if 'platform_count' in request.form and request.form['platform_count'].strip():
+            try:
+                station_data['platform_count'] = int(request.form['platform_count'])
+            except ValueError:
+                station_data['platform_count'] = None
+        else:
+            station_data['platform_count'] = None
+
+        # Handle image upload
+        if 'image' in request.files:
+            image_file = request.files['image']
+            if image_file and image_file.filename != '':
+                # Validate file type
+                allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+                file_ext = os.path.splitext(image_file.filename)[1].lower()
+                
+                if file_ext not in allowed_extensions:
+                    return jsonify({'error': 'Invalid file type. Please use JPG, PNG, GIF, or WebP.'}), 400
+                
+                # Create stations directory if it doesn't exist
+                stations_dir = os.path.join(main_dir, 'static', 'library', 'stations')
+                os.makedirs(stations_dir, exist_ok=True)
+                
+                # First create the station to get its ID
+                temp_station_id = StationController.create_station(station_data['name'])
+                if not temp_station_id:
+                    return jsonify({'error': 'Failed to create station'}), 500
+                
+                # Save image with station ID as filename
+                image_filename = f"{temp_station_id}{file_ext}"
+                image_path = os.path.join(stations_dir, image_filename)
+                image_file.save(image_path)
+                
+                # Update station data with image path
+                station_data['image_path'] = f"/static/library/stations/{image_filename}"
+                
+                # Update the station with image path
+                success = StationController.update_station(temp_station_id, **station_data)
+                if not success:
+                    # Clean up image file if update fails
+                    if os.path.exists(image_path):
+                        os.remove(image_path)
+                    logger.error(f"[@{user['username']}] Failed to update station {temp_station_id} with image")
+                    return jsonify({'error': 'Failed to update station with image'}), 500
+                
+                logger.info(f"[@{user['username']}] Created station '{station_data['name']}' with ID {temp_station_id} and image")
+                return jsonify({'success': True, 'station_id': temp_station_id}), 200
+        
+        # Create station without image
+        station_id = StationController.create_station(station_data['name'])
+        if not station_id:
+            return jsonify({'error': 'Failed to create station'}), 500
+        
+        # Update station with additional data if provided
+        if len(station_data) > 1:  # More than just the name
+            success = StationController.update_station(station_id, **station_data)
+            if not success:
+                logger.error(f"[@{user['username']}] Failed to update station {station_id} with additional data")
+                return jsonify({'error': 'Station created but failed to update with additional data'}), 500
+
+        logger.info(f"[@{user['username']}] Created station '{station_data['name']}' with ID {station_id}")
+        return jsonify({'success': True, 'station_id': station_id}), 200
+
+    except Exception as e:
+        logger.error(f"[@{user['username']}] Error while creating station: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 
 """

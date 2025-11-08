@@ -204,12 +204,15 @@ class StationController:
                         logger.debug(f"Name '{update_data['name']}' belongs to current station {station_id}, allowing update")
             
             # Convert platform_count to int if provided
-            if 'platform_count' in update_data and update_data['platform_count']:
-                try:
-                    update_data['platform_count'] = int(update_data['platform_count'])
-                except (ValueError, TypeError):
-                    logger.warning(f"Invalid platform_count value: {update_data['platform_count']}, setting to None")
+            if 'platform_count' in update_data:
+                if update_data['platform_count'] is None or update_data['platform_count'] == '':
                     update_data['platform_count'] = None
+                else:
+                    try:
+                        update_data['platform_count'] = int(update_data['platform_count'])
+                    except (ValueError, TypeError):
+                        logger.warning(f"Invalid platform_count value: {update_data['platform_count']}, setting to None")
+                        update_data['platform_count'] = None
             
             success = sql.update_by_id('station', station_id, update_data)
             
