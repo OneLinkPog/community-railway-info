@@ -2,7 +2,6 @@ from flask import Blueprint, jsonify, session, request
 from core import main_dir
 from core.logger import Logger
 from core.config import config
-from core.sql import sql
 from core.controller import LineController, OperatorController, StationController
 from datetime import datetime
 
