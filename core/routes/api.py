@@ -317,7 +317,7 @@ def request_operator():
 def get_stations():
     try:
         stations = StationController.get_all_stations()
-        return jsonify({'stations': stations}), 200
+        return jsonify(stations)
     except Exception as e:
         logger.error(f"Error while fetching stations: {str(e)}")
         return jsonify({'error': str(e)}), 500
