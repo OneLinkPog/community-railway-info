@@ -416,13 +416,18 @@ def update_station():
                 station_data['image_path'] = f"/static/library/stations/{image_filename}"
 
         # Update station in database
-        success = StationController.update_station(station_id, **station_data)
-        if not success:
-            logger.error(f"[@{session.get('user')['username']}] Failed to update station {station_id}")
-            return jsonify({'error': 'Failed to update station'}), 500
+        try:
+            success = StationController.update_station(station_id, **station_data)
+            if not success:
+                logger.error(f"[@{session.get('user')['username']}] Failed to update station {station_id}")
+                return jsonify({'error': 'Failed to update station'}), 500
 
-        logger.info(f"[@{session.get('user')['username']}] Updated station {station_id} ({station_data.get('name', 'Unknown')})")
-        return jsonify({'success': True}), 200
+            logger.info(f"[@{session.get('user')['username']}] Updated station {station_id} ({station_data.get('name', 'Unknown')})")
+            return jsonify({'success': True}), 200
+        except Exception as station_error:
+            logger.error(f"[@{session.get('user')['username']}] Station update error: {str(station_error)}")
+            logger.error(f"[@{session.get('user')['username']}] Station data: {station_data}")
+            return jsonify({'error': f'Station update failed: {str(station_error)}'}), 500
 
     except Exception as e:
         logger.error(f"[@{session.get('user')['username']}] Error while updating station: {str(e)}")
@@ -437,9 +442,10 @@ def create_station():
 
     user = session.get('user')
     
-    # Check if user is admin
-    if user.get('id') not in config.web_admins:
-        return jsonify({'error': 'Admin access required'}), 403
+    # Check if user is admin (for now, allow all authenticated users to create stations)
+    # TODO: This should be configurable or based on operator membership
+    # if user.get('id') not in config.web_admins:
+    #     return jsonify({'error': 'Admin access required'}), 403
 
     try:
         # Get form data

@@ -175,6 +175,13 @@ class StationController:
             True if successful, False otherwise
         """
         try:
+            # Ensure station_id is an integer
+            try:
+                station_id = int(station_id)
+            except (ValueError, TypeError):
+                logger.error(f"Invalid station ID: {station_id}")
+                return False
+            
             # Check if station exists
             station = StationController.get_station_by_id(station_id)
             if not station:
@@ -217,15 +224,23 @@ class StationController:
             success = sql.update_by_id('station', station_id, update_data)
             
             if not success:
-                logger.error(f"Failed to update station ID {station_id}")
+                # Check if the record still exists (maybe the update didn't change anything)
+                station_check = StationController.get_station_by_id(station_id)
+                if station_check:
+                    logger.info(f"Station ID {station_id} update returned 0 rows (likely no changes needed)")
+                    return True  # Station exists, so "update" was successful even if no changes
+                else:
+                    logger.error(f"Failed to update station ID {station_id} - station not found")
+                    logger.error(f"Update data was: {update_data}")
+                    return False
             else:
                 logger.info(f"Successfully updated station ID {station_id} with fields: {list(update_data.keys())}")
-            
-            return success
+                return True
         
         except Exception as e:
             logger.error(f"Error updating station ID {station_id}: {str(e)}")
-            return False
+            logger.error(f"Update data was: {update_data}")
+            raise  # Re-raise the exception so the API can see the actual error
     
     @staticmethod
     def delete_station(station_id: int) -> bool:
