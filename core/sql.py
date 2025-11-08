@@ -34,7 +34,6 @@ class SQLConnector:
                 charset='utf8mb4',
                 collation='utf8mb4_unicode_ci'
             )
-            logger.info("Database connection pool initialized successfully")
         except Error as e:
             logger.error(f"Error creating connection pool: {e}")
             raise
@@ -120,7 +119,6 @@ class SQLConnector:
         try:
             with self.get_cursor(dictionary=False) as cursor:
                 cursor.execute(query, tuple(data.values()))
-                logger.info(f"Inserted record into {table}, ID: {cursor.lastrowid}")
                 return cursor.lastrowid
         except Error as e:
             logger.error(f"Error inserting into {table}: {e}")
@@ -159,7 +157,6 @@ class SQLConnector:
             with self.get_cursor(dictionary=False) as cursor:
                 cursor.executemany(query, data)
                 count = cursor.rowcount
-                logger.info(f"Inserted {count} records into {table}")
                 return count
         except Error as e:
             logger.error(f"Error batch inserting into {table}: {e}")
@@ -211,7 +208,6 @@ class SQLConnector:
             with self.get_cursor() as cursor:
                 cursor.execute(query, tuple(params))
                 results = cursor.fetchall()
-                logger.debug(f"Selected {len(results)} records from {table}")
                 return results
         except Error as e:
             logger.error(f"Error selecting from {table}: {e}")
@@ -275,7 +271,6 @@ class SQLConnector:
             with self.get_cursor() as cursor:
                 cursor.execute(query, params or ())
                 results = cursor.fetchall()
-                # logger.debug(f"Custom query returned {len(results)} records")
                 return results
         except Error as e:
             logger.error(f"Error executing custom query: {e}")
@@ -315,7 +310,6 @@ class SQLConnector:
             with self.get_cursor(dictionary=False) as cursor:
                 cursor.execute(query, tuple(params))
                 count = cursor.rowcount
-                logger.info(f"Updated {count} records in {table}")
                 return count
         except Error as e:
             logger.error(f"Error updating {table}: {e}")
@@ -371,7 +365,6 @@ class SQLConnector:
             with self.get_cursor(dictionary=False) as cursor:
                 cursor.execute(query, tuple(where.values()))
                 count = cursor.rowcount
-                logger.info(f"Deleted {count} records from {table}")
                 return count
         except Error as e:
             logger.error(f"Error deleting from {table}: {e}")
@@ -471,7 +464,6 @@ class SQLConnector:
                         result.fetchall()
                 connection.commit()
                 cursor.close()
-                logger.info("SQL script executed successfully")
                 return True
         except Error as e:
             logger.error(f"Error executing SQL script: {e}")
@@ -500,7 +492,6 @@ class SQLConnector:
             # MySQL Connector doesn't have a direct close_pool method
             # but connections will be closed when pool is garbage collected
             self.pool = None
-            logger.info("Database connection pool closed")
 
 
 # Global SQL connector instance
