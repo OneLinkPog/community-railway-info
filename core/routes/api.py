@@ -3,6 +3,7 @@ from core import main_dir
 from core.logger import Logger
 from core.config import config
 from core.sql import sql
+from core.controller import LineController, OperatorController
 from datetime import datetime
 
 import json
@@ -36,70 +37,11 @@ logger = Logger("@api")
 @api.route('/api/lines', methods=['GET'])
 async def get_lines():
     try:
-        query = """
-        SELECT 
-            l.id,
-            l.name,
-            l.color,
-            l.status,
-            l.type,
-            l.notice,
-            o.name as operator_name,
-            o.uid as operator_uid,
-            GROUP_CONCAT(DISTINCT s.name ORDER BY ls.station_order SEPARATOR '||') as stations
-        FROM line l
-        LEFT JOIN operator o ON l.operator_id = o.id
-        LEFT JOIN line_station ls ON l.id = ls.line_id
-        LEFT JOIN station s ON ls.station_id = s.id
-        GROUP BY l.id, l.name, l.color, l.status, l.type, l.notice, o.name, o.uid
-        ORDER BY l.name
-        """
-        
-        results = sql.execute_query(query)
-        
-        lines = []
-        for row in results:
-            comp_query = """
-            SELECT c.parts, c.name as comp_name
-            FROM line_composition lc
-            JOIN composition c ON lc.composition_id = c.id
-            WHERE lc.line_id = %s
-            ORDER BY c.id
-            """
-            compositions_raw = sql.execute_query(comp_query, (row['id'],))
-            
-            compositions = []
-            for comp in compositions_raw:
-                compositions.append({
-                    'name': comp['comp_name'] or '',
-                    'parts': comp['parts']
-                })
-            
-            line = {
-                'name': row['name'],
-                'color': row['color'],
-                'status': row['status'] or 'Running',
-                'type': row['type'] or 'public',
-                'notice': row['notice'] or '',
-                'stations': row['stations'].split('||') if row['stations'] else [],
-                'compositions': compositions,
-                'operator': row['operator_name'] or '',
-                'operator_uid': row['operator_uid'] or ''
-            }
-            lines.append(line)
-        
+        lines = LineController.get_all_lines()
         return jsonify({'success': True, 'lines': lines}), 200
-    
     except Exception as e:
-        logger.error(f"Error while fetching lines from database: {str(e)}")
-        try:
-            with open(main_dir + '/lines.json', 'r') as f:
-                lines = json.load(f)
-            return jsonify({'success': True, 'lines': lines}), 200
-        
-        except Exception as json_error:
-            logger.error(f"Error while fetching lines from JSON: {str(json_error)}")
-            return jsonify({'success': False, 'error': str(e)}), 500
+        logger.error(f"Error while fetching lines: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 # POST /api/lines
@@ -324,36 +266,11 @@ async def delete_line(name):
 @api.route('/api/operators', methods=['GET'])
 async def get_operators():
     try:
-        operators_query = """
-        SELECT o.id, o.name, o.color, o.short, o.uid
-        FROM operator o
-        ORDER BY o.name
-        """
-        operators_raw = sql.execute_query(operators_query)
-        
-        operators = []
-        for op in operators_raw:
-            users_query = """
-            SELECT u.id
-            FROM operator_user ou
-            JOIN user u ON ou.user_id = u.id
-            WHERE ou.operator_id = %s
-            """
-            users_raw = sql.execute_query(users_query, (op['id'],))
-            
-            operator = {
-                'name': op['name'],
-                'color': op['color'] or '#808080',
-                'users': [str(user['id']) for user in users_raw],
-                'short': op['short'] or '',
-                'uid': op['uid']
-            }
-            operators.append(operator)
-        
+        operators = OperatorController.get_all_operators()
         return jsonify(operators), 200
-    
     except Exception as e:
-        logger.error(f"Error while fetching operators from database: {str(e)}")
+        logger.error(f"Error while fetching operators: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 
 # PUT /api/operators/<name>
