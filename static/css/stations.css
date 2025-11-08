@@ -256,6 +256,10 @@
     background: #ff6b6b;
 }
 
+.status-dot.closed {
+    background: #9c0000;
+}
+
 @keyframes pulse {
     0% { opacity: 1; }
     50% { opacity: 0.5; }
