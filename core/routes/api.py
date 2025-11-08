@@ -475,17 +475,31 @@ def save_settings():
             return jsonify({'error': 'Invalid web_admins format'}), 400
 
         with open(main_dir + '/config.yml', 'r') as f:
-            config_data = yaml.safe_load(f)
+            config_data = yaml.load(f, Loader=yaml.SafeLoader)
 
-        config_data['port'] = data['port']
-        config_data['debug'] = data['debug']
-        config_data['readonly'] = data['readonly']
-        config_data['web_admins'] = data['web_admins']
-        config_data['maintenance_mode'] = data['maintenance_mode']
-        config_data['maintenance_message'] = data['maintenance_message']
+        # Update webserver settings
+        if 'webserver' not in config_data:
+            config_data['webserver'] = {}
+        config_data['webserver']['port'] = data['port']
+        config_data['webserver']['debug'] = data['debug']
+
+        # Update administration settings
+        if 'administration' not in config_data:
+            config_data['administration'] = {}
+        config_data['administration']['readonly'] = data['readonly']
+        config_data['administration']['web_admins'] = data['web_admins']
+        config_data['administration']['maintenance_mode'] = data['maintenance_mode']
+        config_data['administration']['maintenance_message'] = data['maintenance_message']
 
         with open(main_dir + '/config.yml', 'w') as f:
-            yaml.safe_dump(config_data, f, default_flow_style=False)
+            yaml.dump(
+                config_data, 
+                f, 
+                default_flow_style=False, 
+                allow_unicode=True,
+                sort_keys=False,
+                width=float("inf")
+            )
 
         config.load()
 

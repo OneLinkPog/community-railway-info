@@ -13,19 +13,32 @@ class Config:
         with open(main_dir + "/config.yml", "r") as _config:
             config_data = yaml.load(_config, Loader=yaml.SafeLoader)
 
-        self.discord_client_id = config_data["discord_client_id"]
-        self.discord_client_secret = config_data["discord_client_secret"]
-        self.discord_redirect_uri = config_data["discord_redirect_uri"]
+        # Discord configuration
+        discord_config = config_data.get("discord", {})
+        self.discord_client_id = discord_config.get("discord_client_id")
+        self.discord_client_secret = discord_config.get("discord_client_secret")
+        self.discord_redirect_uri = discord_config.get("discord_redirect_uri")
 
-        self.host = config_data["host"]
-        self.port = config_data["port"]
-        self.debug = config_data["debug"]
+        # Webserver configuration
+        webserver_config = config_data.get("webserver", {})
+        self.host = webserver_config.get("host", "0.0.0.0")
+        self.port = webserver_config.get("port", 30789)
+        self.debug = webserver_config.get("debug", False)
 
-        self.web_admins = config_data["web_admins"]
+        # Administration configuration
+        admin_config = config_data.get("administration", {})
+        self.web_admins = admin_config.get("web_admins", [])
+        self.maintenance_mode = admin_config.get("maintenance_mode", False)
+        self.maintenance_message = admin_config.get("maintenance_message", "")
+        self.readonly = admin_config.get("readonly", False)
 
-        self.maintenance_mode = config_data["maintenance_mode"]
-        self.maintenance_message = config_data["maintenance_message"]
-        self.readonly = config_data["readonly"]
+        # Database configuration
+        db_config = config_data.get("database", {})
+        self.db_host = db_config.get("host", "localhost")
+        self.db_port = db_config.get("port", 3306)
+        self.db_user = db_config.get("user")
+        self.db_password = db_config.get("password")
+        self.db_database = db_config.get("database")
 
 
 config = Config()

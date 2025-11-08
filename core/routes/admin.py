@@ -44,7 +44,7 @@ def admin_settings():
         return redirect(url_for('index.index_route'))
 
     with open(main_dir + '/config.yml') as f:
-        settings = yaml.safe_load(f)
+        settings = yaml.load(f, Loader=yaml.SafeLoader)
 
     with open(main_dir + '/operators.json') as f:
         operators = json.load(f)
