@@ -38,7 +38,8 @@ let linesData = [];
 function fetchLines() {
     fetch('/api/lines')
         .then(response => response.json())
-        .then(linesArray => {
+        .then(data => {
+            const linesArray = data.lines || data;
             linesData = linesArray;
             const lines = {};
             linesArray.forEach(line => {

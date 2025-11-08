@@ -20,6 +20,7 @@ logger = Logger("@api")
     - /api/operators [GET]
     - /api/operators/<name> [PUT]
     - /api/operators/request [POST]
+    - /api/stations [GET]
     - /api/admin/logs [GET]     
     - /api/admin/settings/update [POST]
     - /api/admin/companies/handle-request [POST]
@@ -322,13 +323,38 @@ async def delete_line(name):
 # GET /api/operators
 @api.route('/api/operators', methods=['GET'])
 async def get_operators():
-    query = """SELECT * FROM operator ORDER BY name"""
     try:
-        results = sql.execute_query(query)
-        return {'operators': results}, 200
+        operators_query = """
+        SELECT o.id, o.name, o.color, o.short, o.uid
+        FROM operator o
+        ORDER BY o.name
+        """
+        operators_raw = sql.execute_query(operators_query)
+        
+        operators = []
+        for op in operators_raw:
+            users_query = """
+            SELECT u.id
+            FROM operator_user ou
+            JOIN user u ON ou.user_id = u.id
+            WHERE ou.operator_id = %s
+            """
+            users_raw = sql.execute_query(users_query, (op['id'],))
+            
+            operator = {
+                'name': op['name'],
+                'color': op['color'] or '#808080',
+                'users': [str(user['id']) for user in users_raw],
+                'short': op['short'] or '',
+                'uid': op['uid']
+            }
+            operators.append(operator)
+        
+        return jsonify(operators), 200
+    
     except Exception as e:
-        logger.error(f"[@{session.get('user')['username']}] Error while fetching operators: {str(e)}")
-        return {'error': str(e)}, 500
+        logger.error(f"Error while fetching operators from database: {str(e)}")
+
 
 # PUT /api/operators/<name>
 @api.route('/api/operators/<name>', methods=['PUT'])
@@ -435,6 +461,23 @@ def request_operator():
 
     except Exception as e:
         logger.error(f"Error while requesting new company: {str(e)}")
+        return {'error': str(e)}, 500
+
+
+
+"""
+    --- STATION ROUTES ---
+"""
+
+# GET /api/stations
+@api.route('/api/stations')
+def get_stations():
+    query = """SELECT * FROM station ORDER BY id"""
+    try:
+        results = sql.execute_query(query)
+        return {'stations': results}, 200
+    except Exception as e:
+        logger.error(f"[@{session.get('user')['username']}] Error while fetching stations: {str(e)}")
         return {'error': str(e)}, 500
 
 

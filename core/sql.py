@@ -275,7 +275,7 @@ class SQLConnector:
             with self.get_cursor() as cursor:
                 cursor.execute(query, params or ())
                 results = cursor.fetchall()
-                logger.debug(f"Custom query returned {len(results)} records")
+                # logger.debug(f"Custom query returned {len(results)} records")
                 return results
         except Error as e:
             logger.error(f"Error executing custom query: {e}")

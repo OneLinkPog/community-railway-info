@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, session
+from flask import Blueprint, render_template, session, jsonify
 from core import main_dir
 from core.config import config
 
 import json
 import re
+import requests
 
 main = Blueprint('index', __name__)
 
@@ -12,11 +13,33 @@ main = Blueprint('index', __name__)
 def index_route():
     user = session.get('user')
 
-    with open(main_dir + '/lines.json') as f:
-        lines = json.load(f)
-
-    with open(main_dir + '/operators.json') as f:
-        operators = json.load(f)
+    try:
+        response = requests.get('http://localhost:30789/api/lines')
+        response.raise_for_status()
+        data = response.json()
+        lines = data.get('lines', []) if isinstance(data, dict) else data
+    except Exception as e:
+        print(f"Error fetching lines from API: {e}")
+        try:
+            with open(main_dir + '/lines.json') as f:
+                lines = json.load(f)
+        except Exception as json_error:
+            print(f"Error loading lines.json: {json_error}")
+            lines = []
+    
+    try:
+        response = requests.get('http://localhost:30789/api/operators')
+        response.raise_for_status()
+        data = response.json()
+        operators = data.get('operators', []) if isinstance(data, dict) else data
+    except Exception as e:
+        print(f"Error fetching operators from API: {e}")
+        try:
+            with open(main_dir + '/operators.json') as f:
+                operators = json.load(f)
+        except Exception as json_error:
+            print(f"Error loading operators.json: {json_error}")
+            operators = []
 
     operator = None
     admin = False
