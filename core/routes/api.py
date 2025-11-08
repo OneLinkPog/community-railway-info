@@ -36,10 +36,10 @@ logger = Logger("@api")
 async def get_lines():
     try:
         lines = LineController.get_all_lines()
-        return jsonify({'success': True, 'lines': lines}), 200
+        return jsonify(lines), 200
     except Exception as e:
         logger.error(f"Error while fetching lines: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 500
 
 
 # POST /api/lines
