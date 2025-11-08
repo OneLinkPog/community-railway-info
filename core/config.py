@@ -25,6 +25,7 @@ class Config:
 
         self.maintenance_mode = config_data["maintenance_mode"]
         self.maintenance_message = config_data["maintenance_message"]
+        self.readonly = config_data["readonly"]
 
 
 config = Config()
