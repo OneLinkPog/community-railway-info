@@ -647,6 +647,32 @@
     font-size: 0.95em;
 }
 
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    font-family: "Roboto Flex", sans-serif;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: #4ecdc4;
+    box-shadow: 0 0 15px rgba(78, 205, 196, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.form-group select option {
+    background: rgba(40, 40, 40, 0.95);
+    color: white;
+    padding: 8px 12px;
+}
+
 .form-input {
     width: 100%;
     padding: 12px 15px;
@@ -670,6 +696,8 @@
 .form-input::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
+
+
 
 .form-actions {
     display: flex;
