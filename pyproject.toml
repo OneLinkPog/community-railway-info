@@ -9,4 +9,5 @@ dependencies = [
     "flask[async]>=3.1.2",
     "pyyaml>=6.0.3",
     "requests-oauthlib>=2.0.0",
+    "mysql-connector-python>=9.5.0",
 ]
