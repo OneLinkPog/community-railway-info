@@ -76,12 +76,16 @@
         <div class="station-modal-backdrop"></div>
         <div id="stationModalCard" class="station-modal-card">
             <span class="close" id="closeStationModal">&times;</span>
+            <button class="station-modal-edit" id="editStationModal" title="Edit Station">
+                <span class="material-symbols-outlined">edit</span>
+            </button>
             
             <div class="station-modal-image-header" id="modalStationImageHeader" style="display: none;">
                 <div class="station-modal-image-overlay"></div>
             </div>
             
-            <div class="station-modal-content">
+            <!-- View Mode Content -->
+            <div id="stationViewContent" class="station-modal-content">
                 <div class="station-modal-header">
                     <div class="station-modal-name">
                         <span class="material-symbols-outlined" id="modalStationIcon">train</span>
@@ -119,275 +123,86 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Edit Mode Content -->
+            <div id="stationEditContent" class="station-modal-content" style="display: none;">
+                <div class="station-modal-header">
+                    <h2>Edit Station</h2>
+                </div>
+                
+                <form id="stationEditForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="editStationName">Station Name</label>
+                        <input type="text" id="editStationName" name="name" required class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editStationAltName">Alternative Name</label>
+                        <input type="text" id="editStationAltName" name="alt_name" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editStationDescription">Description</label>
+                        <textarea id="editStationDescription" name="description" rows="3" class="form-input"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editStationSymbol">Symbol (<a href="https://fonts.google.com/icons" target="_blank">Material Icon</a>)</label>
+                        <input type="text" id="editStationSymbol" name="symbol" class="form-input" value="train">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editStationType">Station Type</label>
+                        <select id="editStationType" name="type" class="form-input">
+                            <option value="public">Public</option>
+                            <option value="metro">Metro</option>
+                            <option value="tram">Tram</option>
+                            <option value="bus">Bus</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editStationStatus">Status</label>
+                        <select id="editStationStatus" name="status" class="form-input">
+                            <option value="open">Open</option>
+                            <option value="closed">Closed</option>
+                            <option value="maintenance">Under Maintenance</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editStationPlatforms">Number of Platforms</label>
+                        <input type="number" id="editStationPlatforms" name="platform_count" min="0" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editStationImage">Station Image</label>
+                        <input type="file" id="editStationImage" name="image" accept="image/*" class="form-input">
+                        <div id="currentImagePreview" class="image-preview" style="display: none;">
+                            <p>Current Image:</p>
+                            <img id="currentImage" alt="Current station image">
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="editStationId" name="station_id">
+                    
+                    <div class="form-actions">
+                        <button type="button" id="cancelStationEdit" class="btn-secondary">
+                            <span class="material-symbols-outlined">close</span>
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <span class="material-symbols-outlined">save</span>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+
+
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('stationSearch');
-    const stationsGrid = document.getElementById('stationsGrid');
-    const noStationsFound = document.getElementById('noStationsFound');
-    const stationCards = document.querySelectorAll('.station-card');
-
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        let visibleStations = 0;
-
-        stationCards.forEach(card => {
-            const stationName = card.dataset.name.toLowerCase();
-            const stationInfo = card.querySelector('.station-info').textContent.toLowerCase();
-            const lines = Array.from(card.querySelectorAll('.line-badge')).map(badge => badge.textContent.toLowerCase()).join(' ');
-
-            if (stationName.includes(searchTerm) || stationInfo.includes(searchTerm) || lines.includes(searchTerm)) {
-                card.style.display = 'block';
-                visibleStations++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-
-        if (visibleStations === 0 && searchTerm.length > 0) {
-            noStationsFound.style.display = 'block';
-            stationsGrid.style.display = 'none';
-        } else {
-            noStationsFound.style.display = 'none';
-            stationsGrid.style.display = 'grid';
-        }
-    });
-
-    stationCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const stationName = this.dataset.name;
-            openStationModal(this, stationName);
-        });
-    });
-
-    // Station Modal Functions
-    async function openStationModal(cardElement, stationName) {
-        const modal = document.getElementById('stationModal');
-        const modalCard = document.getElementById('stationModalCard');
-        
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-        
-        // Calculate final modal position (centered)
-        const finalWidth = Math.min(600, windowWidth * 0.9);
-        const finalHeight = Math.min(windowHeight * 0.8, 800);
-        const finalLeft = (windowWidth - finalWidth) / 2;
-        const finalTop = (windowHeight - finalHeight) / 2;
-        
-        // Set initial state - small and centered (GNOME style)
-        modalCard.style.left = finalLeft + 'px';
-        modalCard.style.top = finalTop + 'px';
-        modalCard.style.width = finalWidth + 'px';
-        modalCard.style.height = finalHeight + 'px';
-        modalCard.style.transform = 'scale(0.6)';
-        modalCard.style.opacity = '0';
-        modalCard.style.transition = 'all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        
-        // Show modal
-        modal.classList.add('show');
-        
-        // Get station data from the card (for basic info)
-        const stationIcon = cardElement.querySelector('.material-symbols-outlined').textContent;
-        const stationAltName = cardElement.querySelector('.station-alt-name')?.textContent;
-        const stationInfo = cardElement.querySelector('.station-info').textContent;
-        const stationStatus = cardElement.querySelector('.station-status');
-        
-        // Get and set station image
-        const stationImageHeader = document.getElementById('modalStationImageHeader');
-        const cardStyle = cardElement.getAttribute('style');
-        const imageMatch = cardStyle?.match(/background-image:\s*url\(['"]?([^'"]*?)['"]?\)/);
-        
-        if (imageMatch && imageMatch[1] && imageMatch[1] !== '') {
-            stationImageHeader.style.backgroundImage = `url('${imageMatch[1]}')`;
-            stationImageHeader.style.display = 'block';
-        } else {
-            stationImageHeader.style.display = 'none';
-        }
-        
-        // Populate basic modal content
-        document.getElementById('modalStationIcon').textContent = stationIcon;
-        document.getElementById('modalStationName').textContent = stationName;
-        document.getElementById('modalStationDescription').textContent = stationInfo;
-        
-        const altNameElement = document.getElementById('modalStationAltName');
-        if (stationAltName) {
-            altNameElement.textContent = stationAltName;
-            altNameElement.style.display = 'block';
-        } else {
-            altNameElement.style.display = 'none';
-        }
-        
-        // Copy status
-        const modalStatus = document.getElementById('modalStationStatus');
-        modalStatus.innerHTML = stationStatus.innerHTML;
-        
-        // Show loading state for API data
-        document.getElementById('modalPlatformCount').textContent = '...';
-        document.getElementById('modalStationType').textContent = '...';
-        document.getElementById('modalLinesGrid').innerHTML = '<div style="text-align: center; padding: 20px; opacity: 0.7;">Loading lines...</div>';
-        
-        // Fetch detailed station data from API
-        try {
-            const response = await fetch(`/api/stations/${encodeURIComponent(stationName)}`);
-            if (response.ok) {
-                const stationData = await response.json();
-                
-                // Update modal with real data
-                const station = stationData.station;
-                const lines = stationData.lines || [];
-                const stats = stationData.statistics || {};
-                
-                document.getElementById('modalPlatformCount').textContent = station.platform_count || stats.platform_count || 'Unknown';
-                
-                let station_type = "Unknown";
-                if (station.type) {
-                    switch (station.type) {
-                        case 'public':
-                            station_type = '🌍 Public Station';
-                            break;
-                        case 'metro':
-                            station_type = '🚇 Metro Station';
-                            break;
-                        case 'tram':
-                            station_type = '🚋 Tram Station';
-                            break;
-                        case 'bus':
-                            station_type = '🚌 Bus Station';
-                            break;
-                        default:
-                            station_type = station.type.charAt(0).toUpperCase() + station.type.slice(1) + ' Station';
-                    }
-                }
-
-                document.getElementById('modalStationType').textContent = station_type;
-
-                // Populate real lines data
-                populateStationLines(lines);
-            } else {
-                // Fallback to sample data if API fails
-                document.getElementById('modalPlatformCount').textContent = 'Unknown';
-                document.getElementById('modalStationType').textContent = 'Unknown';
-                populateSampleLines();
-            }
-        } catch (error) {
-            console.error('Failed to load station details:', error);
-            // Fallback to sample data
-            document.getElementById('modalPlatformCount').textContent = 'Unknown';
-            document.getElementById('modalStationType').textContent = 'Unknown';
-            populateSampleLines();
-        }
-        
-        // Animate to full size with GNOME-style bounce
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                modalCard.style.transform = 'scale(1.02)';
-                modalCard.style.opacity = '1';
-                
-                // Second bounce phase
-                setTimeout(() => {
-                    modalCard.style.transition = 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                    modalCard.style.transform = 'scale(1)';
-                }, 400);
-            });
-        });
-    }
-    
-    function populateStationLines(lines) {
-        const linesGrid = document.getElementById('modalLinesGrid');
-        
-        if (!lines || lines.length === 0) {
-            linesGrid.innerHTML = '<div style="text-align: center; padding: 20px; opacity: 0.7;">No lines serve this station</div>';
-            return;
-        }
-        
-        linesGrid.innerHTML = lines.map(line => `
-            <div class="modal-line-item" style="border-left-color: ${line.color || '#666'}">
-                <div class="modal-line-name" style="color: ${line.color || '#666'}">${line.name}
-                    ${line.status === "No scheduled service"
-                        ? '<div class="modal-line-status">No service</div>'
-                        : `<div class="modal-line-status">${line.status || 'Running'}</div>`
-                    }
-                </div>
-                <div class="modal-line-operator">${line.operator_name || line.operator || 'Unknown Operator'}</div>
-            </div>
-        `).join('');
-    }
-    
-    function populateSampleLines() {
-        const sampleLines = [
-            { name: 'Loading...', operator: 'Please wait', status: 'Fetching data', color: '#666' }
-        ];
-        populateStationLines(sampleLines);
-    }
-    
-    function closeStationModal() {
-        const modal = document.getElementById('stationModal');
-        const modalCard = document.getElementById('stationModalCard');
-        
-        // GNOME-style close animation - shrink and fade
-        modalCard.style.transition = 'all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        modalCard.style.transform = 'scale(0.8)';
-        modalCard.style.opacity = '0';
-        
-        // Wait for animation to complete before hiding modal
-        setTimeout(() => {
-            modal.classList.remove('show');
-            // Reset styles for next opening
-            modalCard.style.transform = '';
-            modalCard.style.opacity = '';
-            modalCard.style.transition = '';
-        }, 300);
-    }
-    
-    // Close modal event listeners
-    document.getElementById('closeStationModal').addEventListener('click', closeStationModal);
-    document.querySelector('.station-modal-backdrop').addEventListener('click', closeStationModal);
-    
-    // Close modal with Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeStationModal();
-        }
-    });
-
-    function animateStats() {
-        const statNumbers = document.querySelectorAll('.stat-number');
-        statNumbers.forEach(stat => {
-            const target = parseInt(stat.textContent);
-            let current = 0;
-            const increment = target / 50;
-            
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    stat.textContent = target;
-                    clearInterval(timer);
-                } else {
-                    stat.textContent = Math.floor(current);
-                }
-            }, 30);
-        });
-    }
-
-    setTimeout(animateStats, 500);
-});
-
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-`;
-document.head.appendChild(style);
-</script>
+<script src="/static/js/station.js"></script>
 {% endblock content %}

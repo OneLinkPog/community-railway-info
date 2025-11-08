@@ -163,13 +163,13 @@ class StationController:
             return None
     
     @staticmethod
-    def update_station(station_id: int, new_name: str) -> bool:
+    def update_station(station_id: int, **kwargs) -> bool:
         """
-        Update a station's name.
+        Update a station's properties.
         
         Args:
             station_id: ID of the station to update
-            new_name: New name for the station
+            **kwargs: Station properties to update (name, alt_name, description, type, status, platform_count, symbol, image_path)
         
         Returns:
             True if successful, False otherwise
@@ -181,16 +181,42 @@ class StationController:
                 logger.error(f"Station with ID {station_id} not found")
                 return False
             
-            # Check if new name already exists
-            existing = StationController.get_station_by_name(new_name)
-            if existing and existing['id'] != station_id:
-                logger.error(f"Station name '{new_name}' already exists with ID {existing['id']}")
+            # Filter valid fields
+            valid_fields = {'name', 'alt_name', 'description', 'type', 'status', 
+                          'platform_count', 'symbol', 'image_path'}
+            update_data = {k: v for k, v in kwargs.items() if k in valid_fields}
+            
+            if not update_data:
+                logger.warning(f"No valid fields provided for station ID {station_id}")
                 return False
             
-            success = sql.update_by_id('station', station_id, {'name': new_name})
+            # Check if new name already exists (if name is being updated)
+            if 'name' in update_data:
+                existing = StationController.get_station_by_name(update_data['name'])
+                if existing:
+                    existing_id = int(existing['id'])
+                    current_id = int(station_id)
+                    logger.debug(f"Name check: existing ID {existing_id}, current ID {current_id}")
+                    if existing_id != current_id:
+                        logger.error(f"Station name '{update_data['name']}' already exists with ID {existing['id']}")
+                        return False
+                    else:
+                        logger.debug(f"Name '{update_data['name']}' belongs to current station {station_id}, allowing update")
+            
+            # Convert platform_count to int if provided
+            if 'platform_count' in update_data and update_data['platform_count']:
+                try:
+                    update_data['platform_count'] = int(update_data['platform_count'])
+                except (ValueError, TypeError):
+                    logger.warning(f"Invalid platform_count value: {update_data['platform_count']}, setting to None")
+                    update_data['platform_count'] = None
+            
+            success = sql.update_by_id('station', station_id, update_data)
             
             if not success:
                 logger.error(f"Failed to update station ID {station_id}")
+            else:
+                logger.info(f"Successfully updated station ID {station_id} with fields: {list(update_data.keys())}")
             
             return success
         

@@ -358,6 +358,76 @@ def search_stations(term):
         return jsonify({'error': str(e)}), 500
 
 
+# POST /api/stations/update
+@api.route('/api/stations/update', methods=['POST'])
+def update_station():
+    if not session.get('user'):
+        return jsonify({'error': 'Not authorized'}), 401
+    
+    if config.readonly:
+        logger.warning(f'[@{session.get("user")["username"]}] Attempted to update station in readonly mode')
+        return jsonify({'error': 'System is in readonly mode'}), 403
+
+    try:
+        user_id = session.get('user')['id']
+        is_admin = user_id in config.web_admins
+        
+        if not is_admin:
+            logger.error(f'[@{session.get("user")["username"]}] Not authorized to update stations')
+            return jsonify({'error': 'Not authorized - admin access required'}), 401
+
+        # Get form data
+        station_id = request.form.get('station_id')
+        if not station_id:
+            return jsonify({'error': 'Station ID is required'}), 400
+
+        # Prepare station data
+        station_data = {
+            'name': request.form.get('name'),
+            'alt_name': request.form.get('alt_name', ''),
+            'description': request.form.get('description', ''),
+            'symbol': request.form.get('symbol', 'train'),
+            'type': request.form.get('type', 'public'),
+            'status': request.form.get('status', 'open'),
+            'platform_count': request.form.get('platform_count')
+        }
+
+        # Handle image upload
+        if 'image' in request.files:
+            image_file = request.files['image']
+            if image_file and image_file.filename:
+                # Create stations directory if it doesn't exist
+                import os
+                stations_dir = os.path.join(main_dir, 'static', 'library', 'stations')
+                os.makedirs(stations_dir, exist_ok=True)
+                
+                # Get file extension
+                file_ext = os.path.splitext(image_file.filename)[1].lower()
+                if file_ext not in ['.jpg', '.jpeg', '.png', '.gif', '.webp']:
+                    return jsonify({'error': 'Invalid image format. Use JPG, PNG, GIF, or WebP.'}), 400
+                
+                # Save image with station ID as filename
+                image_filename = f"{station_id}{file_ext}"
+                image_path = os.path.join(stations_dir, image_filename)
+                image_file.save(image_path)
+                
+                # Update station data with image path
+                station_data['image_path'] = f"/static/library/stations/{image_filename}"
+
+        # Update station in database
+        success = StationController.update_station(station_id, **station_data)
+        if not success:
+            logger.error(f"[@{session.get('user')['username']}] Failed to update station {station_id}")
+            return jsonify({'error': 'Failed to update station'}), 500
+
+        logger.info(f"[@{session.get('user')['username']}] Updated station {station_id} ({station_data.get('name', 'Unknown')})")
+        return jsonify({'success': True}), 200
+
+    except Exception as e:
+        logger.error(f"[@{session.get('user')['username']}] Error while updating station: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
 
 """
     --- ADMIN ROUTES ---
