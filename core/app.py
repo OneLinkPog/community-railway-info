@@ -29,20 +29,6 @@ app.register_blueprint(operators)
 app.register_blueprint(admin)
 
 
-@app.route('/lines.json')
-def lines_json():
-    with open(os.path.join(os.path.dirname(__file__), '../lines.json')) as f:
-        lines = json.load(f)
-    return lines
-
-
-@app.route('/operators.json')
-def operators_json():
-    with open(os.path.join(os.path.dirname(__file__), '../operators.json')) as f:
-        operators = json.load(f)
-    return operators
-
-
 @app.route('/setup.lua')
 def setup_lua():
     with open(os.path.join(os.path.dirname(__file__), '../static/assets/lua/setup.lua')) as f:
