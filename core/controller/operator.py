@@ -85,7 +85,6 @@ class OperatorController:
             operators_raw = sql.execute_query(operator_query, (operator_uid,))
             
             if not operators_raw:
-                logger.debug(f"Operator '{operator_uid}' not found in database")
                 return None
             
             op = operators_raw[0]
@@ -134,7 +133,6 @@ class OperatorController:
             operators_raw = sql.execute_query(operator_query, (operator_name,))
             
             if not operators_raw:
-                logger.debug(f"Operator '{operator_name}' not found in database")
                 return None
             
             op = operators_raw[0]
@@ -256,7 +254,6 @@ class OperatorController:
                         'user_id': str(user_id)
                     })
             
-            logger.info(f"Created operator '{operator_data['name']}' with ID {operator_id}")
             return operator_id
         
         except Exception as e:
@@ -316,7 +313,6 @@ class OperatorController:
                         'user_id': str(user_id)
                     })
             
-            logger.info(f"Updated operator '{operator_uid}'")
             return True
         
         except Exception as e:
@@ -355,9 +351,7 @@ class OperatorController:
             # Delete the operator itself
             success = sql.delete_by_id('operator', operator_id)
             
-            if success:
-                logger.info(f"Deleted operator '{operator_uid}'")
-            else:
+            if not success:
                 logger.error(f"Failed to delete operator '{operator_uid}'")
             
             return success
@@ -411,7 +405,6 @@ class OperatorController:
             })
             
             if result:
-                logger.info(f"Added user '{user_id}' to operator '{operator_uid}'")
                 return True
             else:
                 logger.error(f"Failed to add user '{user_id}' to operator '{operator_uid}'")
@@ -448,7 +441,6 @@ class OperatorController:
             })
             
             if count > 0:
-                logger.info(f"Removed user '{user_id}' from operator '{operator_uid}'")
                 return True
             else:
                 logger.warning(f"User '{user_id}' was not a member of operator '{operator_uid}'")

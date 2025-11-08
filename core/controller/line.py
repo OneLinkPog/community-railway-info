@@ -122,7 +122,6 @@ class LineController:
             results = sql.execute_query(query, (line_name,))
             
             if not results:
-                logger.debug(f"Line '{line_name}' not found in database")
                 return None
             
             row = results[0]
@@ -317,7 +316,6 @@ class LineController:
                         'composition_id': composition_id
                     })
             
-            logger.info(f"Created line '{line_data['name']}' with ID {line_id}")
             return line_id
         
         except Exception as e:
@@ -411,7 +409,6 @@ class LineController:
                         'composition_id': composition_id
                     })
             
-            logger.info(f"Updated line '{line_name}'")
             return True
         
         except Exception as e:
@@ -444,9 +441,7 @@ class LineController:
             # Delete the line itself
             success = sql.delete_by_id('line', line_id)
             
-            if success:
-                logger.info(f"Deleted line '{line_name}'")
-            else:
+            if not success:
                 logger.error(f"Failed to delete line '{line_name}'")
             
             return success

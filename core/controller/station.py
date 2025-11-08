@@ -48,9 +48,6 @@ class StationController:
         try:
             station = sql.select_by_id('station', station_id)
             
-            if not station:
-                logger.debug(f"Station with ID {station_id} not found")
-            
             return station
         
         except Exception as e:
@@ -70,9 +67,6 @@ class StationController:
         """
         try:
             station = sql.select_one('station', where={'name': station_name})
-            
-            if not station:
-                logger.debug(f"Station '{station_name}' not found")
             
             return station
         
@@ -159,9 +153,7 @@ class StationController:
             
             station_id = sql.insert('station', {'name': station_name})
             
-            if station_id:
-                logger.info(f"Created station '{station_name}' with ID {station_id}")
-            else:
+            if not station_id:
                 logger.error(f"Failed to create station '{station_name}'")
             
             return station_id
@@ -197,9 +189,7 @@ class StationController:
             
             success = sql.update_by_id('station', station_id, {'name': new_name})
             
-            if success:
-                logger.info(f"Updated station ID {station_id} to '{new_name}'")
-            else:
+            if not success:
                 logger.error(f"Failed to update station ID {station_id}")
             
             return success
@@ -237,9 +227,7 @@ class StationController:
             # Delete the station
             success = sql.delete_by_id('station', station_id)
             
-            if success:
-                logger.info(f"Deleted station '{station['name']}' (ID: {station_id})")
-            else:
+            if not success:
                 logger.error(f"Failed to delete station ID {station_id}")
             
             return success
@@ -301,7 +289,6 @@ class StationController:
             })
             
             if result:
-                logger.info(f"Added station '{station_name}' to line '{line_name}' at position {order}")
                 return True
             else:
                 logger.error(f"Failed to add station '{station_name}' to line '{line_name}'")
@@ -343,7 +330,6 @@ class StationController:
             })
             
             if count > 0:
-                logger.info(f"Removed station '{station_name}' from line '{line_name}'")
                 return True
             else:
                 logger.warning(f"Station '{station_name}' was not on line '{line_name}'")
@@ -384,7 +370,6 @@ class StationController:
                     {'line_id': line['id'], 'station_id': station['id']}
                 )
             
-            logger.info(f"Reordered {len(station_order)} stations on line '{line_name}'")
             return True
         
         except Exception as e:
@@ -439,7 +424,6 @@ class StationController:
             
             stations = sql.execute_query(query, (f"%{search_term}%",))
             
-            logger.debug(f"Found {len(stations)} stations matching '{search_term}'")
             return stations
         
         except Exception as e:
@@ -484,7 +468,6 @@ class StationController:
                 'lines': [{'name': line['name'], 'color': line.get('color')} for line in lines]
             }
             
-            logger.debug(f"Generated statistics for station '{station_name}'")
             return stats
         
         except Exception as e:

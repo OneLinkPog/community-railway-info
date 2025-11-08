@@ -58,7 +58,6 @@ class OperatorRequestController:
                 }
                 requests.append(request)
             
-            logger.debug(f"Retrieved {len(requests)} operator requests from database")
             return requests
         
         except Exception as e:
@@ -96,7 +95,6 @@ class OperatorRequestController:
             results = sql.execute_query(query, (timestamp,))
             
             if not results:
-                logger.debug(f"Request with timestamp {timestamp} not found")
                 return None
             
             row = results[0]
@@ -115,7 +113,6 @@ class OperatorRequestController:
                 'company_uid': row['company_uid']
             }
             
-            logger.debug(f"Found request with timestamp {timestamp}")
             return request
         
         except Exception as e:
@@ -137,7 +134,6 @@ class OperatorRequestController:
             request = sql.select_by_id('operator_request', request_id)
             
             if not request:
-                logger.debug(f"Request with ID {request_id} not found")
                 return None
             
             formatted_request = {
@@ -155,7 +151,6 @@ class OperatorRequestController:
                 'company_uid': request['company_uid']
             }
             
-            logger.debug(f"Found request with ID {request_id}")
             return formatted_request
         
         except Exception as e:
@@ -208,7 +203,6 @@ class OperatorRequestController:
                 }
                 requests.append(request)
             
-            logger.debug(f"Retrieved {len(requests)} pending operator requests from database")
             return requests
         
         except Exception as e:
@@ -248,9 +242,7 @@ class OperatorRequestController:
             
             request_id = sql.insert('operator_request', insert_data)
             
-            if request_id:
-                logger.info(f"Created operator request for '{request_data['company_name']}' by user {request_data['requester']['username']}")
-            else:
+            if not request_id:
                 logger.error(f"Failed to create operator request for '{request_data['company_name']}'")
             
             return request_id
@@ -279,9 +271,7 @@ class OperatorRequestController:
             query = "UPDATE operator_request SET status = %s WHERE timestamp = %s"
             result = sql.execute_update(query, (status, timestamp))
             
-            if result:
-                logger.info(f"Updated request status to '{status}' for timestamp {timestamp}")
-            else:
+            if not result:
                 logger.error(f"Request with timestamp {timestamp} not found or update failed")
             
             return result
@@ -306,7 +296,6 @@ class OperatorRequestController:
             count = sql.execute_update(query, (timestamp,))
             
             if count > 0:
-                logger.info(f"Deleted operator request with timestamp {timestamp}")
                 return True
             else:
                 logger.warning(f"Request with timestamp {timestamp} not found")
@@ -330,9 +319,7 @@ class OperatorRequestController:
         try:
             success = sql.delete_by_id('operator_request', request_id)
             
-            if success:
-                logger.info(f"Deleted operator request with ID {request_id}")
-            else:
+            if not success:
                 logger.warning(f"Request with ID {request_id} not found")
             
             return success
