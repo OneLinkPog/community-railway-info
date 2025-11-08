@@ -44,6 +44,9 @@
                 <span class="material-symbols-outlined">{{ station.symbol }}</span>
                 {{ station.name }}
             </div>
+            {% if station.alt_name %}
+            <span class="station-alt-name">{{ station.alt_name }}</span>
+            {% endif %}
             <div class="station-info">
                 {{ station.description }}
             </div>

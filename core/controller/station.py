@@ -21,7 +21,7 @@ class StationController:
         """
         try:
             query = """
-            SELECT id, name, description, type, status, platform_count, symbol, image_path
+            SELECT id, name, alt_name, description, type, status, platform_count, symbol, image_path
             FROM station
             ORDER BY name
             """
@@ -87,7 +87,7 @@ class StationController:
         """
         try:
             query = """
-            SELECT s.id, s.name, ls.station_order
+            SELECT s.id, s.name, s.alt_name, ls.station_order
             FROM station s
             JOIN line_station ls ON s.id = ls.station_id
             JOIN line l ON ls.line_id = l.id
