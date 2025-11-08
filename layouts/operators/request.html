@@ -12,12 +12,12 @@
         <form id="requestForm" class="request-form">
             <div class="form-group">
                 <label for="companyName">Company Name</label>
-                <input type="text" id="companyName" name="companyName" required>
+                <input type="text" id="companyName" name="companyName" required placeholder="e.g. Example Railways">
             </div>
             
             <div class="form-group">
-                <label for="shortCode">Short Code (max. 4 characters)</label>
-                <input type="text" id="shortCode" name="shortCode" maxlength="4" required>
+                <label for="shortCode">Short Code (max. 5 characters)</label>
+                <input type="text" id="shortCode" name="shortCode" maxlength="5" required placeholder="e.g. EXR">
             </div>
             
             <div class="form-group">
@@ -31,8 +31,8 @@
             </div>
 
             <div class="form-group">
-                <label for="companyUid">Unique Company ID (Cannot be changed later)</label>
-                <input type="text" id="companyUid" name="companyUid" pattern="\S+" title="No spaces allowed" required>
+                <label for="companyUid">Unique Company ID</label>
+                <input type="text" id="companyUid" name="companyUid" pattern="\S+" title="No spaces allowed" required placeholder="e.g. example-railways">
             </div>
 
             <button type="submit" class="submit-btn">Submit request</button>

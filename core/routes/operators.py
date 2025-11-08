@@ -170,12 +170,17 @@ def request_operator_page():
     if not user:
         return redirect(url_for('auth.login'))
 
-    with open(main_dir + '/operators.json') as f:
-        operators = json.load(f)
+    operators = OperatorController.get_all_operators()
+    
+    if user and 'id' in user:
+        operator = [op for op in operators if user['id'] in op['users']]
+        
+    if user and user["id"] in config.web_admins:
+        admin = True
 
-    operator = next((op for op in operators if user['id'] in op['users']), None)
-
-    if operator:
-        return render_template('operators/request.html', error="You are already part of an operator")
-
-    return render_template('operators/request.html', user=user)
+    return render_template(
+        'operators/request.html',
+        user=user,
+        operator=operator,
+        admin=admin,
+    )

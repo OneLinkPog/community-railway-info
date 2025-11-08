@@ -54,14 +54,6 @@ class OperatorController:
         
         except Exception as e:
             logger.error(f"Error fetching operators from database: {str(e)}")
-            try:
-                with open(main_dir + '/operators.json', 'r') as f:
-                    operators = json.load(f)
-                logger.info(f"Loaded {len(operators)} operators from JSON fallback")
-                return operators
-            except Exception as json_error:
-                logger.error(f"Error loading operators from JSON: {str(json_error)}")
-                return []
     
     @staticmethod
     def get_operator_by_uid(operator_uid: str) -> Optional[Dict[str, Any]]:
