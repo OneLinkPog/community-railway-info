@@ -4,7 +4,7 @@ from core.config import config
 
 from core.routes.oauth2 import auth
 from core.routes.api import api
-from core.routes.index import index
+from core.routes.main import main
 from core.routes.admin import admin
 from core.routes.operators import operators
 
@@ -24,7 +24,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 app.register_blueprint(auth)
 app.register_blueprint(api)
-app.register_blueprint(index)
+app.register_blueprint(main)
 app.register_blueprint(operators)
 app.register_blueprint(admin)
 

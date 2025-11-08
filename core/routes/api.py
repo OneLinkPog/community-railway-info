@@ -12,6 +12,7 @@ logger = Logger("@api")
 
 """
     --- API Routes ---
+    - /api/lines [GET]
     - /api/lines [POST]
     - /api/lines/<name> [PUT]
     - /api/lines/<name> [DELETE]
@@ -28,13 +29,25 @@ logger = Logger("@api")
     --- LINE ROUTES ---
 """
 
+
+# GET /api/lines
+@api.route('/api/lines', methods=['GET'])
+async def get_lines():
+    try:
+        with open(main_dir + '/lines.json', 'r') as f:
+            lines = json.load(f)
+        return jsonify({'success': True, 'lines': lines}), 200
+    except Exception as e:
+        logger.error(f"Error while fetching lines: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 # POST /api/lines
 @api.route('/api/lines', methods=['POST'])
 async def add_line():
     if not session.get('user'):
         return {'error': 'Unauthorized'}, 401
     
-    # Check if readonly mode is enabled (not for admins)
     if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to add line in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
@@ -117,7 +130,7 @@ async def update_line(name):
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
     
-    # Check if readonly mode is enabled (not for admins)
+    
     if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to update line in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
@@ -201,7 +214,7 @@ async def delete_line(name):
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
     
-    # Check if readonly mode is enabled (not for admins)
+    
     if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to delete line in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
@@ -253,7 +266,7 @@ async def update_operator(name):
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
     
-    # Check if readonly mode is enabled (not for admins)
+    
     if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to update operator in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
@@ -311,7 +324,7 @@ def request_operator():
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
 
-    # Check if readonly mode is enabled (not for admins)
+    
     if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to request operator in readonly mode')
         return {'error': 'System is in readonly mode'}, 403

@@ -5,10 +5,10 @@ from core.config import config
 import json
 import re
 
-index = Blueprint('index', __name__)
+main = Blueprint('index', __name__)
 
 
-@index.route('/')
+@main.route('/')
 def index_route():
     user = session.get('user')
 
@@ -77,7 +77,7 @@ def index_route():
     )
 
 
-@index.route('/computercraft-setup')
+@main.route('/computercraft-setup')
 def computercraft_setup_route():
     user = session.get('user')
 
@@ -101,7 +101,7 @@ def computercraft_setup_route():
     )
 
 
-@index.route('/stations')
+@main.route('/stations')
 def stations_route():
     user = session.get('user')
 
