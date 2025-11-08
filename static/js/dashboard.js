@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const dropzone = variantDiv.querySelector(".composition-dropzone");
         const nameInput = variantDiv.querySelector(".variant-name-input");
 
-´        nameInput.addEventListener("input", (e) => {
+        nameInput.addEventListener("input", (e) => {
             compositionVariants[variantIndex].name = e.target.value;
             updateCompositionInput();
         });
