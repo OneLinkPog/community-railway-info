@@ -2,10 +2,8 @@ from flask import Blueprint, jsonify, session, request
 from core import main_dir
 from core.logger import Logger
 from core.config import config
-from core.controller import LineController, OperatorController, StationController
-from datetime import datetime
+from core.controller import LineController, OperatorController, StationController, OperatorRequestController
 
-import json
 import yaml
 
 api = Blueprint('api', __name__)
@@ -52,9 +50,6 @@ async def add_line():
     if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to add line in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
-    
-    with open(main_dir + '/operators.json', 'r') as f:
-        operators = json.load(f)
 
     try:
         data = request.json
@@ -62,64 +57,42 @@ async def add_line():
         required_fields = ['name', 'color', 'status', 'operator_uid', 'type']
         for field in required_fields:
             if field not in data:
-                logger.error(
-                    f'[@{session.get("user")["username"]}] Missing field: {field}')
+                logger.error(f'[@{session.get("user")["username"]}] Missing field: {field}')
                 return {'error': f'Missing field: {field}'}, 400
 
         allowed_types = ['public', 'private', 'metro', 'tram', 'bus']
         if data['type'] not in allowed_types:
-            logger.error(
-                f'[@{session.get("user")["username"]}] Invalid line type: {data["type"]}')
+            logger.error(f'[@{session.get("user")["username"]}] Invalid line type: {data["type"]}')
             return {'error': f'Invalid line type. Must be one of: {", ".join(allowed_types)}'}, 400
 
-        # Handle both old 'composition' and new 'compositions' format
         if 'composition' in data and 'compositions' not in data:
-            # Convert old single composition to new array format
             if data['composition']:
                 data['compositions'] = [data['composition']]
             else:
                 data['compositions'] = []
             del data['composition']
 
-        with open(main_dir + '/lines.json', 'r+') as f:
-            lines = json.load(f)
+        if LineController.line_exists(data['name']):
+            logger.error(f'[@{session.get("user")["username"]}] A line with that name already exists')
+            return {'error': 'A line with that name already exists'}, 400
+        
+        operator = OperatorController.get_operator_by_uid(data['operator_uid'])
+        if not operator:
+            logger.error(f'[@{session.get("user")["username"]}] Operator not found')
+            return {'error': 'Operator not found'}, 404
+        
+        if session.get('user')['id'] not in operator.get('users', []):
+            logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
+            return {'error': 'Not authorized - must be member of the rail company'}, 401
 
-            if any(line.get('name') == data['name'] for line in lines):
-                logger.error(
-                    f'[@{session.get("user")["username"]}] A line with that name already exists')
-                return {'error': 'A line with that name already exists'}, 400
+        line_id = LineController.create_line(data)
+        if not line_id:
+            logger.error(f"[@{session.get('user')['username']}] Failed to create line")
+            return {'error': 'Failed to create line'}, 500
 
-            logger.info(f'[@{session.get("user")["username"]}] Added new line: {data["name"]} (Type: {data["type"]})')
-            lines.append(data)
-            f.seek(0)
-            json.dump(lines, f, indent=2)
-            f.truncate()
-            
-            with open(main_dir + '/lines.json', 'r') as f:
-                lines = json.load(f)
-                line = next((line for line in lines if line.get('name') == data["name"]), None)
-                if not line:
-                    logger.error(
-                        f'[@{session.get("user")["username"]}] Line "{data["name"]}" not found after adding. '
-                        'Possible write error or corrupted lines.json.'
-                    )
-                    return {
-                        'error': (
-                            f'Line "{data["name"]}" was not found after adding. '
-                            'Please check if lines.json is valid and writable.'
-                        )
-                    }, 500
-                    
-            operator = next((op for op in operators if op['uid'] == line['operator_uid']), None)
-            if not operator:
-                logger.error(f'[@{session.get("user")["username"]}] Operator not found')
-                return {'error': 'Operator not found'}, 404
-                
-            if session.get('user')['id'] not in operator.get('users', []):
-                logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
-                return {'error': 'Not authorized - must be member of the rail company'}, 401
-
+        logger.info(f'[@{session.get("user")["username"]}] Added new line: {data["name"]} (Type: {data["type"]})')
         return {'success': True}, 200
+
     except Exception as e:
         logger.error(f"[@{session.get('user')['username']}] Error while adding line: {str(e)}")
         return {'error': str(e)}, 500
@@ -131,31 +104,25 @@ async def update_line(name):
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
     
-    
     if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to update line in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
-    
-    with open(main_dir + '/operators.json', 'r') as f:
-        operators = json.load(f)
-    
-    with open(main_dir + '/lines.json', 'r') as f:
-        lines = json.load(f)
-        line = next((line for line in lines if line.get('name') == name), None)
+
+    try:
+        line = LineController.get_line_by_name(name)
         if not line:
             logger.error(f'[@{session.get("user")["username"]}] Line not found')
             return {'error': 'Line not found'}, 404
-            
-    operator = next((op for op in operators if op['uid'] == line['operator_uid']), None)
-    if not operator:
-        logger.error(f'[@{session.get("user")["username"]}] Operator not found')
-        return {'error': 'Operator not found'}, 404
         
-    if session.get('user')['id'] not in operator.get('users', []):
-        logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
-        return {'error': 'Not authorized - must be member of the rail company'}, 401
+        operator = OperatorController.get_operator_by_uid(line['operator_uid'])
+        if not operator:
+            logger.error(f'[@{session.get("user")["username"]}] Operator not found')
+            return {'error': 'Operator not found'}, 404
+        
+        if session.get('user')['id'] not in operator.get('users', []):
+            logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
+            return {'error': 'Not authorized - must be member of the rail company'}, 401
 
-    try:
         data = request.json
 
         if 'composition' in data and 'compositions' not in data:
@@ -165,47 +132,28 @@ async def update_line(name):
                 data['compositions'] = []
             del data['composition']
 
-        with open(main_dir + '/lines.json', 'r+') as f:
-            lines = json.load(f)
-            
-            old_line = None
-            for line in lines:
-                if line.get('name') == name:
-                    old_line = line.copy()
-                    break
+        if 'operator_uid' not in data:
+            data['operator_uid'] = line['operator_uid']
 
-            line_updated = False
-            for i, line in enumerate(lines):
-                if line.get('name') == name:
-                    # Preserve operator data
-                    data['operator'] = line.get('operator')
-                    data['operator_uid'] = line.get('operator_uid')
-                    lines[i] = data
-                    line_updated = True
-                    
-                    changes = []
-                    for key in data:
-                        if key in old_line and data[key] != old_line[key]:
-                            changes.append(f"{key}: {old_line[key]} -> {data[key]}")
-                    
-                    change_log = ", ".join(changes) if changes else "no changes"
-                    logger.info(f"[@{session.get('user')['username']}] Updated line {name}. Changes: {change_log.replace(chr(10), ' ').replace(chr(13), ' ')}")
-                    break
+        changes = []
+        for key in data:
+            if key in line and data[key] != line[key]:
+                old_val = str(line[key])[:50]
+                new_val = str(data[key])[:50]
+                changes.append(f"{key}: {old_val} -> {new_val}")
+        
+        change_log = ", ".join(changes) if changes else "no changes"
+        
+        success = LineController.update_line(name, data)
+        if not success:
+            logger.error(f"[@{session.get('user')['username']}] Failed to update line {name}")
+            return {'error': 'Failed to update line'}, 500
 
-            if not line_updated:
-                logger.info(
-                    f"[@{session.get('user')['username']}] Line {name} not found")
-                return {'error': f'Line {name} not found'}, 404
-
-            f.seek(0)
-            json.dump(lines, f, indent=2)
-            f.truncate()
-
+        logger.info(f"[@{session.get('user')['username']}] Updated line {name}. Changes: {change_log.replace(chr(10), ' ').replace(chr(13), ' ')}")
         return {'success': True}, 200
 
     except Exception as e:
-        logger.error(
-            f"[@{session.get('user')['username']}] Error while updating line {name}: {str(e)}")
+        logger.error(f"[@{session.get('user')['username']}] Error while updating line {name}: {str(e)}")
         return {'error': str(e)}, 500
 
 
@@ -215,40 +163,31 @@ async def delete_line(name):
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
     
-    
     if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to delete line in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
-    
-    with open(main_dir + '/operators.json', 'r') as f:
-        operators = json.load(f)
-        
-    with open(main_dir + '/lines.json', 'r') as f:
-        lines = json.load(f)
-        line = next((line for line in lines if line.get('name') == name), None)
+
+    try:
+        line = LineController.get_line_by_name(name)
         if not line:
             logger.error(f'[@{session.get("user")["username"]}] Line not found')
             return {'error': 'Line not found'}, 404
-            
-    operator = next((op for op in operators if op['uid'] == line['operator_uid']), None)
-    if not operator:
-        logger.error(f'[@{session.get("user")["username"]}] Operator not found')
-        return {'error': 'Operator not found'}, 404
         
-    if session.get('user')['id'] not in operator.get('users', []):
-        logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
-        return {'error': 'Not authorized - must be member of the rail company'}, 401
+        operator = OperatorController.get_operator_by_uid(line['operator_uid'])
+        if not operator:
+            logger.error(f'[@{session.get("user")["username"]}] Operator not found')
+            return {'error': 'Operator not found'}, 404
+        
+        if session.get('user')['id'] not in operator.get('users', []):
+            logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
+            return {'error': 'Not authorized - must be member of the rail company'}, 401
 
-    try:
-        with open(main_dir + '/lines.json', 'r+') as f:
-            lines = json.load(f)
-            lines = [line for line in lines if line.get('name') != name]
-            f.seek(0)
-            json.dump(lines, f, indent=2)
-            f.truncate()
+        success = LineController.delete_line(name)
+        if not success:
+            logger.error(f"[@{session.get('user')['username']}] Failed to delete line {name}")
+            return {'error': 'Failed to delete line'}, 500
 
-        logger.info(
-            f"[@{session.get('user')['username']}] Deleted line {name} successfully.")
+        logger.info(f"[@{session.get('user')['username']}] Deleted line {name} successfully.")
         return {'success': True}, 200
 
     except Exception as e:
@@ -278,55 +217,33 @@ async def update_operator(name):
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
     
-    
     if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to update operator in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
-    
-    with open(main_dir + '/operators.json', 'r') as f:
-        operators = json.load(f)
-        
-    operator = next((op for op in operators if op['uid'] == name), None)
-    if not operator:
-        logger.error(f'[@{session.get("user")["username"]}] Operator not found')
-        return {'error': 'Operator not found'}, 404
-        
-    if session.get('user')['id'] not in operator.get('users', []):
-        logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
-        return {'error': 'Not authorized - must be member of the rail company'}, 401
 
     try:
+        operator = OperatorController.get_operator_by_uid(name)
+        if not operator:
+            logger.error(f'[@{session.get("user")["username"]}] Operator not found')
+            return {'error': 'Operator not found'}, 404
+        
+        if session.get('user')['id'] not in operator.get('users', []):
+            logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
+            return {'error': 'Not authorized - must be member of the rail company'}, 401
+
         data = request.json
-        logger.info(
-            f"[@{session.get('user')['username']}] Updating operator {name} with data: {data}")
+        logger.info(f"[@{session.get('user')['username']}] Updating operator {name} with data: {data}")
 
-        with open(main_dir + '/operators.json', 'r+') as f:
-            operators = json.load(f)
+        success = OperatorController.update_operator(name, data)
+        if not success:
+            logger.error(f"[@{session.get('user')['username']}] Failed to update operator {name}")
+            return {'error': 'Failed to update operator'}, 500
 
-            operator_updated = False
-            for i, operator in enumerate(operators):
-                if operator.get('uid') == name:
-                    data['uid'] = operator['uid']
-                    operators[i] = data
-                    operator_updated = True
-                    logger.info(
-                        f"[@{session.get('user')['username']}] Operator {name} updated successfully with new data: {operators[i]}")
-                    break
-
-            if not operator_updated:
-                logger.info(
-                    f"[@{session.get('user')['username']}] Operator {name} not found")
-                return {'error': f'Operator {name} not found'}, 404
-
-            f.seek(0)
-            json.dump(operators, f, indent=2)
-            f.truncate()
-
+        logger.info(f"[@{session.get('user')['username']}] Operator {name} updated successfully")
         return {'success': True}, 200
 
     except Exception as e:
-        logger.error(
-            f"[@{session.get('user')['username']}] Error while updating operator {name}: {str(e)}")
+        logger.error(f"[@{session.get('user')['username']}] Error while updating operator {name}: {str(e)}")
         return {'error': str(e)}, 500
     
 
@@ -336,7 +253,6 @@ def request_operator():
     if not session.get('user'):
         return {'error': 'Not authorized'}, 401
 
-    
     if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to request operator in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
@@ -346,8 +262,6 @@ def request_operator():
         user = session.get('user')
 
         request_data = {
-            'timestamp': datetime.now().isoformat(),
-            'status': 'pending',
             'requester': {
                 'id': user['id'],
                 'username': user['username']
@@ -359,18 +273,11 @@ def request_operator():
             'company_uid': data['companyUid']
         }
 
-        requests_file = main_dir + '/operator_requests.json'
-
-        try:
-            with open(requests_file, 'r') as f:
-                requests = json.load(f)
-        except FileNotFoundError:
-            requests = []
-
-        requests.append(request_data)
-
-        with open(requests_file, 'w') as f:
-            json.dump(requests, f, indent=2)
+        success = OperatorRequestController.create_request(request_data)
+        
+        if not success:
+            logger.error(f"[@{user['username']}] Failed to create operator request")
+            return {'error': 'Failed to create request'}, 500
 
         logger.info(f"New Company request by @{user['username']}")
         return {'success': True}, 200
@@ -475,35 +382,30 @@ def handle_company_request():
         if not timestamp or action not in ['accept', 'reject']:
             return jsonify({'error': 'Invalid request'}), 400
 
-        with open(main_dir + '/operator_requests.json', 'r') as f:
-            requests = json.load(f)
-
-        request_data = next(
-            (req for req in requests if req['timestamp'] == timestamp), None)
-
+        request_data = OperatorRequestController.get_request_by_timestamp(timestamp)
+        
         if not request_data:
             return jsonify({'error': 'Request not found'}), 404
 
         if action == 'accept':
-            new_operator = {
+            new_operator_data = {
                 'name': request_data['company_name'],
-                'short_code': request_data['short_code'],
+                'short': request_data['short_code'],
                 'uid': request_data['company_uid'].lower(),
                 'color': request_data['color'],
                 'users': [request_data['requester']['id']] + request_data['additional_users']
             }
 
-            with open(main_dir + '/operators.json', 'r+') as f:
-                operators = json.load(f)
-                operators.append(new_operator)
-                f.seek(0)
-                json.dump(operators, f, indent=2)
-                f.truncate()
+            operator_id = OperatorController.create_operator(new_operator_data)
+            if not operator_id:
+                logger.error(f"[@{user['username']}] Failed to create operator for request")
+                return jsonify({'error': 'Failed to create operator'}), 500
 
-        request_data['status'] = 'accepted' if action == 'accept' else 'rejected'
-
-        with open(main_dir + '/operator_requests.json', 'w') as f:
-            json.dump(requests, f, indent=2)
+        success = OperatorRequestController.update_request_status(timestamp, 'accepted' if action == 'accept' else 'rejected')
+        
+        if not success:
+            logger.error(f"[@{user['username']}] Failed to update request status")
+            return jsonify({'error': 'Failed to update request status'}), 500
 
         logger.admin(f"[@{user['username']}] {action.capitalize()}ed operator request for {request_data['company_name']}")
         return jsonify({'success': True})
