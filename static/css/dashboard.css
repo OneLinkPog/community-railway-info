@@ -474,3 +474,163 @@
     background-repeat: no-repeat;
     background-position: center;
 }
+
+/* Station Search Interface Styles */
+.station-search-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.station-search-input {
+    width: calc(100% - 15px) !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+    border: 1px solid #1f2325 !important;
+    background: #1f2325 !important;
+    color: var(--color-text) !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.station-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1f2325;
+    border: 1px solid #333;
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.station-dropdown.show {
+    display: block;
+}
+
+.station-dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #333;
+    color: var(--color-text);
+    font-family: "Poppins", sans-serif;
+    transition: background-color 0.2s ease;
+}
+
+.station-dropdown-item:hover {
+    background-color: #2a2d30;
+}
+
+.station-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.selected-stations-container {
+    margin-top: 15px;
+}
+
+.selected-stations-header {
+    margin-bottom: 10px;
+    color: var(--color-text);
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+}
+
+.stations-list {
+    background: #1f2325;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stations-list.empty::before {
+    content: "No stations selected yet. Search and click to add stations.";
+    color: #888;
+    font-style: italic;
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+.station-item {
+    background: #2a2d30;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: grab;
+    color: var(--color-text);
+    font-family: "Poppins", sans-serif;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.station-item:hover {
+    background: #3a3d40;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.station-item.dragging {
+    opacity: 0.5;
+    transform: rotate(2deg);
+}
+
+.station-item-name {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.station-item-order {
+    background: #444;
+    color: #fff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.station-item-remove {
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.2s ease;
+}
+
+.station-item-remove:hover {
+    background: #d32f2f;
+}
+
+.stations-list .station-item:active {
+    cursor: grabbing;
+}
+
+/* Drag and drop styles */
+.stations-list.drag-over {
+    border-color: #2196F3;
+    background-color: rgba(33, 150, 243, 0.1);
+}
+
+.drag-placeholder {
+    height: 2px;
+    background: #2196F3;
+    margin: 2px 0;
+    border-radius: 1px;
+}
