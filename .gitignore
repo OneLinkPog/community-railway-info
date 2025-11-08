@@ -216,4 +216,5 @@ outdated.json
 operators.json
 operator_requests.json
 operator_avatar_cache.json
-sql_migrate.py
+
+sql
