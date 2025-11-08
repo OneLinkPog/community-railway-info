@@ -35,7 +35,7 @@ async def add_line():
         return {'error': 'Unauthorized'}, 401
     
     # Check if readonly mode is enabled (not for admins)
-    if config.readonly and session.get('user')['id'] not in config.web_admins:
+    if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to add line in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
     
@@ -101,7 +101,7 @@ async def add_line():
                 logger.error(f'[@{session.get("user")["username"]}] Operator not found')
                 return {'error': 'Operator not found'}, 404
                 
-            if session.get('user')['id'] not in operator.get('users', []) and session.get('user')['id'] not in config.web_admins:
+            if session.get('user')['id'] not in operator.get('users', []):
                 logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
                 return {'error': 'Not authorized - must be member of the rail company'}, 401
 
@@ -118,7 +118,7 @@ async def update_line(name):
         return {'error': 'Not authorized'}, 401
     
     # Check if readonly mode is enabled (not for admins)
-    if config.readonly and session.get('user')['id'] not in config.web_admins:
+    if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to update line in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
     
@@ -137,7 +137,7 @@ async def update_line(name):
         logger.error(f'[@{session.get("user")["username"]}] Operator not found')
         return {'error': 'Operator not found'}, 404
         
-    if session.get('user')['id'] not in operator.get('users', []) and session.get('user')['id'] not in config.web_admins:
+    if session.get('user')['id'] not in operator.get('users', []):
         logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
         return {'error': 'Not authorized - must be member of the rail company'}, 401
 
@@ -202,7 +202,7 @@ async def delete_line(name):
         return {'error': 'Not authorized'}, 401
     
     # Check if readonly mode is enabled (not for admins)
-    if config.readonly and session.get('user')['id'] not in config.web_admins:
+    if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to delete line in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
     
@@ -221,7 +221,7 @@ async def delete_line(name):
         logger.error(f'[@{session.get("user")["username"]}] Operator not found')
         return {'error': 'Operator not found'}, 404
         
-    if session.get('user')['id'] not in operator.get('users', []) and session.get('user')['id'] not in config.web_admins:
+    if session.get('user')['id'] not in operator.get('users', []):
         logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
         return {'error': 'Not authorized - must be member of the rail company'}, 401
 
@@ -254,7 +254,7 @@ async def update_operator(name):
         return {'error': 'Not authorized'}, 401
     
     # Check if readonly mode is enabled (not for admins)
-    if config.readonly and session.get('user')['id'] not in config.web_admins:
+    if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to update operator in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
     
@@ -266,7 +266,7 @@ async def update_operator(name):
         logger.error(f'[@{session.get("user")["username"]}] Operator not found')
         return {'error': 'Operator not found'}, 404
         
-    if session.get('user')['id'] not in operator.get('users', []) and session.get('user')['id'] not in config.web_admins:
+    if session.get('user')['id'] not in operator.get('users', []):
         logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
         return {'error': 'Not authorized - must be member of the rail company'}, 401
 
@@ -312,7 +312,7 @@ def request_operator():
         return {'error': 'Not authorized'}, 401
 
     # Check if readonly mode is enabled (not for admins)
-    if config.readonly and session.get('user')['id'] not in config.web_admins:
+    if config.readonly:
         logger.warning(f'[@{session.get("user")["username"]}] Attempted to request operator in readonly mode')
         return {'error': 'System is in readonly mode'}, 403
 
@@ -479,6 +479,7 @@ def save_settings():
 
         config_data['port'] = data['port']
         config_data['debug'] = data['debug']
+        config_data['readonly'] = data['readonly']
         config_data['web_admins'] = data['web_admins']
         config_data['maintenance_mode'] = data['maintenance_mode']
         config_data['maintenance_message'] = data['maintenance_message']

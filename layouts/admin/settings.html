@@ -18,6 +18,10 @@
             <div class="smd-component_toggle{% if config.debug %} smd-component_toggle--active{% endif %}" onclick="toggleSwitch(this)" id="debug"></div>
         </div>
         <div class="form-group">
+            <label for="readonly">Readonly Mode</label>
+            <div class="smd-component_toggle{% if config.readonly %} smd-component_toggle--active{% endif %}" onclick="toggleSwitch(this)" id="readonly"></div>
+        </div>
+        <div class="form-group">
             <label for="web_admins">Administrators</label>
             <input type="text" id="web_admins" name="web_admins" value="{{ config.web_admins|join(',') }}" class="monospace">
         </div>
@@ -49,6 +53,7 @@ async function handleSettingsSubmit(event) {
     const formData = {
         port: parseInt(document.getElementById('port').value),
         debug: document.getElementById('debug').classList.contains('smd-component_toggle--active'),
+        readonly: document.getElementById('readonly').classList.contains('smd-component_toggle--active'),
         web_admins: document.getElementById('web_admins').value.split(',').map(id => id.trim()),
         maintenance_mode: document.getElementById('maintenance_mode').classList.contains('smd-component_toggle--active'),
         maintenance_message: document.getElementById('maintenance_message').value
