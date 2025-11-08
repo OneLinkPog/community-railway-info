@@ -232,6 +232,29 @@ class LineController:
         except Exception as e:
             logger.error(f"Error fetching lines for operator '{operator_uid}': {str(e)}")
             return []
+        
+    @staticmethod
+    def get_all_line_stations_count() -> int:
+        """
+        Get all line-station associations.
+        
+        Returns:
+            List of dictionaries with line and station info
+        """
+        try:
+            query = """
+            SELECT 
+                COUNT(*) as count
+            FROM line_station ls
+            JOIN line l ON ls.line_id = l.id
+            JOIN station s ON ls.station_id = s.id
+            """
+            result = sql.execute_query(query)
+            return result[0]['count'] if result else 0
+
+        except Exception as e:
+            logger.error(f"Error fetching line stations count: {str(e)}")
+            return 0
     
     @staticmethod
     def create_line(line_data: Dict[str, Any]) -> Optional[int]:

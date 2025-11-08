@@ -16,26 +16,25 @@
         </div>
     </div>
 
-    <!-- <div class="stats-section">
-        <div class="stats-grid">
-            <div class="stat-item">
-                <span class="stat-number" id="totalStations">{{ total_stations }}</span>
-                <span class="stat-label">Total Stations</span>
+    <div style="display: flex; justify-content: center; margin-top: -42px;">
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalStations">{{ total_stations }}</span>
+                    <span class="stat-label">Total Stations</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="activeStations">{{ active_stations }}</span>
+                    <span class="stat-label">Active Stations</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="connectingLines">{{ connecting_lines }}</span>
+                    <span class="stat-label">Line Connections</span>
+                </div>
             </div>
-            <div class="stat-item">
-                <span class="stat-number" id="activeStations">{{ active_stations }}</span>
-                <span class="stat-label">Active Stations</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number" id="mainStations">79836792476</span>
-                <span class="stat-label">Main Terminals</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number" id="connectingLines">156</span>
-                <span class="stat-label">Line Connections</span>
-            </div>
-        </div>
-    </div> -->
+        </div> 
+    </div>
+    
     
     <div class="stations-grid" id="stationsGrid">
         {% for station in stations %}

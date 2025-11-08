@@ -267,34 +267,43 @@
 .stats-section {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 30px;
-    margin: 40px 20px;
-    margin-top: -48px;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 25px 20px;
+    margin-top: -30px;
     border: 1.5px solid rgba(255, 255, 255, 0.1);
+    width: 50%;
+
 }
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
     text-align: center;
 }
 
 .stat-item {
-    padding: 20px;
+    padding: 15px 10px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
+    border-radius: 12px;
     transition: transform 0.3s ease;
 }
 
 .stat-item:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 .stat-number {
     font-family: "Roboto Flex", sans-serif;
-    font-size: 2.5em;
+    font-optical-sizing: auto;
+    font-variation-settings: 
+        "wdth" 125,
+        "wght" 900,
+        "YTAS" 800,
+        "XOPQ" 80,
+        "XTRA" 550;
+    font-size: 2em;
     font-weight: bold;
     color: #4ecdc4;
     display: block;
@@ -303,7 +312,7 @@
 
 .stat-label {
     opacity: 0.8;
-    font-size: 0.9em;
+    font-size: 0.85em;
 }
 
 .no-stations {

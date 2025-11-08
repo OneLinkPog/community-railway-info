@@ -106,6 +106,7 @@ def stations_route():
     stations = StationController.get_all_stations()
     total_stations = len(stations)
     active_stations = len([s for s in stations if s['status'] == 'open'])
+    connecting_lines = LineController.get_all_line_stations_count()
 
     operator = None
     admin = False
@@ -123,5 +124,6 @@ def stations_route():
         operator=operator,
         stations=stations,
         total_stations=total_stations,
-        active_stations=active_stations
+        active_stations=active_stations,
+        connecting_lines=connecting_lines
     )
