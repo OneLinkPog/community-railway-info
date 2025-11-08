@@ -289,6 +289,8 @@ class OperatorController:
                 update_data['color'] = operator_data['color']
             if 'short' in operator_data:
                 update_data['short'] = operator_data['short']
+            if "uid" in operator_data:
+                update_data['uid'] = operator_data['uid']
             
             if update_data:
                 sql.update('operator', update_data, {'id': operator_id})

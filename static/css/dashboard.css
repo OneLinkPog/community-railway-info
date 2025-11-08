@@ -390,9 +390,10 @@
     display: flex;
     gap: 5px;
     flex-wrap: wrap;
-    padding: 5px;
-    border: 1px solid #444;
-    border-radius: 4px;
+    padding: 7px;
+    border-radius: 8px;
+    border: 1px solid #1f2325;
+    background: #1f2325;
 }
 
 .composition-part {
@@ -401,10 +402,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #555;
-    border-radius: 4px;
     cursor: grab;
-    background-color: #333;
+    border: none;
     user-select: none;
     transition: opacity 0.2s ease;
     background-size: contain;
@@ -421,7 +420,7 @@
 
 #composition-dropzone,
 .composition-dropzone {
-    border: 2px dashed #ccc;
+    border: 2px dashed #5d5f61;
     border-radius: 4px;
     padding: 10px;
     min-height: 44px;
@@ -430,6 +429,7 @@
     gap: 5px;
     flex-grow: 1;
     flex-wrap: wrap;
+    background: #1f2325;
 }
 
 #composition-dropzone .composition-part,

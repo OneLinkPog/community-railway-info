@@ -21,14 +21,13 @@ document.addEventListener('DOMContentLoaded', function() {
         variantDiv.dataset.index = variantIndex;
         
         variantDiv.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;" class="form-group">
                 <input type="text" class="variant-name-input form-make-this-shit-white poppins" 
                        placeholder="Variant name (e.g., Peak Hours, Off-Peak)" 
                        value="${variantName}" 
-                       data-variant="${variantIndex}"
-                       style="flex: 1; padding: 6px; border-radius: 4px; border: 1px solid #555; background: #1f2325; color: white;">
-                <button type="button" class="btn-small smd-component_button-small poppins btn-danger" onclick="removeCompositionVariant(${variantIndex})">
-                    <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+                       data-variant="${variantIndex}">
+                <button type="button" class="smd-component_button-small poppins btn-danger" onclick="removeCompositionVariant(${variantIndex})">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
                 </button>
             </div>
             <div class="composition-dropzone form-make-this-shit-white" data-variant="${variantIndex}"></div>
