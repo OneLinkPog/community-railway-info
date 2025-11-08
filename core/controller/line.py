@@ -16,11 +16,13 @@ class LineController:
         """
         Get all lines from the database with their stations and compositions.
         Falls back to JSON file if database query fails.
+        OPTIMIZED: Uses only 2 queries instead of N+1
         
         Returns:
             List of line dictionaries
         """
         try:
+            # Query 1: Get all lines with stations in ONE query
             query = """
             SELECT 
                 l.id,
@@ -42,24 +44,32 @@ class LineController:
             
             results = sql.execute_query(query)
             
+            # Query 2: Get ALL compositions for ALL lines in ONE query
+            comp_query = """
+            SELECT 
+                lc.line_id,
+                c.parts, 
+                c.name as comp_name
+            FROM line_composition lc
+            JOIN composition c ON lc.composition_id = c.id
+            ORDER BY lc.line_id, c.id
+            """
+            all_compositions = sql.execute_query(comp_query)
+            
+            # Build composition map: {line_id: [compositions]}
+            comp_map = {}
+            for comp in all_compositions:
+                line_id = comp['line_id']
+                if line_id not in comp_map:
+                    comp_map[line_id] = []
+                comp_map[line_id].append({
+                    'name': comp['comp_name'] or '',
+                    'parts': comp['parts']
+                })
+            
+            # Build final lines list
             lines = []
             for row in results:
-                comp_query = """
-                SELECT c.parts, c.name as comp_name
-                FROM line_composition lc
-                JOIN composition c ON lc.composition_id = c.id
-                WHERE lc.line_id = %s
-                ORDER BY c.id
-                """
-                compositions_raw = sql.execute_query(comp_query, (row['id'],))
-                
-                compositions = []
-                for comp in compositions_raw:
-                    compositions.append({
-                        'name': comp['comp_name'] or '',
-                        'parts': comp['parts']
-                    })
-                
                 line = {
                     'name': row['name'],
                     'color': row['color'],
@@ -67,13 +77,13 @@ class LineController:
                     'type': row['type'] or 'public',
                     'notice': row['notice'] or '',
                     'stations': row['stations'].split('||') if row['stations'] else [],
-                    'compositions': compositions,
+                    'compositions': comp_map.get(row['id'], []),
                     'operator': row['operator_name'] or '',
                     'operator_uid': row['operator_uid'] or ''
                 }
                 lines.append(line)
             
-            logger.debug(f"Retrieved {len(lines)} lines from database")
+            logger.debug(f"Retrieved {len(lines)} lines from database (optimized: 2 queries)")
             return lines
         
         except Exception as e:

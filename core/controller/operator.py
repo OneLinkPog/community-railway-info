@@ -17,11 +17,13 @@ class OperatorController:
         """
         Get all operators from the database with their users.
         Falls back to JSON file if database query fails.
+        OPTIMIZED: Uses only 2 queries instead of N+1
         
         Returns:
             List of operator dictionaries
         """
         try:
+            # Query 1: Get all operators
             operators_query = """
             SELECT o.id, o.name, o.color, o.short, o.uid
             FROM operator o
@@ -29,26 +31,36 @@ class OperatorController:
             """
             operators_raw = sql.execute_query(operators_query)
             
+            # Query 2: Get ALL users for ALL operators in ONE query
+            all_users_query = """
+            SELECT ou.operator_id, u.id
+            FROM operator_user ou
+            JOIN user u ON ou.user_id = u.id
+            ORDER BY ou.operator_id
+            """
+            all_users = sql.execute_query(all_users_query)
+            
+            # Build user map: {operator_id: [user_ids]}
+            user_map = {}
+            for user_row in all_users:
+                op_id = user_row['operator_id']
+                if op_id not in user_map:
+                    user_map[op_id] = []
+                user_map[op_id].append(str(user_row['id']))
+            
+            # Build final operators list
             operators = []
             for op in operators_raw:
-                users_query = """
-                SELECT u.id
-                FROM operator_user ou
-                JOIN user u ON ou.user_id = u.id
-                WHERE ou.operator_id = %s
-                """
-                users_raw = sql.execute_query(users_query, (op['id'],))
-                
                 operator = {
                     'name': op['name'],
                     'color': op['color'] or '#808080',
-                    'users': [str(user['id']) for user in users_raw],
+                    'users': user_map.get(op['id'], []),
                     'short': op['short'] or '',
                     'uid': op['uid']
                 }
                 operators.append(operator)
             
-            logger.debug(f"Retrieved {len(operators)} operators from database")
+            logger.debug(f"Retrieved {len(operators)} operators from database (optimized: 2 queries)")
             return operators
         
         except Exception as e:
