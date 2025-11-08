@@ -1,8 +1,7 @@
 from typing import List, Dict, Any, Optional
 from core.sql import sql
 from core.logger import Logger
-from core import main_dir
-import json
+
 
 logger = Logger("@operator_controller")
 

@@ -1,8 +1,6 @@
 from typing import List, Dict, Any, Optional
 from core.sql import sql
 from core.logger import Logger
-from core import main_dir
-import json
 
 logger = Logger("@line_controller")
 
@@ -80,14 +78,6 @@ class LineController:
         
         except Exception as e:
             logger.error(f"Error fetching lines from database: {str(e)}")
-            try:
-                with open(main_dir + '/lines.json', 'r') as f:
-                    lines = json.load(f)
-                logger.info(f"Loaded {len(lines)} lines from JSON fallback")
-                return lines
-            except Exception as json_error:
-                logger.error(f"Error loading lines from JSON: {str(json_error)}")
-                return []
     
     @staticmethod
     def get_line_by_name(line_name: str) -> Optional[Dict[str, Any]]:
