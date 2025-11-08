@@ -11,27 +11,27 @@
 
         <div class="form-group">
             <label for="port">Port</label>
-            <input type="number" id="port" name="port" value="{{ config.port }}" class="monospace">
+            <input type="number" id="port" name="port" value="{{ config.webserver.port }}" class="monospace">
         </div>
         <div class="form-group">
             <label for="debug">Debug Mode</label>
-            <div class="smd-component_toggle{% if config.debug %} smd-component_toggle--active{% endif %}" onclick="toggleSwitch(this)" id="debug"></div>
+            <div class="smd-component_toggle{% if config.webserver.debug %} smd-component_toggle--active{% endif %}" onclick="toggleSwitch(this)" id="debug"></div>
         </div>
         <div class="form-group">
             <label for="readonly">Readonly Mode</label>
-            <div class="smd-component_toggle{% if config.readonly %} smd-component_toggle--active{% endif %}" onclick="toggleSwitch(this)" id="readonly"></div>
+            <div class="smd-component_toggle{% if config.administration.readonly %} smd-component_toggle--active{% endif %}" onclick="toggleSwitch(this)" id="readonly"></div>
         </div>
         <div class="form-group">
             <label for="web_admins">Administrators</label>
-            <input type="text" id="web_admins" name="web_admins" value="{{ config.web_admins|join(',') }}" class="monospace">
+            <input type="text" id="web_admins" name="web_admins" value="{{ config.administration.web_admins|join(',') }}" class="monospace">
         </div>
         <div class="form-group">
             <label for="maintenance_mode">Maintenance Mode</label>
-            <div class="smd-component_toggle{% if config.maintenance_mode %} smd-component_toggle--active{% endif %}" onclick="toggleSwitch(this)" id="maintenance_mode"></div>
+            <div class="smd-component_toggle{% if config.administration.maintenance_mode %} smd-component_toggle--active{% endif %}" onclick="toggleSwitch(this)" id="maintenance_mode"></div>
         </div>
         <div class="form-group">
             <label for="maintenance_message">Maintenance Message</label>
-            <textarea id="maintenance_message" name="maintenance_message" class="monospace">{{ config.maintenance_message }}</textarea>
+            <textarea id="maintenance_message" name="maintenance_message" class="monospace">{{ config.administration.maintenance_message }}</textarea>
         </div>
         <button type="submit" class="smd-component_button-medium smd-component_button-flex">
             <div class="smd-component_button-inner">
