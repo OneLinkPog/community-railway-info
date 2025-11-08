@@ -308,8 +308,8 @@ class SQLConnector:
         
         try:
             with self.get_cursor(dictionary=False) as cursor:
-                logger.debug(f"Executing update query: {query}")
-                logger.debug(f"With parameters: {tuple(params)}")
+                #logger.debug(f"Executing update query: {query}")
+                #logger.debug(f"With parameters: {tuple(params)}")
                 
                 # Debug: Check if record exists before update
                 if where and len(where) == 1:
@@ -317,11 +317,11 @@ class SQLConnector:
                     check_query = f"SELECT COUNT(*) as count FROM `{table}` WHERE `{check_key}` = %s"
                     cursor.execute(check_query, (check_value,))
                     check_result = cursor.fetchone()
-                    logger.debug(f"Records found with {check_key}={check_value}: {check_result[0] if check_result else 'None'}")
+                    #logger.debug(f"Records found with {check_key}={check_value}: {check_result[0] if check_result else 'None'}")
                 
                 cursor.execute(query, tuple(params))
                 count = cursor.rowcount
-                logger.debug(f"Update affected {count} rows")
+                #logger.debug(f"Update affected {count} rows")
                 return count
         except Error as e:
             logger.error(f"Error updating {table}: {e}")
@@ -351,7 +351,7 @@ class SQLConnector:
         """
         try:
             count = self.update(table, data, {id_column: record_id})
-            logger.debug(f"Update operation for {table} ID {record_id}: affected {count} rows")
+            #logger.debug(f"Update operation for {table} ID {record_id}: affected {count} rows")
             return count > 0
         except Exception as e:
             logger.error(f"Error in update_by_id for {table} ID {record_id}: {e}")
