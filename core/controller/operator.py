@@ -60,7 +60,6 @@ class OperatorController:
                 }
                 operators.append(operator)
             
-            logger.debug(f"Retrieved {len(operators)} operators from database (optimized: 2 queries)")
             return operators
         
         except Exception as e:
@@ -109,7 +108,6 @@ class OperatorController:
                 'uid': op['uid']
             }
             
-            logger.debug(f"Retrieved operator '{operator_uid}' from database")
             return operator
         
         except Exception as e:
@@ -159,7 +157,6 @@ class OperatorController:
                 'uid': op['uid']
             }
             
-            logger.debug(f"Retrieved operator '{operator_name}' from database")
             return operator
         
         except Exception as e:
@@ -208,7 +205,6 @@ class OperatorController:
                 }
                 operators.append(operator)
             
-            logger.debug(f"Retrieved {len(operators)} operators for user '{user_id}'")
             return operators
         
         except Exception as e:

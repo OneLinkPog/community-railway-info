@@ -28,7 +28,6 @@ class StationController:
             
             stations = sql.execute_query(query)
             
-            logger.debug(f"Retrieved {len(stations)} stations from database")
             return stations
         
         except Exception as e:
@@ -49,9 +48,7 @@ class StationController:
         try:
             station = sql.select_by_id('station', station_id)
             
-            if station:
-                logger.debug(f"Retrieved station with ID {station_id}")
-            else:
+            if not station:
                 logger.debug(f"Station with ID {station_id} not found")
             
             return station
@@ -74,9 +71,7 @@ class StationController:
         try:
             station = sql.select_one('station', where={'name': station_name})
             
-            if station:
-                logger.debug(f"Retrieved station '{station_name}'")
-            else:
+            if not station:
                 logger.debug(f"Station '{station_name}' not found")
             
             return station
@@ -108,7 +103,6 @@ class StationController:
             
             stations = sql.execute_query(query, (line_name,))
             
-            logger.debug(f"Retrieved {len(stations)} stations for line '{line_name}'")
             return stations
         
         except Exception as e:
@@ -139,7 +133,6 @@ class StationController:
             
             lines = sql.execute_query(query, (station_name,))
             
-            logger.debug(f"Retrieved {len(lines)} lines at station '{station_name}'")
             return lines
         
         except Exception as e:

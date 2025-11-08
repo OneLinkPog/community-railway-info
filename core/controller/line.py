@@ -83,7 +83,6 @@ class LineController:
                 }
                 lines.append(line)
             
-            logger.debug(f"Retrieved {len(lines)} lines from database (optimized: 2 queries)")
             return lines
         
         except Exception as e:
@@ -158,7 +157,6 @@ class LineController:
                 'operator_uid': row['operator_uid'] or ''
             }
             
-            logger.debug(f"Retrieved line '{line_name}' from database")
             return line
         
         except Exception as e:
@@ -230,7 +228,6 @@ class LineController:
                 }
                 lines.append(line)
             
-            logger.debug(f"Retrieved {len(lines)} lines for operator '{operator_uid}'")
             return lines
         
         except Exception as e:
