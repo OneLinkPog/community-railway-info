@@ -23,7 +23,7 @@ function closeModal() {
 
 async function getOperatorColor(operatorUid) {
     try {
-        const response = await fetch('/operators.json');
+        const response = await fetch('/api/operators');
         const operators = await response.json();
         const operator = operators.find(op => op.uid === operatorUid);
         return operator?.color || '#808080';
@@ -36,7 +36,7 @@ async function getOperatorColor(operatorUid) {
 let linesData = [];
 
 function fetchLines() {
-    fetch('/lines.json')
+    fetch('/api/lines')
         .then(response => response.json())
         .then(linesArray => {
             linesData = linesArray;
@@ -82,7 +82,7 @@ function fetchLines() {
 
                         const operatorColor = await getOperatorColor(lineData.operator_uid);
 
-                        const operatorName = await fetch('/operators.json')
+                        const operatorName = await fetch('/api/operators')
                             .then(response => response.json())
                             .then(operators => {
                                 const operator = operators.find(op => op.uid === lineData.operator_uid);

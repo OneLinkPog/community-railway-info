@@ -351,7 +351,7 @@ async function editOperator(operatorName) {
     document.getElementById('operatorName').value = window.operatorName;
 
 
-    const response = await fetch('/operators.json');
+    const response = await fetch('/api/operators');
     const operators = await response.json();
     const operatorData = operators.find(op => op.uid === window.operatorUid);
 
