@@ -23,7 +23,7 @@ class SQLConnector:
         try:
             self.pool = pooling.MySQLConnectionPool(
                 pool_name="railway_info_pool",
-                pool_size=5,
+                pool_size=20,
                 pool_reset_session=True,
                 host=config.db_host,
                 port=config.db_port,
