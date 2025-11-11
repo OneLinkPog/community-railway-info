@@ -316,7 +316,7 @@ class SQLConnector:
                     check_key, check_value = next(iter(where.items()))
                     check_query = f"SELECT COUNT(*) as count FROM `{table}` WHERE `{check_key}` = %s"
                     cursor.execute(check_query, (check_value,))
-                    check_result = cursor.fetchone()
+                    #check_result = cursor.fetchone()
                     #logger.debug(f"Records found with {check_key}={check_value}: {check_result[0] if check_result else 'None'}")
                 
                 cursor.execute(query, tuple(params))
