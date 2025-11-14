@@ -578,6 +578,14 @@ async function initializeStationSearch() {
         if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
             dropdown.classList.remove("show");
         }
+        
+        // Close all tooltips when clicking outside
+        const activeTooltips = document.querySelectorAll('.tooltip.active');
+        activeTooltips.forEach(tooltip => {
+            if (!tooltip.contains(e.target)) {
+                tooltip.classList.remove('active');
+            }
+        });
     });
 
     // Initialize drag and drop for stations list

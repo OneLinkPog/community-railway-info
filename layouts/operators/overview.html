@@ -1,6 +1,7 @@
 {% extends "base/base.html" %}
 {% block stylesheet %}
 <link rel="stylesheet" href="/static/css/dashboard.css">
+<link rel="stylesheet" href="/static/css/index.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
@@ -177,7 +178,7 @@
                 <div class="form-group">
                     <div style="display: flex; align-items: center; gap: 5px;">
                         <label for="composition-builder">Train compositions</label>
-                        <span class="tooltip">
+                        <span class="tooltip" onclick="this.classList.toggle('active'); event.stopPropagation();">
                             <span class="material-symbols-outlined">help</span>
                             <span class="tooltiptext" style="width: 380px; max-height: 400px; overflow-y: auto;">
                                 <strong>Train Composition Reference:</strong><br>

@@ -174,8 +174,8 @@
 }
 
 .composition-part-display {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -186,6 +186,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    image-rendering: pixelated;
 }
 
 .maintenance-mode h3 {
