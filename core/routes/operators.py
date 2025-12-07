@@ -166,6 +166,7 @@ def operator_route(uid):
 @operators.route('/request')
 def request_operator_page():
     user = session.get('user')
+    admin = False
 
     if not user:
         return redirect(url_for('auth.login'))

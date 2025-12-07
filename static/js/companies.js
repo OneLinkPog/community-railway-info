@@ -1,6 +1,6 @@
 async function handleRequest(timestamp, action) {
     try {
-        const response = await fetch('/admin/companies/handle-request', {
+        const response = await fetch('/api/admin/companies/handle-request', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
