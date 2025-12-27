@@ -55,7 +55,10 @@
     
     <div class="stations-grid" id="stationsGrid">
         {% for station in stations %}
-        <div class="station-card" data-name="{{ station.name }}" style="background-image: url('{{ station.image_path }}');">
+        <div class="station-card" data-name="{{ station.name }}">
+            {% if station.image_path %}
+            <img class="station-bg" src="{{ station.image_path }}" loading="lazy" alt="{{ station.name }} image">
+            {% endif %}
             <div class="station-name">
                 <span class="material-symbols-outlined">{{ station.symbol }}</span>
                 {{ station.name }}
