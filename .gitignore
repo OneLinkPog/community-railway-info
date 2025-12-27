@@ -217,3 +217,5 @@ operator_avatar_cache.json
 sql
 json
 /static/library
+
+db_data/
