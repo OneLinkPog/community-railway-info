@@ -16,16 +16,14 @@
     padding: 25px;
     border-radius: 16px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-family: "Roboto Flex", sans-serif !important;
-    font-optical-sizing: auto !important;
-    font-weight: bold !important;
-    font-style: normal !important;
-    font-variation-settings: 
-        "wdth" 120,
-        "wght" 1000,
-        "YTAS" 800,
-        "XOPQ" 80,
-        "XTRA" 500;
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 1000;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100,
+        "GRAD" 0,
+        "ROND" 100;
 }
 
 .form-group {
@@ -47,7 +45,14 @@
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.05);
     color: white;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100,
+        "GRAD" 0,
+        "ROND" 100;
 }
 
 .form-group input[type="color"] {
@@ -71,16 +76,14 @@
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.2s;
-    font-family: "Roboto Flex", sans-serif !important;
-    font-optical-sizing: auto !important;
-    font-weight: bold !important;
-    font-style: normal !important;
-    font-variation-settings: 
-        "wdth" 120,
-        "wght" 1000,
-        "YTAS" 800,
-        "XOPQ" 80,
-        "XTRA" 500;
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 1000;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100,
+        "GRAD" 0,
+        "ROND" 100;
 }
 
 .submit-btn:hover {

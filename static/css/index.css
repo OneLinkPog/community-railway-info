@@ -13,16 +13,14 @@
 }
 
 .header h1 {
-    font-family: "Roboto Flex", sans-serif !important;
-    font-optical-sizing: auto !important;
-    font-weight: bold !important;
-    font-style: normal !important;
-    font-variation-settings: 
-        "wdth" 125,
-        "wght" 900,
-        "YTAS" 800,
-        "XOPQ" 80,
-        "XTRA" 450;
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 1000;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 105,
+        "GRAD" 0,
+        "ROND" 100;
 }
 
 .tabs {
@@ -42,7 +40,14 @@
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100,
+        "GRAD" 0,
+        "ROND" 100;
     font-size: 16px;
 }
 
@@ -52,11 +57,25 @@
     background: #2c2b2b;
 }
 
-.tab-btn:nth-of-type(1).active { background: var(--color-success); }
-.tab-btn:nth-of-type(2).active { background: var(--color-failed); }
-.tab-btn:nth-of-type(3).active { background: var(--color-accent-strong); }
-.tab-btn:nth-of-type(4).active { background: var(--color-warning); }
-.tab-btn:nth-of-type(5).active { background: var(--color-warning); }
+.tab-btn:nth-of-type(1).active {
+    background: var(--color-success);
+}
+
+.tab-btn:nth-of-type(2).active {
+    background: var(--color-failed);
+}
+
+.tab-btn:nth-of-type(3).active {
+    background: var(--color-accent-strong);
+}
+
+.tab-btn:nth-of-type(4).active {
+    background: var(--color-warning);
+}
+
+.tab-btn:nth-of-type(5).active {
+    background: var(--color-warning);
+}
 
 
 .tab-content {
@@ -83,17 +102,15 @@
 }
 
 .line-status h1 {
-  font-family: "Roboto Flex", sans-serif !important;
-  font-optical-sizing: auto !important;
-  font-weight: bold !important;
-  font-style: normal !important;
-  font-variation-settings: 
-    "wdth" 125,
-    "wght" 850,
-    "YTAS" 800,
-    "XOPQ" 80,
-    "XTRA" 450;
-  margin-top: 4px;
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 850;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 105,
+        "GRAD" 0,
+        "ROND" 100;
+    margin-top: 4px;
 }
 
 .line-status--header {
@@ -112,14 +129,14 @@
 }
 
 .line {
-    font-family: "Roboto Flex", sans-serif !important;
-    font-optical-sizing: auto !important;
-    font-variation-settings: 
-        "wdth" 135,
-        "wght" 700,
-        "YTAS" 800,
-        "XOPQ" 100,
-        "XTRA" 450;
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100,
+        "GRAD" 0,
+        "ROND" 100;
     font-size: 17px;
     border-radius: 8px;
     margin: 5px;
@@ -190,15 +207,13 @@
 }
 
 .maintenance-mode h3 {
-    font-family: "Roboto Flex", sans-serif;
+    font-family: "Google Sans Flex", sans-serif;
     font-optical-sizing: auto;
-    font-weight: bold;
+    font-weight: 800;
     font-style: normal;
-    font-variation-settings: 
-        "wdth" 125,
-        "wght" 1000,
-        "YTAS" 800,
-        "XOPQ" 80,
-        "XTRA" 500;
+    font-variation-settings:
+        "wdth" 100,
+        "GRAD" 0,
+        "ROND" 100;
     margin: 10px;
 }

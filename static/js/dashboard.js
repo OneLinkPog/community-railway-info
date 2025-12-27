@@ -25,11 +25,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         variantDiv.innerHTML = `
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;" class="form-group">
-                <input type="text" class="variant-name-input form-make-this-shit-white poppins" 
+                <input type="text" class="variant-name-input form-make-this-shit-white" 
                        placeholder="Variant name (e.g., Peak Hours, Off-Peak)" 
                        value="${variantName}" 
                        data-variant="${variantIndex}">
-                <button type="button" class="smd-component_button-small poppins btn-danger" onclick="removeCompositionVariant(${variantIndex})">
+                <button type="button" class="smd-component_button-small btn-danger" onclick="removeCompositionVariant(${variantIndex})">
                     <span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
                 </button>
             </div>
