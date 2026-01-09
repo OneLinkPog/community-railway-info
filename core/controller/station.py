@@ -21,13 +21,30 @@ class StationController:
         """
         try:
             query = """
-            SELECT id, name, alt_name, description, type, status, platform_count, symbol, image_path
-            FROM station
-            ORDER BY name
+            SELECT S.id, S.name, S.alt_name, S.description, S.type, 
+                   S.status, S.platform_count, S.symbol, S.image_path,
+                   GROUP_CONCAT(DISTINCT L.name ORDER BY L.name SEPARATOR ', ') as `lines`
+            FROM station S
+            LEFT JOIN line_station LS ON S.id = LS.station_id
+            LEFT JOIN line L ON LS.line_id = L.id
+            GROUP BY S.id, S.name, S.alt_name, S.description, S.type, 
+                     S.status, S.platform_count, S.symbol, S.image_path
+            ORDER BY S.name
             """
             
             stations = sql.execute_query(query)
-            
+            # Convert `lines` from a concatenated string to a Python list
+            for station in stations:
+                lines_field = station.get('lines')
+                if lines_field is None:
+                    station['lines'] = []
+                elif isinstance(lines_field, str):
+                    station['lines'] = [part.strip() for part in lines_field.split(',') if part.strip()]
+                elif isinstance(lines_field, (list, tuple)):
+                    station['lines'] = list(lines_field)
+                else:
+                    station['lines'] = []
+
             return stations
         
         except Exception as e:
