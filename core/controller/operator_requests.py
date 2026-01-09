@@ -269,7 +269,7 @@ class OperatorRequestController:
                 return False
             
             query = "UPDATE operator_request SET status = %s WHERE timestamp = %s"
-            result = sql.execute_update(query, (status, timestamp))
+            result = sql.execute_query(query, (status, timestamp))
             
             if not result:
                 logger.error(f"Request with timestamp {timestamp} not found or update failed")
@@ -293,7 +293,7 @@ class OperatorRequestController:
         """
         try:
             query = "DELETE FROM operator_request WHERE timestamp = %s"
-            count = sql.execute_update(query, (timestamp,))
+            count = sql.execute_query(query, (timestamp,))
             
             if count > 0:
                 return True
