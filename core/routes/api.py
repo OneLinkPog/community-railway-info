@@ -328,7 +328,14 @@ def get_stations():
 @api.route('/api/stations/<name>', methods=['GET'])
 def get_station_details(name):
     try:
-        station = StationController.get_station_by_name(name)
+        is_id = name.isdigit()
+        
+        if is_id:
+            station = StationController.get_station_by_id(int(name))
+            name = station['name'] if station else None
+        else:
+            station = StationController.get_station_by_name(name)
+            
         if not station:
             return jsonify({'error': 'Station not found'}), 404
         
