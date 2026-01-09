@@ -18,7 +18,7 @@
         <h1>Operator not found</h1>
         <p>The operator you are looking for does not exist or has been deleted.</p>
         <a href="/operators" class="btn-secondary smd-component_button-medium">
-            <span style="position: absolute" class="material-symbols-outlined">arrow_back</span>
+            <span style="position: absolute" class="material-symbols">arrow_back</span>
             <span style="margin-left: 30px;">Back to Operators</span>
         </a>
         {% else %}
@@ -53,14 +53,14 @@
         <div class="dashboard-controls">
             <button onclick="showAddLineModal()" class="smd-component_button-medium btn-primary smd-component_button-flex">
                 <div class="smd-component_button-inner">
-                    <span class="material-symbols-outlined">add</span>
+                    <span class="material-symbols">add</span>
                     Add Line
                 </div>
             </button>
 
             <button onclick="editOperator('{{ operator_overview.name }}')" class="smd-component_button-medium btn-primary smd-component_button-flex">
                 <div class="smd-component_button-inner">
-                    <span class="material-symbols-outlined">edit</span>
+                    <span class="material-symbols">edit</span>
                     Edit operator
                 </div>
             </button>
@@ -144,10 +144,10 @@
                 {% if admin or member %}
                 <div class="line-actions">
                     <button onclick="editLine('{{ line.name }}')" class="btn-secondary smd-component_button-medium">
-                        <span class="material-symbols-outlined">edit</span>
+                        <span class="material-symbols">edit</span>
                     </button>
                     <button onclick="deleteLine('{{ line.name }}')" class="btn-danger smd-component_button-medium">
-                        <span class="material-symbols-outlined">delete</span>
+                        <span class="material-symbols">delete</span>
                     </button>
                 </div>
                 {% endif %}
@@ -179,7 +179,7 @@
                     <div style="display: flex; align-items: center; gap: 5px;">
                         <label for="composition-builder">Train compositions</label>
                         <span class="tooltip" onclick="this.classList.toggle('active'); event.stopPropagation();">
-                            <span class="material-symbols-outlined">help</span>
+                            <span class="material-symbols">help</span>
                             <span class="tooltiptext" style="width: 380px; max-height: 400px; overflow-y: auto;">
                                 <strong>Train Composition Reference:</strong><br>
                                 <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #666; font-size: 12px; color: #999;">
@@ -285,7 +285,7 @@
                         <div id="compositions-container"></div>
                         <button type="button" class="btn-secondary smd-component_button-medium smd-component_button-flex" onclick="addCompositionVariant()" style="margin-top: 10px;">
                             <div class="smd-component_button-inner"r>
-                                <span class="material-symbols-outlined">add</span>
+                                <span class="material-symbols">add</span>
                                 <span>Add variant</span>
                             </div>
                             
@@ -340,7 +340,7 @@
                 <input type="hidden" id="lineId" name="id">
                 <button type="submit" class="btn-primary smd-component_button-medium smd-component_button-flex">
                     <div class="smd-component_button-inner">
-                        <span class="material-symbols-outlined">save</span>
+                        <span class="material-symbols">save</span>
                         Save Line
                     </div>
                 </button>
@@ -381,7 +381,7 @@
                 </div>
                 <button type="submit" class="btn-primary smd-component_button-medium smd-component_button-flex">
                     <div class="smd-component_button-inner">
-                        <span class="material-symbols-outlined">save</span>
+                        <span class="material-symbols">save</span>
                         Save Changes
                     </div>
                 </button>

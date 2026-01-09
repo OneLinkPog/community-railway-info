@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modalCard.dataset.stationName = stationName;
         
         // Get station data from the card (for basic info)
-        const stationIcon = cardElement.querySelector('.material-symbols-outlined').textContent;
+        const stationIcon = cardElement.querySelector('.material-symbols').textContent;
         const stationAltName = cardElement.querySelector('.station-alt-name')?.textContent;
         const stationInfo = cardElement.querySelector('.station-info').textContent;
         const stationStatus = cardElement.querySelector('.station-status');
@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const stationsGrid = document.getElementById('stationsGrid');
         const stationsListView = document.getElementById('stationsListView');
         const listViewBtn = document.getElementById('listViewBtn');
-        const listIcon = listViewBtn.querySelector('.material-symbols-outlined');
+        const listIcon = listViewBtn.querySelector('.material-symbols');
         const listText = listViewBtn.querySelector('.sort-text');
         
         if (!isListView) {
@@ -554,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: stationName,
                 altName: card.querySelector('.station-alt-name')?.textContent || '',
                 description: card.querySelector('.station-info')?.textContent || '',
-                icon: card.querySelector('.material-symbols-outlined')?.textContent || 'train',
+                icon: card.querySelector('.material-symbols')?.textContent || 'train',
                 status: card.querySelector('.station-status')?.innerHTML || '',
                 element: card
             };
@@ -585,7 +585,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ${stations.map(station => `
                             <div class="list-station-item" data-name="${station.name}">
                                 <div class="list-station-icon">
-                                    <span class="material-symbols-outlined">${station.icon}</span>
+                                    <span class="material-symbols">${station.icon}</span>
                                 </div>
                                 <div class="list-station-content">
                                     <div class="list-station-name">${station.name}</div>

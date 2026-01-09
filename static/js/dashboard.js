@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
                        value="${variantName}" 
                        data-variant="${variantIndex}">
                 <button type="button" class="smd-component_button-small btn-danger" onclick="removeCompositionVariant(${variantIndex})">
-                    <span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+                    <span class="material-symbols" style="font-size: 20px;">delete</span>
                 </button>
             </div>
             <div class="composition-dropzone form-make-this-shit-white" data-variant="${variantIndex}"></div>

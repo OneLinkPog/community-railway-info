@@ -6,13 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Community Railway Info</title>
 
-  <link rel="shortcut icon" href="/static/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/static/favicon.webp" type="image/x-icon">
   <link rel="stylesheet" href="/static/css/base.css">
   <link rel="stylesheet" href="/static/css/dialog.css">
+  <link rel="stylesheet" href="/static/vendor/adlsv3/adlsv3.min.css">
 
-  <link rel="stylesheet" href="https://dl.strawberryfoundations.org/w3/static/adlsv3/dist/adlsv3.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="/static/vendor/material/symbols.css">
   
   <meta property="og:title" content="Railway Info">
   <meta property="og:description" content="Your favorite website to manage all your lines in one place! Information about Community Railway lines and services">
@@ -20,11 +19,12 @@
   <meta property="og:image" content="/static/favicon.png">
   <meta name="theme-color" content="#FF0000">
 
-  <script src="/static/js/lines.js"></script>  
+  <script src="/static/js/color.js"></script>
+  <script defer src="/static/js/lines.js"></script>  
+  <script defer src="/static/vendor/adlsv3/adlsv3.min.js"></script>
 
   {% block stylesheet %}{% endblock stylesheet %}
   
-  <script src="https://dl.strawberryfoundations.org/w3/static/adlsv3/dist/adlsv3.min.js"></script>
 </head>
 
 <body class="smd-layout_body body-gradient">

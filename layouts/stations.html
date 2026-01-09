@@ -12,7 +12,7 @@
         
         <div class="search-container">
             <input type="text" id="stationSearch" class="search-input" placeholder="Search stations...">
-            <span class="material-symbols-outlined search-icon">search</span>
+            <span class="material-symbols search-icon">search</span>
         </div>
     </div>
 
@@ -39,16 +39,16 @@
     <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin: 30px 0;">
         <div class="sort-controls">
             <button id="sortStationsBtn" class="btn-secondary sort-btn" title="Sort stations A-Z">
-                <span class="material-symbols-outlined sort-icon">sort_by_alpha</span>
+                <span class="material-symbols sort-icon">sort_by_alpha</span>
                 <span class="sort-text">Sort A-Z</span>
             </button>
         </div>
         <button id="addStationBtn" class="btn-primary add-station-btn">
-            <span class="material-symbols-outlined">add</span>
+            <span class="material-symbols">add</span>
             Add New Station
         </button>
         <button id="listViewBtn" class="btn-secondary sort-btn" title="Show as alphabetical list">
-            <span class="material-symbols-outlined">view_list</span>
+            <span class="material-symbols">view_list</span>
             <span class="sort-text">List View</span>
         </button>
     </div>
@@ -60,7 +60,7 @@
             <img class="station-bg" src="{{ station.image_path }}" loading="lazy" alt="{{ station.name }} image">
             {% endif %}
             <div class="station-name">
-                <span class="material-symbols-outlined">{{ station.symbol }}</span>
+                <span class="material-symbols">{{ station.symbol }}</span>
                 {{ station.name }}
             </div>
             {% if station.alt_name %}
@@ -93,7 +93,7 @@
     </div>
 
     <div class="no-stations" id="noStationsFound" style="display: none;">
-        <span class="material-symbols-outlined">search_off</span>
+        <span class="material-symbols">search_off</span>
         <h3>No Stations Found</h3>
         <p>Try searching with a different term.</p>
     </div>
@@ -104,7 +104,7 @@
         <div id="stationModalCard" class="station-modal-card">
             <span class="close" id="closeStationModal">&times;</span>
             <button class="station-modal-edit" id="editStationModal" title="Edit Station">
-                <span class="material-symbols-outlined">edit</span>
+                <span class="material-symbols">edit</span>
             </button>
             
             <div class="station-modal-image-header" id="modalStationImageHeader" style="display: none;">
@@ -115,7 +115,7 @@
             <div id="stationViewContent" class="station-modal-content">
                 <div class="station-modal-header">
                     <div class="station-modal-name">
-                        <span class="material-symbols-outlined" id="modalStationIcon">train</span>
+                        <span class="material-symbols" id="modalStationIcon">train</span>
                         <h2 id="modalStationName">Station Name</h2>
                     </div>
                     <div class="station-modal-alt-name" id="modalStationAltName" style="display: none;"></div>
@@ -216,11 +216,11 @@
                     
                     <div class="form-actions">
                         <button type="button" id="cancelStationEdit" class="btn-secondary">
-                            <span class="material-symbols-outlined">close</span>
+                            <span class="material-symbols">close</span>
                             Cancel
                         </button>
                         <button type="submit" class="btn-primary">
-                            <span class="material-symbols-outlined">save</span>
+                            <span class="material-symbols">save</span>
                             Save Changes
                         </button>
                     </div>
@@ -293,11 +293,11 @@
                     
                     <div class="form-actions">
                         <button type="button" id="cancelAddStation" class="btn-secondary">
-                            <span class="material-symbols-outlined">close</span>
+                            <span class="material-symbols">close</span>
                             Cancel
                         </button>
                         <button type="submit" class="btn-primary">
-                            <span class="material-symbols-outlined">add</span>
+                            <span class="material-symbols">add</span>
                             Create Station
                         </button>
                     </div>
