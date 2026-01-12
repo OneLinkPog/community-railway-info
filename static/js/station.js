@@ -70,12 +70,13 @@ document.addEventListener('DOMContentLoaded', function() {
     stationCards.forEach(card => {
         card.addEventListener('click', function() {
             const stationName = this.dataset.name;
-            openStationModal(this, stationName);
+            const stationId = this.dataset.id;
+            openStationModal(this, stationName, stationId);
         });
     });
 
     // Station Modal Functions
-    async function openStationModal(cardElement, stationName) {
+    async function openStationModal(cardElement, stationName, stationId) {
         const modal = document.getElementById('stationModal');
         const modalCard = document.getElementById('stationModalCard');
         
@@ -102,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Store station name for edit functionality
         modalCard.dataset.stationName = stationName;
+        modalCard.dataset.stationId = stationId;
         
         // Get station data from the card (for basic info)
         const stationIcon = cardElement.querySelector('.material-symbols').textContent;
@@ -109,13 +111,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const stationInfo = cardElement.querySelector('.station-info').textContent;
         const stationStatus = cardElement.querySelector('.station-status');
         
-        // Get and set station image
+        // Get and set station image. Prefer an <img class="station-bg"> inside the card,
+        // otherwise fall back to inline background-image style.
         const stationImageHeader = document.getElementById('modalStationImageHeader');
-        const cardStyle = cardElement.getAttribute('style');
-        const imageMatch = cardStyle?.match(/background-image:\s*url\(['"]?([^'"]*?)['"]?\)/);
-        
-        if (imageMatch && imageMatch[1] && imageMatch[1] !== '') {
-            stationImageHeader.style.backgroundImage = `url('${imageMatch[1]}')`;
+        let imageUrl = null;
+        const imgEl = cardElement.querySelector('.station-bg');
+        if (imgEl && imgEl.src) {
+            imageUrl = imgEl.src;
+        } else {
+            const cardStyle = cardElement.getAttribute('style');
+            const imageMatch = cardStyle?.match(/background-image:\s*url\(['"]?([^'\"]*?)['"]?\)/);
+            if (imageMatch && imageMatch[1]) imageUrl = imageMatch[1];
+        }
+
+        if (imageUrl && imageUrl !== '') {
+            stationImageHeader.style.backgroundImage = `url('${imageUrl}')`;
             stationImageHeader.style.display = 'block';
         } else {
             stationImageHeader.style.display = 'none';
@@ -124,6 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Populate basic modal content
         document.getElementById('modalStationIcon').textContent = stationIcon;
         document.getElementById('modalStationName').textContent = stationName;
+        document.getElementById('modalStationId').textContent = 'Station-ID: ' + stationId;
         document.getElementById('modalStationDescription').textContent = stationInfo;
         
         const altNameElement = document.getElementById('modalStationAltName');
@@ -145,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Fetch detailed station data from API
         try {
-            const response = await fetch(`/api/stations/${encodeURIComponent(stationName)}`);
+            const response = await fetch(`/api/stations/${encodeURIComponent(stationId)}`);
             if (response.ok) {
                 const stationData = await response.json();
                 
@@ -160,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (station.type) {
                     switch (station.type) {
                         case 'public':
-                            station_type = '🌍 Public Station';
+                            station_type = '🌍 Train Station';
                             break;
                         case 'metro':
                             station_type = '🚇 Metro Station';
@@ -267,21 +278,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Station Edit Functions
     function openStationEditModal() {
         const modalCard = document.getElementById('stationModalCard');
-        const stationName = modalCard.dataset.stationName;
-        
-        if (!stationName) return;
-        
+        const stationId = modalCard.dataset.stationId;
+
+        if (!stationId) return;
+
         // Switch from view mode to edit mode
         document.getElementById('stationViewContent').style.display = 'none';
         document.getElementById('stationEditContent').style.display = 'block';
-        
+
         // Load station data for editing
-        loadStationForEdit(stationName);
+        loadStationForEdit(stationId);
     }
     
-    async function loadStationForEdit(stationName) {
+    async function loadStationForEdit(stationId) {
         try {
-            const response = await fetch(`/api/stations/${encodeURIComponent(stationName)}`);
+            const response = await fetch(`/api/stations/${encodeURIComponent(stationId)}`);
             if (response.ok) {
                 const stationData = await response.json();
                 const station = stationData.station;
@@ -348,7 +359,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Error: ' + result.error);
                 }
             } else {
-                alert('Failed to update station. Please try again.');
+                if (response.status === 401) {
+                    alert('You are not authorized to perform this action. Try logging in.');
+                }
+                else if (response.status === 403) {
+                    alert('Forbidden: You do not have permission to update this station. Attempted to update station in readonly mode');
+                }
+                else {
+                    alert('Failed to update station. Please try again.');
+                }
+                
             }
         } catch (error) {
             console.error('Error updating station:', error);
@@ -478,7 +498,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Re-attach event listeners for the restored cards
             newCard.addEventListener('click', function() {
                 const stationName = this.dataset.name;
-                openStationModal(this, stationName);
+                const stationId = this.dataset.id;
+                openStationModal(this, stationName, stationId);
             });
             
             stationsGrid.appendChild(newCard);
@@ -552,6 +573,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Extract station data
             const stationData = {
                 name: stationName,
+                id: card.dataset.id,
                 altName: card.querySelector('.station-alt-name')?.textContent || '',
                 description: card.querySelector('.station-info')?.textContent || '',
                 icon: card.querySelector('.material-symbols')?.textContent || 'train',
@@ -583,7 +605,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="alphabet-stations">
                         ${stations.map(station => `
-                            <div class="list-station-item" data-name="${station.name}">
+                            <div class="list-station-item" data-name="${station.name}" data-id="${station.id}">
                                 <div class="list-station-icon">
                                     <span class="material-symbols">${station.icon}</span>
                                 </div>
@@ -607,9 +629,10 @@ document.addEventListener('DOMContentLoaded', function() {
         listItems.forEach(item => {
             item.addEventListener('click', function() {
                 const stationName = this.dataset.name;
+                const stationId = this.dataset.id;
                 const originalCard = stationCards.find(card => card.dataset.name === stationName);
                 if (originalCard) {
-                    openStationModal(originalCard, stationName);
+                    openStationModal(originalCard, stationName, stationId);
                 }
             });
         });

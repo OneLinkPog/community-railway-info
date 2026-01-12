@@ -6,7 +6,7 @@
 {% block content %}
 <div class="content">
   <div class="header">
-    <h1>🚆 Line Status - <span id="current-tab">🌍 Public</span></h1>
+    <h1>🚆 Line Status - <span id="current-tab">🌍 Train</span></h1>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
       const tabButtons = document.querySelectorAll('.tab-btn');
@@ -21,8 +21,8 @@
     </script>
   </div>
   <div class="tabs" style="display: flex; gap: 10px;">
-    <button class="tab-btn active" data-tab="public"><b>🌍 Public</b></button>
-    <button class="tab-btn" data-tab="private"><b>🔒 Private</b></button>
+    <button class="tab-btn active" data-tab="public"><b>🌍 Train</b></button>
+    <button class="tab-btn" data-tab="private"><b>🔒 Private rail</b></button>
     <button class="tab-btn" data-tab="metro"><b>🚇 Metro</b></button>
     <button class="tab-btn" data-tab="tram"><b>🚋 Tram</b></button>
     <button class="tab-btn" data-tab="bus"><b>🚌 Bus</b></button>

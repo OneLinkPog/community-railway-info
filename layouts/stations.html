@@ -55,7 +55,7 @@
     
     <div class="stations-grid" id="stationsGrid">
         {% for station in stations %}
-        <div class="station-card" data-name="{{ station.name }}">
+        <div class="station-card" data-name="{{ station.name }}" data-id="{{ station.id }}">
             {% if station.image_path %}
             <img class="station-bg" src="{{ station.image_path }}" loading="lazy" alt="{{ station.name }} image">
             {% endif %}
@@ -103,10 +103,12 @@
         <div class="station-modal-backdrop"></div>
         <div id="stationModalCard" class="station-modal-card">
             <span class="close" id="closeStationModal">&times;</span>
+            {% if session.get('user') %}
             <button class="station-modal-edit" id="editStationModal" title="Edit Station">
                 <span class="material-symbols">edit</span>
             </button>
-            
+            {% endif %}
+        
             <div class="station-modal-image-header" id="modalStationImageHeader" style="display: none;">
                 <div class="station-modal-image-overlay"></div>
             </div>
@@ -116,9 +118,15 @@
                 <div class="station-modal-header">
                     <div class="station-modal-name">
                         <span class="material-symbols" id="modalStationIcon">train</span>
-                        <h2 id="modalStationName">Station Name</h2>
+                        <h2 id="modalStationName">Station Name</h2>                        
                     </div>
+                    
                     <div class="station-modal-alt-name" id="modalStationAltName" style="display: none;"></div>
+
+                    <div class="station-modal-name" style="margin-top: 12px;">
+                        <span style="font-size: 16px" class="material-symbols" id="modalStationIcon">key</span>
+                        <h2 style="font-size: 15px" id="modalStationId">Station-ID: 42</h2>
+                    </div>
                 </div>
                 
                 <div class="station-modal-body">
@@ -181,8 +189,8 @@
                     <div class="form-group">
                         <label for="editStationType">Station Type</label>
                         <select id="editStationType" name="type" class="form-input">
-                            <option value="public">Public</option>
-                            <option value="private">Private</option>
+                            <option value="public">Train</option>
+                            <option value="private">Private rail</option>
                             <option value="metro">Metro</option>
                             <option value="tram">Tram</option>
                             <option value="bus">Bus</option>
@@ -264,8 +272,8 @@
                     <div class="form-group">
                         <label for="addStationType">Station Type</label>
                         <select id="addStationType" name="type" class="form-input">
-                            <option value="public">Public</option>
-                            <option value="private">Private</option>
+                            <option value="public">Train</option>
+                            <option value="private">Private rail</option>
                             <option value="metro">Metro</option>
                             <option value="tram">Tram</option>
                             <option value="bus">Bus</option>
