@@ -381,17 +381,48 @@
 
 #composition-parts {
     display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.composition-parts-categorized {
+    display: flex;
     gap: 5px;
     flex-wrap: wrap;
-    padding: 7px;
+    width: 100%;
+}
+
+.composition-builder-categorized {
+    display: flex;
+    flex-direction: column;
+    background: #2a2d30;
+    padding: 12px;
     border-radius: 8px;
-    border: 1px solid #1f2325;
-    background: #1f2325;
+    border: 1px solid #444;
+}
+
+.composition-builder-categorized h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100,
+        "GRAD" 0,
+        "ROND" 100;
 }
 
 .composition-part {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

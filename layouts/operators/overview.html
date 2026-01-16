@@ -218,6 +218,9 @@
                                     
                                     <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/w.png'); background-size: contain; background-repeat: no-repeat;"></div>
                                     <span><b>W</b> WC only | <b>J</b> Restaurant <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/j.png'); background-size: contain; display: inline-block; vertical-align: middle; margin-left: 4px;"></div></span>
+
+                                    <div style="width: 28px; height: 28px; background-image: url('/static/assets/icons/sl.png'); background-size: contain; background-repeat: no-repeat;"></div>
+                                    <span><b>SL</b> Sleep</span>
                                     
                                     <!-- Back Section -->
                                     <div style="grid-column: 1 / -1; margin-top: 6px; font-weight: bold; color: #aaa;">↓ Back (End)</div>
@@ -233,54 +236,72 @@
                     </div>
                     <div id="composition-builder">
                         <div id="composition-parts">
-                            <div class="composition-part" draggable="true" data-part="e"></div>
-                            <div class="composition-part" draggable="true" data-part="l"></div>
-                            <div class="composition-part" draggable="true" data-part="s"></div>
-                            <div class="composition-part" draggable="true" data-part="t"></div>
+                            <div class="composition-builder-categorized">
+                                <h3>Base Parts</h3>
+                                <div class="composition-parts-categorized">
+                                    <div class="composition-part" draggable="true" data-part="e"></div>
+                                    <div class="composition-part" draggable="true" data-part="l"></div>
+                                    <div class="composition-part" draggable="true" data-part="s"></div>
+                                    <div class="composition-part" draggable="true" data-part="t"></div>
+                                </div>
+                            </div>
 
-                            <div class="composition-part" draggable="true" data-part="fh"></div>
-                            <div class="composition-part" draggable="true" data-part="fh1"></div>
-                            <div class="composition-part" draggable="true" data-part="fh2"></div>
+                            <div class="composition-builder-categorized">
+                                <h3>Front Parts</h3>
+                                <div class="composition-parts-categorized">
+                                    <div class="composition-part" draggable="true" data-part="fh"></div>
+                                    <div class="composition-part" draggable="true" data-part="fh1"></div>
+                                    <div class="composition-part" draggable="true" data-part="fh2"></div>
+                                    <div class="composition-part" draggable="true" data-part="fl"></div>
+                                    <div class="composition-part" draggable="true" data-part="fl1"></div>
+                                    <div class="composition-part" draggable="true" data-part="fl2"></div>
+                                </div>
+                            </div>
 
-                            <div class="composition-part" draggable="true" data-part="bh"></div>
-                            <div class="composition-part" draggable="true" data-part="bh1"></div>
-                            <div class="composition-part" draggable="true" data-part="bh2"></div>
+                            <div class="composition-builder-categorized">
+                                <h3>Back Parts</h3>
+                                <div class="composition-parts-categorized">
+                                    <div class="composition-part" draggable="true" data-part="bh"></div>
+                                    <div class="composition-part" draggable="true" data-part="bh1"></div>
+                                    <div class="composition-part" draggable="true" data-part="bh2"></div>
+                                    <div class="composition-part" draggable="true" data-part="bl"></div>
+                                    <div class="composition-part" draggable="true" data-part="bl1"></div>
+                                    <div class="composition-part" draggable="true" data-part="bl2"></div>
+                                </div>
+                            </div>
 
-                            <div class="composition-part" draggable="true" data-part="fl"></div>
-                            <div class="composition-part" draggable="true" data-part="fl1"></div>
-                            <div class="composition-part" draggable="true" data-part="fl2"></div>
+                            <div class="composition-builder-categorized">
+                                <h3>Regular Cars</h3>
+                                <div class="composition-parts-categorized">
+                                    <div class="composition-part" draggable="true" data-part="1"></div>
+                                    <div class="composition-part" draggable="true" data-part="2"></div>
+                                    <div class="composition-part" draggable="true" data-part="1w"></div>
+                                    <div class="composition-part" draggable="true" data-part="2w"></div>
+                                    <div class="composition-part" draggable="true" data-part="1-2"></div>
+                                    <div class="composition-part" draggable="true" data-part="1-2w"></div>
+                                    <div class="composition-part" draggable="true" data-part="w"></div>
+                                    <div class="composition-part" draggable="true" data-part="j"></div>
+                                    <div class="composition-part" draggable="true" data-part="sl"></div>
+                                </div>
+                            </div>
 
-                            <div class="composition-part" draggable="true" data-part="bl"></div>
-                            <div class="composition-part" draggable="true" data-part="bl1"></div>
-                            <div class="composition-part" draggable="true" data-part="bl2"></div>
-
-                            
-                            <div class="composition-part" draggable="true" data-part="1"></div>
-                            <div class="composition-part" draggable="true" data-part="2"></div>
-
-                            <div class="composition-part" draggable="true" data-part="1w"></div>
-                            <div class="composition-part" draggable="true" data-part="2w"></div>
-                            
-                            <div class="composition-part" draggable="true" data-part="1-2"></div>
-                            <div class="composition-part" draggable="true" data-part="1-2w"></div>
-                            <div class="composition-part" draggable="true" data-part="w"></div>
-                            
-                            <div class="composition-part" draggable="true" data-part="j"></div>
-
-                            <div class="composition-part" draggable="true" data-part="1-1df"></div>
-                            <div class="composition-part" draggable="true" data-part="1-2df"></div>
-                            <div class="composition-part" draggable="true" data-part="2-1df"></div>
-                            <div class="composition-part" draggable="true" data-part="2-2df"></div>
-
-                            <div class="composition-part" draggable="true" data-part="1-1db"></div>
-                            <div class="composition-part" draggable="true" data-part="1-2db"></div>
-                            <div class="composition-part" draggable="true" data-part="2-1db"></div>
-                            <div class="composition-part" draggable="true" data-part="2-2db"></div>
-
-                            <div class="composition-part" draggable="true" data-part="1-1d"></div>
-                            <div class="composition-part" draggable="true" data-part="1-2d"></div>
-                            <div class="composition-part" draggable="true" data-part="2-1d"></div>
-                            <div class="composition-part" draggable="true" data-part="2-2d"></div>
+                            <div class="composition-builder-categorized">
+                                <h3>Double Decker</h3>
+                                <div class="composition-parts-categorized">
+                                    <div class="composition-part" draggable="true" data-part="1-1d"></div>
+                                    <div class="composition-part" draggable="true" data-part="1-2d"></div>
+                                    <div class="composition-part" draggable="true" data-part="2-1d"></div>
+                                    <div class="composition-part" draggable="true" data-part="2-2d"></div>
+                                    <div class="composition-part" draggable="true" data-part="1-1df"></div>
+                                    <div class="composition-part" draggable="true" data-part="1-2df"></div>
+                                    <div class="composition-part" draggable="true" data-part="2-1df"></div>
+                                    <div class="composition-part" draggable="true" data-part="2-2df"></div>
+                                    <div class="composition-part" draggable="true" data-part="1-1db"></div>
+                                    <div class="composition-part" draggable="true" data-part="1-2db"></div>
+                                    <div class="composition-part" draggable="true" data-part="2-1db"></div>
+                                    <div class="composition-part" draggable="true" data-part="2-2db"></div>
+                                </div>
+                            </div>
                         </div>
                         <div id="compositions-container"></div>
                         <button type="button" class="btn-secondary smd-component_button-medium smd-component_button-flex" onclick="addCompositionVariant()" style="margin-top: 10px;">
