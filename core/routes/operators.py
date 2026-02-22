@@ -3,10 +3,10 @@ from core import main_dir
 from core.config import config, allowed_tags, allowed_attributes
 from core.logger import Logger
 from core.controller import LineController, OperatorController
+from core.utils import fetch_discord_user
 from bleach import clean
 
 import json
-import requests
 import os
 import time
 
@@ -121,52 +121,27 @@ def operator_route(uid):
             user_data = get_cached_user_data(user_id)
             
             if not user_data:
-                try:
-                    # Use Discord API directly
-                    if not config.discord_bot_token or config.discord_bot_token == "YOUR_BOT_TOKEN_HERE":
-                        raise Exception("Discord bot token not configured")
+                discord_data = fetch_discord_user(user_id, config.discord_bot_token)
+                
+                if discord_data:
+                    # Adjust avatar size from default to 32px
+                    avatar_url = discord_data.get("avatar_url", default_avatar)
+                    if 'cdn.discordapp.com/avatars/' in avatar_url:
+                        avatar_url = avatar_url.split('?')[0] + '?size=32'
                     
-                    headers = {
-                        'Authorization': f'Bot {config.discord_bot_token}',
-                        'Content-Type': 'application/json'
+                    user_data = {
+                        "avatar_url": avatar_url,
+                        "username": discord_data.get("username", user_id),
+                        "display_name": discord_data.get("display_name", user_id)
                     }
-                    
-                    response = requests.get(
-                        f"https://discord.com/api/v10/users/{user_id}",
-                        headers=headers,
-                        timeout=4
-                    )
-                    
-                    if response.status_code == 200:
-                        discord_data = response.json()
-                        
-                        avatar_url = default_avatar
-                        if discord_data.get('avatar'):
-                            avatar_hash = discord_data['avatar']
-                            extension = 'gif' if avatar_hash.startswith('a_') else 'png'
-                            avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.{extension}?size=32"
-                        else:
-                            if discord_data.get('discriminator') and discord_data['discriminator'] != '0':
-                                default_avatar_index = int(discord_data['discriminator']) % 5
-                            else:
-                                default_avatar_index = (int(user_id) >> 22) % 6
-                            avatar_url = f"https://cdn.discordapp.com/embed/avatars/{default_avatar_index}.png"
-                        
-                        user_data = {
-                            "avatar_url": avatar_url,
-                            "username": discord_data.get("username", user_id),
-                            "display_name": discord_data.get("global_name") or discord_data.get("username", user_id)
-                        }
-                    else:
-                        raise Exception(f"Discord API returned {response.status_code}")
-                        
-                except Exception as e:
-                    logger.warning(f"Failed to fetch Discord user {user_id}: {str(e)}")
+                else:
+                    logger.warning(f"Failed to fetch Discord user {user_id}")
                     user_data = {
                         "avatar_url": default_avatar,
                         "username": user_id,
                         "display_name": user_id
                     }
+                
                 set_cached_user_data(user_id, user_data)
                 
             operator['user_datas'].append({
