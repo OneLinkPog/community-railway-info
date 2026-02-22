@@ -254,7 +254,30 @@ async def update_operator(name):
             logger.error(f'[@{session.get("user")["username"]}] Not a member of the rail company')
             return {'error': 'Not authorized - must be member of the rail company'}, 401
 
-        data = request.json
+        if request.content_type and 'application/json' in request.content_type:
+            data = request.json
+        else:
+            users_raw = request.form.get('users', '')
+            data = {
+                'name': request.form.get('name'),
+                'color': request.form.get('color'),
+                'short': request.form.get('short'),
+                'users': [u.strip() for u in users_raw.split('\n') if u.strip()],
+                'description': request.form.get('description', ''),
+            }
+            if 'image' in request.files:
+                image_file = request.files['image']
+                if image_file and image_file.filename:
+                    operators_dir = os.path.join(main_dir, 'static', 'library', 'operators')
+                    os.makedirs(operators_dir, exist_ok=True)
+                    file_ext = os.path.splitext(image_file.filename)[1].lower()
+                    if file_ext not in ['.jpg', '.jpeg', '.png', '.gif', '.webp']:
+                        return jsonify({'error': 'Invalid image format. Use JPG, PNG, GIF, or WebP.'}), 400
+                    image_filename = f"{operator['id']}{file_ext}"
+                    image_path_full = os.path.join(operators_dir, image_filename)
+                    image_file.save(image_path_full)
+                    data['image_path'] = f"/static/library/operators/{image_filename}"
+
         logger.info(f"[@{session.get('user')['username']}] Updating operator {name} with data: {data}")
 
         success = OperatorController.update_operator(name, data)

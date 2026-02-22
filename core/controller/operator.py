@@ -25,7 +25,7 @@ class OperatorController:
         try:
             # Query 1: Get all operators
             operators_query = """
-            SELECT o.id, o.name, o.color, o.short, o.uid
+            SELECT o.id, o.name, o.color, o.short, o.uid, o.description, o.image_path
             FROM operator o
             ORDER BY o.name
             """
@@ -56,7 +56,9 @@ class OperatorController:
                     'color': op['color'] or '#808080',
                     'users': user_map.get(op['id'], []),
                     'short': op['short'] or '',
-                    'uid': op['uid']
+                    'uid': op['uid'],
+                    'description': op['description'] or '',
+                    'image_path': op['image_path'] or '',
                 }
                 operators.append(operator)
             
@@ -78,7 +80,7 @@ class OperatorController:
         """
         try:
             operator_query = """
-            SELECT o.id, o.name, o.color, o.short, o.uid
+            SELECT o.id, o.name, o.color, o.short, o.uid, o.description, o.image_path
             FROM operator o
             WHERE o.uid = %s
             """
@@ -104,7 +106,9 @@ class OperatorController:
                 'color': op['color'] or '#808080',
                 'users': [str(user['id']) for user in users_raw],
                 'short': op['short'] or '',
-                'uid': op['uid']
+                'uid': op['uid'],
+                'description': op['description'] or '',
+                'image_path': op['image_path'] or '',
             }
             
             return operator
@@ -289,8 +293,12 @@ class OperatorController:
                 update_data['color'] = operator_data['color']
             if 'short' in operator_data:
                 update_data['short'] = operator_data['short']
-            if "uid" in operator_data:
+            if 'uid' in operator_data:
                 update_data['uid'] = operator_data['uid']
+            if 'description' in operator_data:
+                update_data['description'] = operator_data['description']
+            if 'image_path' in operator_data:
+                update_data['image_path'] = operator_data['image_path']
             
             if update_data:
                 sql.update('operator', update_data, {'id': operator_id})

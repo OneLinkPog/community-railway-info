@@ -40,6 +40,36 @@
         "wdth" 100,
         "GRAD" 0,
         "ROND" 100;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.operator-badge::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.2s ease;
+    font-weight: 400;
+}
+
+.operator-badge:hover::after {
+    opacity: 1;
+    bottom: calc(100% + 5px);
+}
+
+.operator-badge:hover {
+    transform: translateY(-2px);
 }
 
 .operator-badge.admin {

@@ -267,35 +267,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function handleOperatorSubmit(event) {
     event.preventDefault();
-    console.log("handleOperatorSubmit called");
 
-    const formData = new FormData(event.target);
+    const form = event.target;
     const operatorId = window.operatorUid;
+    const formData = new FormData(form);
 
-    const data = {
-        name: formData.get("name"),
-        color: formData.get("color"),
-        users: formData
-            .get("users")
-            .split("\n")
-            .filter((s) => s.trim()),
-        short: formData.get("short"),
-    };
+    const method = operatorId ? "PUT" : "POST";
+    const url = operatorId
+        ? `/api/operators/${operatorId}`
+        : "/api/operators";
 
     try {
-        const method = operatorId ? "PUT" : "POST";
-        const url = operatorId
-            ? `/api/operators/${operatorId}`
-            : "/api/operators";
-
-        console.log("Sending request:", { method, url, data });
-
         const response = await fetch(url, {
             method: method,
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
+            body: formData,
         });
 
         if (response.ok) {
@@ -373,16 +358,12 @@ async function editLine(lineName) {
 }
 
 async function editOperator(operatorName) {
-    // ... existing code ...
     const operator = window.operatorName;
     if (!operator) {
         console.error("Operator not found:", operatorName);
         return;
     }
 
-    console.log("Editing Operator:", operator);
-
-    document.getElementById("modalTitle").textContent = "Edit operator";
     document.getElementById("operatorName").value = window.operatorName;
 
     const response = await fetch("/api/operators");
@@ -398,6 +379,19 @@ async function editOperator(operatorName) {
         document.getElementById("operatorShort").value =
             operatorData.short || "";
         document.getElementById("operatorUid").value = operatorData.uid;
+        document.getElementById("operatorDescription").value =
+            operatorData.description || "";
+        if (window.descriptionEditor) {
+            window.descriptionEditor.setValue(operatorData.description || "");
+        }
+        const preview = document.getElementById("currentImagePreview");
+        const currentImg = document.getElementById("currentImage");
+        if (operatorData.image_path) {
+            currentImg.src = operatorData.image_path;
+            preview.style.display = "block";
+        } else {
+            preview.style.display = "none";
+        }
     } else {
         console.error("Operator data not found for UID:", window.operatorUid);
     }
@@ -406,6 +400,9 @@ async function editOperator(operatorName) {
     modal.style.display = "block";
     setTimeout(() => {
         modal.classList.add("show");
+        if (window.descriptionEditor) {
+            window.descriptionEditor.refresh();
+        }
     }, 10);
 }
 

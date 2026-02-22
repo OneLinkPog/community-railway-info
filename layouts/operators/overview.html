@@ -22,29 +22,36 @@
             <span style="margin-left: 30px;">Back to Operators</span>
         </a>
         {% else %}
-        <div class="dashboard-header">
-            <h1>{{ operator_overview.name }}</h1>
-
-            {% if admin %}
-            <span class="operator-badge admin">🛡️ Admin</span>
-            {% endif %}
-
-            {% if member %}
-            <span class="operator-badge member">👥 Member</span>
-            {% endif %}
-
-            <div class="operator-members">
-                {% if operator_overview.user_datas %}
-                <div class="member-avatars">
-                    {% for user_data in operator_overview.user_datas %}
-                    <a href="/users/{{ user_data.id }}">
-                        <div class="member-avatar" data-tooltip="{{ user_data.display_name }} (@{{ user_data.username }})">
-                            <img src="{{ user_data.avatar_url }}" alt="Member Avatar">
-                        </div>
-                    </a>
-                    
-                    {% endfor %}
+        <div class="dashboard-header" style="align-items: flex-start; justify-content: space-between;">
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                {% if operator_overview.image_path %}
+                <img src="{{ operator_overview.image_path }}" alt="{{ operator_overview.name }} Logo" style="width: 64px; height: 64px; object-fit: contain; border-radius: 8px; flex-shrink: 0;">
+                {% else %}
+                <img src="/static/library/operator.png" alt="{{ operator_overview.name }} Logo" style="width: 64px; height: 64px; object-fit: contain; border-radius: 8px; flex-shrink: 0;">
+                {% endif %}
+                <div>
+                    <h1 style="margin: 0;">{{ operator_overview.name }}</h1>
+                    {% if operator_overview.description %}
+                    <p style="margin: 4px 0 0; color: rgba(255,255,255,0.7); font-size: 0.95rem;">{{ operator_overview.description | safe }}</p>
+                    {% endif %}
                 </div>
+            </div>
+
+            <div style="display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; justify-content: flex-end;">
+                {% if operator_overview.user_datas %}
+                {% for user_data in operator_overview.user_datas %}
+                <a href="/users/{{ user_data.id }}">
+                    <div class="member-avatar" data-tooltip="{{ user_data.display_name }} (@{{ user_data.username }})">
+                        <img src="{{ user_data.avatar_url }}" alt="Member Avatar">
+                    </div>
+                </a>
+                {% endfor %}
+                {% endif %}
+                {% if admin %}
+                <span class="operator-badge admin" data-tooltip="SUPERMAN POWER! - You can edit this operator or add/edit/remove lines">🛡️ Admin</span>
+                {% endif %}
+                {% if member %}
+                <span class="operator-badge member" data-tooltip="You are a member of this operator">👥 Member</span>
                 {% endif %}
             </div>
         </div>
@@ -392,6 +399,21 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="operatorImage">Operator Logo</label>
+                    <input type="file" id="operatorImage" name="image" accept="image/*" class="form-make-this-shit-white monospace">
+                    <div id="currentImagePreview" class="image-preview" style="display: none; margin-top: 8px;">
+                        <p style="margin: 0 0 4px;">Current Logo:</p>
+                        <img id="currentImage" alt="Current operator logo" style="max-width: 120px; max-height: 120px; object-fit: contain; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15);">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="operatorDescription">Description</label>
+                    <div id="operatorDescriptionEditor" style="height: 150px; border: 1px solid #ccc;"></div>
+                    <textarea id="operatorDescription" name="description" style="display:none;"></textarea>
+                </div>
+
+                <div class="form-group">
                     <label for="operatorUsers">Users (one per Line)</label>
                     <textarea id="operatorUsers" name="users" rows="4" placeholder="Enter usernames, one per line" class="form-make-this-shit-white"></textarea>
                 </div>
@@ -417,20 +439,33 @@
     window.operatorUid = "{{ operator_overview.uid }}";
     window.lines = {{ operator_lines | tojson | safe }};
 </script>
-
 <script src="/static/js/dashboard.js"></script>
 
 <script>
     window.noticeEditor = CodeMirror(document.getElementById('lineNoticeEditor'), {
-    value: document.getElementById('lineNotice').value,
-    mode: 'htmlmixed',
-    lineNumbers: true,
-    lineWrapping: true,
-    theme: 'monokai',
+        value: document.getElementById('lineNotice').value,
+        mode: 'htmlmixed',
+        lineNumbers: true,
+        lineWrapping: true,
+        theme: 'monokai',
     });
 
     window.noticeEditor.setSize("100%", "150px");
-    
+
+    window.descriptionEditor = CodeMirror(document.getElementById('operatorDescriptionEditor'), {
+        value: document.getElementById('operatorDescription').value,
+        mode: 'htmlmixed',
+        lineNumbers: true,
+        lineWrapping: true,
+        theme: 'monokai',
+    });
+
+    window.descriptionEditor.setSize("100%", "150px");
+
+    document.getElementById('operatorForm').addEventListener('submit', function () {
+        document.getElementById('operatorDescription').value = window.descriptionEditor.getValue();
+    }, true);
+
     // Apply icons to composition parts
     document.querySelectorAll('.composition-part').forEach(part => {
         const partName = part.getAttribute('data-part');
