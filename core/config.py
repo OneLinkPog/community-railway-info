@@ -18,6 +18,7 @@ class Config:
         self.discord_client_id = discord_config.get("discord_client_id")
         self.discord_client_secret = discord_config.get("discord_client_secret")
         self.discord_redirect_uri = discord_config.get("discord_redirect_uri")
+        self.discord_bot_token = discord_config.get("discord_bot_token")
 
         # Webserver configuration
         webserver_config = config_data.get("webserver", {})

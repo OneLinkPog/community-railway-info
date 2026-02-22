@@ -2,6 +2,7 @@ discord:
     discord_client_id: "YOUR_CLIENT_ID_HERE"
     discord_client_secret: "YOUR_CLIENT_SECRET_HERE"
     discord_redirect_uri: "YOUR_REDIRECT_URI_HERE"
+    discord_bot_token: "YOUR_BOT_TOKEN_HERE"
 
 webserver:
     host: 0.0.0.0

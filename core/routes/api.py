@@ -6,6 +6,7 @@ from core.controller import LineController, OperatorController, StationControlle
 
 import os
 import yaml
+import requests
 
 api = Blueprint('api', __name__)
 logger = Logger("@api")
@@ -685,4 +686,82 @@ def save_settings():
             f'[@{session.get("user")["username"]}] Error updating settings: {str(e)}')
         return jsonify({'error': str(e)}), 500
 
+"""
+    --- DISCORD API ROUTES ---
+"""
 
+# GET /api/discord/user/<user_id>
+@api.route('/api/discord/user/<user_id>', methods=['GET'])
+async def get_discord_user(user_id):
+    """
+    Fetch Discord user data (username, display name, avatar) via Discord API
+    """
+    try:
+        if not config.discord_bot_token or config.discord_bot_token == "YOUR_BOT_TOKEN_HERE":
+            logger.error("Discord bot token not configured")
+            return jsonify({'error': 'Discord bot token not configured'}), 500
+        
+        url = f"https://discord.com/api/v10/users/{user_id}"
+        
+        headers = {
+            'Authorization': f'Bot {config.discord_bot_token}',
+            'Content-Type': 'application/json'
+        }
+        
+        response = requests.get(url, headers=headers, timeout=10)
+        
+        if response.status_code == 404:
+            logger.warning(f"Discord user not found: {user_id}")
+            return jsonify({'error': 'User not found'}), 404
+        
+        if response.status_code == 401:
+            logger.error("Invalid Discord bot token")
+            return jsonify({'error': 'Invalid bot token'}), 500
+        
+        if response.status_code == 429:
+            logger.warning(f"Discord API rate limit reached for user {user_id}")
+            return jsonify({'error': 'Rate limit reached, please try again later'}), 429
+        
+        if response.status_code != 200:
+            logger.error(f"Discord API error: {response.status_code} - {response.text}")
+            return jsonify({'error': f'Discord API error: {response.status_code}'}), 500
+        
+        user_data = response.json()
+        
+        avatar_url = None
+        if user_data.get('avatar'):
+            avatar_hash = user_data['avatar']
+            extension = 'gif' if avatar_hash.startswith('a_') else 'png'
+            avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.{extension}"
+        else:
+            if user_data.get('discriminator') and user_data['discriminator'] != '0':
+                default_avatar_index = int(user_data['discriminator']) % 5
+            else:
+                default_avatar_index = (int(user_id) >> 22) % 6
+            avatar_url = f"https://cdn.discordapp.com/embed/avatars/{default_avatar_index}.png"
+        
+        result = {
+            'id': user_data.get('id'),
+            'username': user_data.get('username'),
+            'display_name': user_data.get('global_name') or user_data.get('username'),
+            'discriminator': user_data.get('discriminator', '0'),
+            'avatar_url': avatar_url,
+            'avatar_hash': user_data.get('avatar'),
+            'bot': user_data.get('bot', False),
+            'system': user_data.get('system', False)
+        }
+        
+        logger.info(f"Successfully fetched Discord user data for {user_id}")
+        return jsonify(result), 200
+    
+    except requests.exceptions.Timeout:
+        logger.error(f"Timeout while fetching Discord user {user_id}")
+        return jsonify({'error': 'Request timeout'}), 504
+    
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request error while fetching Discord user {user_id}: {str(e)}")
+        return jsonify({'error': 'Failed to connect to Discord API'}), 500
+    
+    except Exception as e:
+        logger.error(f"Error fetching Discord user {user_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
