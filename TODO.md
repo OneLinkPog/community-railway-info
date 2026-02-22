@@ -17,7 +17,7 @@
 - Currently nothing to do
 
 ## Bugs
-- [ ] Migrate from avatar-cyan.vercel.app ([#44](https://github.com/OneLinkPog/community-railway-info/issues/44))
+- Currently nothing to do
 
 # Done
 - [x] Add admin panel for adding new companies
@@ -33,3 +33,4 @@
 - [x] Add station section ([#28](https://github.com/OneLinkPog/community-railway-info/issues/28))
   - [x] Connect it with the lines
 - [x] Proper URL en- & decoding for all API targets (so that something like S5/R51 works)
+- [x] Migrate from avatar-cyan.vercel.app ([#44](https://github.com/OneLinkPog/community-railway-info/issues/44))
