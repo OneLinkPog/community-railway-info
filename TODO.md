@@ -8,7 +8,6 @@
 
 ## Company Management
 - [ ] Support lines having multiple operators
-- [ ] Logo next to company name ([#32](https://github.com/OneLinkPog/community-railway-info/issues/32))
 
 ## Documentation
 - Currently nothing to do
@@ -34,3 +33,4 @@
   - [x] Connect it with the lines
 - [x] Proper URL en- & decoding for all API targets (so that something like S5/R51 works)
 - [x] Migrate from avatar-cyan.vercel.app ([#44](https://github.com/OneLinkPog/community-railway-info/issues/44))
+- [x] Logo next to company name ([#32](https://github.com/OneLinkPog/community-railway-info/issues/32))
