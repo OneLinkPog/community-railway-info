@@ -1,85 +1,133 @@
 {% extends "base/base.html" %}
 {% block stylesheet %}
 <link rel="stylesheet" href="/static/css/index.css">
+<link rel="stylesheet" href="/static/css/operators.css">
 {% endblock stylesheet %}
 
 {% block content %}
-<div class="content">
-    <div class="line-status">
-        <div class="sort-buttons" style="display: flex; gap: 50px;">
-            <h1>Train Operators</h1>
+<div class="operators-container">
+    <div class="operators-header">
+        <h1>Train Operators</h1>
+        <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.05rem; margin: 0;">
+            Browse all railway companies and their networks
+        </p>
+    </div>
 
-            <div class="sort-buttons" style="margin-top: -16px; display: flex; gap: 10px; align-items: center;">
-                <button class="smd-component_button-small smd-component_button-flex" style="background: #607D8B;" onclick="sortOperators('name')">Sort by name</button>
-                <button class="smd-component_button-small smd-component_button-flex" style="background: #607D8B;" onclick="sortOperators('trains')">Sort by number of trains</button>
+    <div class="operators-controls">
+        <div class="search-box">
+            <span class="material-symbols">search</span>
+            <input type="text" id="operator-search" placeholder="Search operators..." oninput="filterOperators()">
+        </div>
+        
+        <div class="sort-controls">
+            <button class="sort-btn active" onclick="sortOperators('name')" id="sort-name">
+                <span class="material-symbols">sort_by_alpha</span>
+                Name
+            </button>
+            <button class="sort-btn" onclick="sortOperators('trains')" id="sort-trains">
+                <span class="material-symbols">trending_down</span>
+                Lines
+            </button>
+        </div>
+    </div>
+
+    <div class="operators-grid" id="operators-list">
+        {% for operator in operators %}
+        <div class="operator-card" 
+             data-name="{{ operator.name }}"
+             data-trains="{{ operator.train_count }}"
+             onclick="window.location.href='/operators/{{ operator.uid }}'">
+            <div class="operator-card-header">
+                <div class="operator-card-gradient" style="background: linear-gradient(135deg, {{ operator.color }} 0%, {{ operator.color }}dd 100%);"></div>
+            </div>
+            <div class="operator-card-content">
+                <div class="operator-logo-wrapper">
+                    {% if operator.image_path %}
+                    <img src="{{ operator.image_path }}" alt="{{ operator.name }}" class="operator-logo">
+                    {% else %}
+                    <img src="/static/library/operator.png" alt="{{ operator.name }}" class="operator-logo">
+                    {% endif %}
+                </div>
+                <h3 class="operator-card-title">{{ operator.name }}</h3>
+                <div class="operator-card-stats">
+                    <div class="operator-stat">
+                        <span class="material-symbols">route</span>
+                        <span>{{ operator.train_count }} {{ 'line' if operator.train_count == 1 else 'lines' }}</span>
+                    </div>
+                </div>
             </div>
         </div>
+        {% endfor %}
+    </div>
 
-        <div class="lines" id="operators-list">
-            {% for operator in operators %}
-            <div class="line-item line" id="operator-{{ operator.uid }}" 
-                 data-color="{{ operator.color }}"
-                 data-name="{{ operator.name }}"
-                 data-trains="{{ operator.train_count }}"
-                 onclick="window.location.href='/operators/{{ operator.uid }}'">
-                <span class="operator-name">{{ operator.name }}</span>
-                <span class="train-count">({{ operator.train_count }})</span>
+    <div class="no-results" id="no-results" style="display: none;">
+        <span class="material-symbols">search_off</span>
+        <h2>No operators found</h2>
+        <p>Try adjusting your search terms</p>
+    </div>
+
+    <div class="request-operator-banner">
+        <h3>Your railway company is missing?</h3>
+        <p>Request to add your operator to our network</p>
+        <a href="/request" class="smd-component_button-medium btn-primary" style="background: #2196F3">
+            <div style="display: flex; align-items: center;">
+                <span class="material-symbols" style="margin-right: 8px;">add_circle</span>
+                Request Operator
             </div>
-            <script>
-                (function() {
-                    const element = document.getElementById('operator-{{ operator.uid }}');
-                    if (!element) return;
-                    
-                    try {
-                        element.style.backgroundColor = '{{ operator.color }}';
-                        const hex = '{{ operator.color }}'.replace('#', '');
-                        const r = parseInt(hex.substr(0,2), 16);
-                        const g = parseInt(hex.substr(2,2), 16);
-                        const b = parseInt(hex.substr(4,2), 16);
-                        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-                        
-                        element.style.color = brightness > 128 ? '#000000' : '#ffffff';
-                    } catch (error) {
-                        console.error('Error setting colors:', error);
-                    }
-                })();
-            </script>
-            {% endfor %}
-        </div>
-        <br><br>
-        <a class="smd-component_button-small" href="/request">Your rail company is missing? Request one!</a>
+            
+        </a>
     </div>
 </div>
 
 <script>
-    function sortOperators(criterion) {
-        const container = document.getElementById('operators-list');
-        if (!container) return;
+let currentSort = 'name';
+
+function sortOperators(criterion) {
+    currentSort = criterion;
     
-        const operators = Array.from(container.children);
-        
-        operators.sort((a, b) => {
-            try {
-                if (criterion === 'name') {
-                    const nameA = (a.dataset.name || '').toLowerCase();
-                    const nameB = (b.dataset.name || '').toLowerCase();
-                    return nameA.localeCompare(nameB);
-                } else if (criterion === 'trains') {
-                    const trainsA = parseInt(a.dataset.trains) || 0;
-                    const trainsB = parseInt(b.dataset.trains) || 0;
-                    return trainsB - trainsA;
-                }
-            } catch (error) {
-                console.error('Sorting error:', error);
-                return 0;
-            }
-            return 0;
-        });
-        
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
+    // Update button states
+    document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('sort-' + criterion).classList.add('active');
+    
+    const container = document.getElementById('operators-list');
+    if (!container) return;
+
+    const operators = Array.from(container.querySelectorAll('.operator-card'));
+    
+    operators.sort((a, b) => {
+        if (criterion === 'name') {
+            const nameA = (a.dataset.name || '').toLowerCase();
+            const nameB = (b.dataset.name || '').toLowerCase();
+            return nameA.localeCompare(nameB);
+        } else if (criterion === 'trains') {
+            const trainsA = parseInt(a.dataset.trains) || 0;
+            const trainsB = parseInt(b.dataset.trains) || 0;
+            return trainsB - trainsA;
         }
-        operators.forEach(op => container.appendChild(op));
-    }
+        return 0;
+    });
+    
+    operators.forEach(op => container.appendChild(op));
+}
+
+function filterOperators() {
+    const searchTerm = document.getElementById('operator-search').value.toLowerCase();
+    const cards = document.querySelectorAll('.operator-card');
+    let visibleCount = 0;
+    
+    cards.forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const matches = name.includes(searchTerm);
+        card.style.display = matches ? '' : 'none';
+        if (matches) visibleCount++;
+    });
+    
+    document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+// Initialize with default sort
+document.addEventListener('DOMContentLoaded', () => {
+    sortOperators('name');
+});
 </script>
 {% endblock content %}

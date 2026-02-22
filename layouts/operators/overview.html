@@ -58,14 +58,14 @@
 
         {% if admin or member %}
         <div class="dashboard-controls">
-            <button onclick="showAddLineModal()" class="smd-component_button-medium btn-primary smd-component_button-flex">
+            <button onclick="showAddLineModal()" class="smd-component_button-medium btn-primary smd-component_button-flex" style="background: {{ operator_overview.color }}">
                 <div class="smd-component_button-inner">
                     <span class="material-symbols">add</span>
                     Add Line
                 </div>
             </button>
 
-            <button onclick="editOperator('{{ operator_overview.name }}')" class="smd-component_button-medium btn-primary smd-component_button-flex">
+            <button onclick="editOperator('{{ operator_overview.name }}')" class="smd-component_button-medium btn-primary smd-component_button-flex" style="background: {{ operator_overview.color }}">
                 <div class="smd-component_button-inner">
                     <span class="material-symbols">edit</span>
                     Edit operator
@@ -471,6 +471,37 @@
         const partName = part.getAttribute('data-part');
         part.style.backgroundImage = `url('/static/assets/icons/${partName}.png')`;
     });
+
+    // Adjust text color based on operator color brightness
+    function adjustButtonTextColor() {
+        const operatorColor = '{{ operator_overview.color }}';
+        
+        if (!operatorColor) return;
+        
+        // Calculate brightness
+        const hex = operatorColor.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        
+        // Determine text color based on brightness
+        const textColor = brightness > 128 ? '#000000' : '#ffffff';
+        
+        // Apply to all buttons with operator color background
+        const buttons = document.querySelectorAll('.dashboard-controls button[style*="background"]');
+        buttons.forEach(button => {
+            button.style.color = textColor;
+            // Also apply to icons inside buttons
+            const icons = button.querySelectorAll('.material-symbols');
+            icons.forEach(icon => {
+                icon.style.color = textColor;
+            });
+        });
+    }
+    
+    // Run on page load
+    adjustButtonTextColor();
 </script>
 
 {% endblock content %}
