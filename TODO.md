@@ -2,6 +2,8 @@
 
 ## General
 - [ ] Add linking capabilities to the station popup
+- [ ] Derry category
+- [ ] station names roll over onto the next line
 
 ## Interface
 - [ ] Fix navbar (more mobile friendly)
