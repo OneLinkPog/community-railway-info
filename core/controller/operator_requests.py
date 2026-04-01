@@ -267,14 +267,17 @@ class OperatorRequestController:
             if status not in ['pending', 'accepted', 'rejected']:
                 logger.error(f"Invalid status: {status}")
                 return False
-            
-            query = "UPDATE operator_request SET status = %s WHERE timestamp = %s"
-            result = sql.execute_query(query, (status, timestamp))
-            
-            if not result:
+
+            affected_rows = sql.update(
+                'operator_request',
+                {'status': status},
+                {'timestamp': timestamp}
+            )
+
+            if affected_rows <= 0:
                 logger.error(f"Request with timestamp {timestamp} not found or update failed")
-            
-            return result
+
+            return affected_rows > 0
         
         except Exception as e:
             logger.error(f"Error updating request status: {str(e)}")

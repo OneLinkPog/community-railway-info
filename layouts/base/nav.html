@@ -1,9 +1,25 @@
-<header class="smd-layout_header">
+<header class="smd-layout_header" id="mainHeader">
   <div class="smd-layout_header-branding">
     <a href="/">
       <img src="/static/favicon.webp" alt="Logo">
     </a>
-    <a href="/">Railway Info</a>
+    <a class="brand-text" href="/">Railway Info</a>
+  </div>
+
+  <div class="smd-component_dropdown mobile-nav-container">
+    <button class="smd-component_dropdown-dropbtn mobile-nav-toggle" onclick="toggleDropdown(this)" aria-label="Toggle navigation">
+      <span class="material-symbols">menu</span>
+    </button>
+    <div class="mobile-nav-dropdown smd-component_dropdown-content">
+      <div class="smd-component_dropdown-content-main">
+        <a href="/operators"><span class="material-symbols material-symbols--ul">apartment</span><span class="smd-component_dropdown-content-main-text">Operators</span></a>
+        <a href="/stations"><span class="material-symbols material-symbols--ul">train</span><span class="smd-component_dropdown-content-main-text">Train stations</span></a>
+        <a href="/computercraft-setup"><span class="material-symbols material-symbols--ul">monitor</span><span class="smd-component_dropdown-content-main-text">Station display</span></a>
+        <a href="/api-docs"><span class="material-symbols material-symbols--ul">api</span><span class="smd-component_dropdown-content-main-text">API Docs</span></a>
+        <a href="https://github.com/OneLinkPog/community-railway-info"><span class="material-symbols material-symbols--ul">code</span><span class="smd-component_dropdown-content-main-text">GitHub</span></a>
+        <div class="smd-component_dropdown-spacer"></div>
+      </div>
+    </div>
   </div>
 
   <nav class="smd-layout_navbar">
@@ -11,6 +27,7 @@
     <a href="/stations"><span class="material-symbols">train</span> Train stations</a>
     <a href="/computercraft-setup"><span class="material-symbols">monitor</span> Station display</a>
     <a href="https://github.com/OneLinkPog/community-railway-info"><span class="material-symbols">code</span> GitHub</a>
+    <a href="/api-docs"><span class="material-symbols">api</span> API Docs</a>
     <!-- <a href="/library"><span class="material-symbols">script</span> Library</a> -->
   </nav>
 
@@ -89,27 +106,78 @@
     </div>
 
     <script>
-      function toggleDropdown(btn) {
-        var dropdowns = document.getElementsByClassName('smd-component_dropdown-content');
-        for (var i = 0; i < dropdowns.length; i++) {
-          dropdowns[i].classList.remove('show');
+      function isMobileNavMode() {
+        var navbar = document.querySelector('.smd-layout_navbar');
+        if (!navbar) {
+          return window.innerWidth <= 1050;
         }
+        return window.getComputedStyle(navbar).display === 'none';
+      }
+
+      function syncMobileNavState() {
+        var header = document.getElementById('mainHeader');
+        if (!header) {
+          return;
+        }
+
+        var mobileDropdown = document.querySelector('.mobile-nav-dropdown');
+        if (!isMobileNavMode()) {
+          if (mobileDropdown) {
+            mobileDropdown.classList.remove('show');
+          }
+          header.classList.remove('mobile-nav-open');
+          return;
+        }
+
+        if (mobileDropdown && mobileDropdown.classList.contains('show')) {
+          header.classList.add('mobile-nav-open');
+        } else {
+          header.classList.remove('mobile-nav-open');
+        }
+      }
+
+      function toggleDropdown(btn) {
+        if (btn.classList.contains('mobile-nav-toggle') && !isMobileNavMode()) {
+          return;
+        }
+
+        var dropdowns = document.querySelectorAll('.smd-component_dropdown .smd-component_dropdown-content');
+        dropdowns.forEach(function (dropdownItem) {
+          if (btn.parentElement && btn.parentElement.contains(dropdownItem)) {
+            return;
+          }
+          dropdownItem.classList.remove('show');
+        });
         const dropdown = btn.parentElement.querySelector('.smd-component_dropdown-content');
         if (dropdown) {
           dropdown.classList.toggle('show');
         }
+        syncMobileNavState();
       }
 
       document.addEventListener('click', function (event) {
         var isDropdownBtn = event.target.closest('.smd-component_dropdown-dropbtn');
         var isDropdownContent = event.target.closest('.smd-component_dropdown-content');
         if (!isDropdownBtn && !isDropdownContent) {
-          var dropdowns = document.getElementsByClassName('smd-component_dropdown-content');
-          for (var i = 0; i < dropdowns.length; i++) {
-            dropdowns[i].classList.remove('show');
-          }
+          var dropdowns = document.querySelectorAll('.smd-component_dropdown .smd-component_dropdown-content');
+          dropdowns.forEach(function (dropdownItem) {
+            dropdownItem.classList.remove('show');
+          });
+          syncMobileNavState();
         }
       });
+
+      window.addEventListener('resize', function () {
+        if (!isMobileNavMode()) {
+          var dropdowns = document.querySelectorAll('.smd-component_dropdown .smd-component_dropdown-content');
+          dropdowns.forEach(function (dropdownItem) {
+            dropdownItem.classList.remove('show');
+          });
+        }
+        syncMobileNavState();
+      });
+
+      syncMobileNavState();
     </script>
   </div>
   <hr>

@@ -624,17 +624,27 @@ function displayStationDropdown(stations) {
         dropdown.innerHTML =
             '<div class="station-dropdown-item">No stations found</div>';
     } else {
-        dropdown.innerHTML = stations
-            .map(
-                (station) =>
-                    `<div class="station-dropdown-item" onclick="addStation('${station.name}')">
-                ${station.name}
-            </div>`
-            )
-            .join("");
+        dropdown.innerHTML = "";
+
+        stations.forEach((station) => {
+            const item = document.createElement("div");
+            item.className = "station-dropdown-item";
+            item.textContent = station.name;
+            item.addEventListener("click", () => addStation(station.name));
+            dropdown.appendChild(item);
+        });
     }
 
     dropdown.classList.add("show");
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
 function addStation(stationName) {
@@ -683,7 +693,7 @@ function updateStationsDisplay() {
             (station, index) =>
                 `<div class="station-item" draggable="true" data-index="${index}">
             <div class="station-item-order">${index + 1}</div>
-            <div class="station-item-name">${station.name}</div>
+            <div class="station-item-name">${escapeHtml(station.name)}</div>
             <button type="button" class="station-item-remove" onclick="removeStation(${index})">×</button>
         </div>`
         )

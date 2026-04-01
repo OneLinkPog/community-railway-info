@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, session
+from flask import Blueprint, render_template, session, redirect, url_for
 from core.config import config
-from core.controller import LineController, OperatorController, StationController
+from core.controller import LineController, OperatorController, StationController, OperatorRequestController
 from core.logger import Logger
+from core.utils import fetch_discord_user
 
 import re
 
@@ -126,4 +127,95 @@ def stations_route():
         total_stations=total_stations,
         active_stations=active_stations,
         connecting_lines=connecting_lines
+    )
+
+
+@main.route('/api-docs')
+def api_docs_route():
+    user = session.get('user')
+
+    operators = OperatorController.get_all_operators()
+
+    operator = None
+    admin = False
+
+    if user and 'id' in user:
+        operator = [op for op in operators if user['id'] in op['users']]
+
+    if user and user['id'] in config.web_admins:
+        admin = True
+
+    return render_template(
+        'api-docs.html',
+        user=user,
+        admin=admin,
+        operator=operator,
+    )
+
+
+@main.route('/me')
+def my_profile_route():
+    user = session.get('user')
+
+    if not user or 'id' not in user:
+        return redirect(url_for('auth.login'))
+
+    return redirect(url_for('index.user_profile_route', user_id=user['id']))
+
+
+@main.route('/users/<string:user_id>')
+def user_profile_route(user_id):
+    current_user = session.get('user')
+
+    all_operators = OperatorController.get_all_operators() or []
+    all_lines = LineController.get_all_lines() or []
+    all_requests = OperatorRequestController.get_all_requests() or []
+
+    nav_operator = None
+    admin = False
+
+    if current_user and 'id' in current_user:
+        nav_operator = [op for op in all_operators if current_user['id'] in op.get('users', [])]
+
+    if current_user and current_user['id'] in config.web_admins:
+        admin = True
+
+    member_operators = [op for op in all_operators if str(user_id) in op.get('users', [])]
+    member_operator_uids = {op.get('uid') for op in member_operators}
+    member_lines = [line for line in all_lines if line.get('operator_uid') in member_operator_uids]
+
+    user_requests = [
+        req for req in all_requests
+        if str(req.get('requester', {}).get('id')) == str(user_id)
+    ]
+
+    request_stats = {
+        'total': len(user_requests),
+        'pending': len([r for r in user_requests if r.get('status') == 'pending']),
+        'accepted': len([r for r in user_requests if r.get('status') == 'accepted']),
+        'rejected': len([r for r in user_requests if r.get('status') == 'rejected'])
+    }
+
+    discord_user = fetch_discord_user(user_id, config.discord_bot_token) or {
+        'id': user_id,
+        'username': user_id,
+        'display_name': user_id,
+        'avatar_url': 'https://cdn.discordapp.com/embed/avatars/0.png',
+        'bot': False,
+        'system': False,
+    }
+
+    is_self = bool(current_user and str(current_user.get('id')) == str(user_id))
+
+    return render_template(
+        'users.html',
+        user=current_user,
+        admin=admin,
+        operator=nav_operator,
+        profile_user=discord_user,
+        is_self=is_self,
+        member_operators=member_operators,
+        member_lines=member_lines,
+        request_stats=request_stats,
+        user_requests=user_requests[:10],
     )

@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     const searchInput = document.getElementById('stationSearch');
     const stationsGrid = document.getElementById('stationsGrid');
     const noStationsFound = document.getElementById('noStationsFound');
@@ -604,19 +613,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         ${letter === '#' ? 'Numbers & Symbols' : letter}
                     </div>
                     <div class="alphabet-stations">
-                        ${stations.map(station => `
-                            <div class="list-station-item" data-name="${station.name}" data-id="${station.id}">
+                        ${stations.map(station => {
+                            const safeName = escapeHtml(station.name);
+                            const safeAltName = escapeHtml(station.altName);
+                            const safeDescription = escapeHtml(station.description);
+                            const safeIcon = escapeHtml(station.icon);
+
+                            return `
+                            <div class="list-station-item" data-name="${safeName}" data-id="${station.id}">
                                 <div class="list-station-icon">
-                                    <span class="material-symbols">${station.icon}</span>
+                                    <span class="material-symbols">${safeIcon}</span>
                                 </div>
                                 <div class="list-station-content">
-                                    <div class="list-station-name">${station.name}</div>
-                                    ${station.altName ? `<div class="list-station-alt-name">${station.altName}</div>` : ''}
-                                    ${station.description ? `<div class="list-station-description">${station.description}</div>` : ''}
+                                    <div class="list-station-name">${safeName}</div>
+                                    ${station.altName ? `<div class="list-station-alt-name">${safeAltName}</div>` : ''}
+                                    ${station.description ? `<div class="list-station-description">${safeDescription}</div>` : ''}
                                     <div class="list-station-status">${station.status}</div>
                                 </div>
                             </div>
-                        `).join('')}
+                        `;
+                        }).join('')}
                     </div>
                 </div>
             `;

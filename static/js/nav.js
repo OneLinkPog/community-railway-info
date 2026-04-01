@@ -3,11 +3,29 @@ let ticking = false;
 let lastScrollY = 0;
 let isFloating = false;
 let animationPhase = 0; // 0 = normal, 1 = transitioning, 2 = floating
-const isMobile = window.innerWidth <= 768;
-const threshold = isMobile ? 15 : 25;
+let isMobile = window.innerWidth <= 1050;
+let threshold = isMobile ? 15 : 25;
 const anchorZone = 5;
 
 function updateHeader() {
+  if (!header) {
+    ticking = false;
+    return;
+  }
+
+  if (header.classList.contains("mobile-nav-open")) {
+    header.classList.remove(
+      "smd-layout_header--floating",
+      "smd-layout_header--transitioning",
+      "smd-layout_header--transitioning-back",
+      "smd-layout_header--snap-back"
+    );
+    isFloating = false;
+    animationPhase = 0;
+    ticking = false;
+    return;
+  }
+
   const scrollY = window.scrollY;
 
   if (scrollY === lastScrollY) {
@@ -80,8 +98,11 @@ window.addEventListener("scroll", onScroll, { passive: true });
 window.addEventListener(
   "resize",
   () => {
-    const newIsMobile = window.innerWidth <= 768;
+    const newIsMobile = window.innerWidth <= 1050;
     if (newIsMobile !== isMobile) {
+      isMobile = newIsMobile;
+      threshold = isMobile ? 15 : 25;
+
       // Reset animation state on resize
       animationPhase = 0;
       isFloating = false;

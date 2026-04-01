@@ -1,0 +1,126 @@
+.api-docs-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 16px 42px;
+    margin-top: 64px !important;
+}
+
+.docs-hero {
+    background: linear-gradient(120deg, rgba(12, 74, 110, 0.16), rgba(12, 110, 74, 0.16));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 18px;
+}
+
+.docs-hero h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.docs-hero p {
+    opacity: 0.9;
+    margin: 10px 0 0;
+}
+
+.docs-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.docs-meta span {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+}
+
+.docs-card {
+    background: rgba(12, 12, 14, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 14px;
+}
+
+.docs-card h2 {
+    margin-top: 0;
+}
+
+.endpoint-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 10px;
+}
+
+.endpoint {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.endpoint-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.method {
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    border-radius: 999px;
+    padding: 3px 9px;
+    min-width: 58px;
+    text-align: center;
+}
+
+.method.get {
+    background: rgba(50, 205, 125, 0.2);
+    color: #7df0b0;
+}
+
+.method.post {
+    background: rgba(60, 145, 255, 0.2);
+    color: #8bc2ff;
+}
+
+.method.put {
+    background: rgba(252, 186, 3, 0.2);
+    color: #ffd36e;
+}
+
+.method.delete {
+    background: rgba(255, 99, 99, 0.2);
+    color: #ff9b9b;
+}
+
+pre {
+    background: rgba(0, 0, 0, 0.36);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 10px 12px;
+    overflow-x: auto;
+}
+
+code {
+    font-family: "Google Sans Code", monospace;
+}
+
+@media (max-width: 700px) {
+    .api-docs-page {
+        padding: 22px 12px 36px;
+    }
+
+    .docs-hero {
+        padding: 18px;
+    }
+}

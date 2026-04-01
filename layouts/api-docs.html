@@ -1,0 +1,149 @@
+{% extends "base/base.html" %}
+{% block stylesheet %}
+<link rel="stylesheet" href="/static/css/index.css">
+<link rel="stylesheet" href="/static/css/api-docs.css">
+{% endblock stylesheet %}
+
+{% block content %}
+<div class="content api-docs-page">
+    <div class="docs-hero">
+        <h1><span class="material-symbols">api</span> API Documentation</h1>
+        <p>Reference for external developers who want to consume Community Railway Info data.</p>
+        <div class="docs-meta">
+            <span>Base path: <code>/api</code></span>
+            <span>Format: <code>application/json</code></span>
+        </div>
+    </div>
+
+    <section class="docs-card">
+        <h2>Authentication</h2>
+        <p>
+            Some endpoints are public, others require an authenticated browser session (Discord login),
+            and a few are restricted to admins only.
+        </p>
+        <ul>
+            <li><strong>Public:</strong> No session required</li>
+            <li><strong>User session:</strong> Logged-in user required</li>
+            <li><strong>Admin:</strong> Logged-in admin required</li>
+        </ul>
+    </section>
+
+    <section class="docs-card">
+        <h2>⚠️ Fair Use & API Guidelines</h2>
+        <p>
+            This API is provided free of charge for public use. To ensure stability for everyone, 
+            we ask that you follow these guidelines:
+        </p>
+        <ul>
+            <li><strong>Prevent Abuse:</strong> Excessive requests or malicious activities (e.g., DDoS attacks) will result in temporary or permanent IP bans.</li>
+            <li><strong>High-Volume Access:</strong> If your project requires a high volume of requests, please contact me directly to discuss your use case.</li>
+            <li><strong>Scope of Use:</strong> This API is strictly intended for <strong>MrJulsen's community projects</strong> (e.g., the Public Discord User Metadata API). Please do not use it for external applications.</li>
+        </ul>
+    </section>
+
+
+
+    <section class="docs-card">
+        <h2>Public Endpoints</h2>
+        <div class="endpoint-grid">
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method get">GET</span><code>/api/lines</code></div>
+                <p>Returns all lines, including stations and operator metadata.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method get">GET</span><code>/api/operators</code></div>
+                <p>Returns all operators.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method get">GET</span><code>/api/stations</code></div>
+                <p>Returns all stations.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method get">GET</span><code>/api/stations/&lt;id_or_name&gt;</code></div>
+                <p>Returns one station with connected lines and statistics.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method get">GET</span><code>/api/stations/search/&lt;term&gt;</code></div>
+                <p>Searches stations by name.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method get">GET</span><code>/api/discord/user/&lt;user_id&gt;</code></div>
+                <p>Resolves Discord user metadata for a given user ID.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="docs-card">
+        <h2>Session-Protected Endpoints</h2>
+        <div class="endpoint-grid">
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method post">POST</span><code>/api/lines</code></div>
+                <p>Creates a new line.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method put">PUT</span><code>/api/lines/&lt;name&gt;</code></div>
+                <p>Updates a line.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method delete">DELETE</span><code>/api/lines/&lt;name&gt;</code></div>
+                <p>Deletes a line.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method put">PUT</span><code>/api/operators/&lt;uid&gt;</code></div>
+                <p>Updates an operator (member/admin only).</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method post">POST</span><code>/api/operators/request</code></div>
+                <p>Submits a new operator request.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method post">POST</span><code>/api/stations/create</code></div>
+                <p>Creates a station.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method post">POST</span><code>/api/stations/update</code></div>
+                <p>Updates a station.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="docs-card">
+        <h2>Admin Endpoints</h2>
+        <div class="endpoint-grid">
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method get">GET</span><code>/api/admin/logs</code></div>
+                <p>Returns server log entries.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method post">POST</span><code>/api/admin/companies/handle-request</code></div>
+                <p>Accepts or rejects operator requests.</p>
+            </article>
+            <article class="endpoint">
+                <div class="endpoint-head"><span class="method post">POST</span><code>/api/admin/settings/update</code></div>
+                <p>Updates runtime/admin settings.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="docs-card">
+        <h2>Quick Examples</h2>
+        <h3>Fetch all lines</h3>
+        <pre><code>curl -sS "https://railinfo.juliandev02.me/api/lines"</code></pre>
+
+        <h3>Fetch station by ID</h3>
+        <pre><code>curl -sS "https://railinfo.juliandev02.me/api/stations/42"</code></pre>
+
+        <h3>Create an operator request (session required)</h3>
+        <pre><code>curl -X POST "https://railinfo.juliandev02.me/api/operators/request" \
+  -H "Content-Type: application/json" \
+  -b "session=&lt;your-session-cookie&gt;" \
+  -d '{
+    "companyName": "Noctis Rail",
+    "shortCode": "NTR",
+    "color": "#3A84F7",
+    "additionalUsers": ["123456789012345678"],
+    "companyUid": "noctis-rail"
+  }'</code></pre>
+    </section>
+</div>
+{% endblock content %}

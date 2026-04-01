@@ -1,0 +1,84 @@
+{% extends "base/base.html" %}
+{% block stylesheet %}
+<link rel="stylesheet" href="/static/css/index.css">
+<link rel="stylesheet" href="/static/css/users.css">
+{% endblock stylesheet %}
+
+{% block content %}
+<div class="content user-profile-page">
+    <section class="user-hero">
+        <img class="user-avatar" src="{{ profile_user.avatar_url }}" alt="Avatar of {{ profile_user.display_name }}">
+        <div class="user-hero-text">
+            <h1>
+                {{ profile_user.display_name }}
+                {% if is_self %}<span class="profile-pill">You</span>{% endif %}
+                {% if profile_user.bot %}<span class="profile-pill profile-pill-bot">Bot</span>{% endif %}
+            </h1>
+            <p>@{{ profile_user.username }}</p>
+            <div class="user-meta">
+                <span>Discord ID: {{ profile_user.id }}</span>
+                <span>Operators: {{ member_operators|length }}</span>
+                <span>Lines covered: {{ member_lines|length }}</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stats-card">
+            <h3>Operator Requests</h3>
+            <div class="stats-row">
+                <span>Total</span>
+                <strong>{{ request_stats.total }}</strong>
+            </div>
+            <div class="stats-row">
+                <span>Pending</span>
+                <strong>{{ request_stats.pending }}</strong>
+            </div>
+            <div class="stats-row">
+                <span>Accepted</span>
+                <strong>{{ request_stats.accepted }}</strong>
+            </div>
+            <div class="stats-row">
+                <span>Rejected</span>
+                <strong>{{ request_stats.rejected }}</strong>
+            </div>
+        </article>
+
+        <article class="stats-card">
+            <h3>Membership</h3>
+            {% if member_operators %}
+            <div class="chip-wrap">
+                {% for op in member_operators %}
+                <a class="op-chip" href="/operators/{{ op.uid }}">
+                    <span class="chip-dot"></span>
+                    {{ op.name }}
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="muted">No operator memberships found.</p>
+            {% endif %}
+        </article>
+    </section>
+
+    <section class="requests-section">
+        <h2>Recent Requests</h2>
+        {% if user_requests %}
+        <div class="request-list">
+            {% for req in user_requests %}
+            <article class="request-item status-{{ req.status }}">
+                <div class="request-top">
+                    <h3>{{ req.company_name }}</h3>
+                    <span class="status-badge">{{ req.status|capitalize }}</span>
+                </div>
+                <p class="request-meta">Short code: {{ req.short_code }} | UID: {{ req.company_uid }}</p>
+                <p class="request-meta">Timestamp: {{ req.timestamp }}</p>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="muted">No requests from this user yet.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock content %}
