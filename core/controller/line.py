@@ -87,6 +87,7 @@ class LineController:
         
         except Exception as e:
             logger.error(f"Error fetching lines from database: {str(e)}")
+            return []
     
     @staticmethod
     def get_line_by_name(line_name: str) -> Optional[Dict[str, Any]]:
@@ -196,24 +197,34 @@ class LineController:
             
             results = sql.execute_query(query, (operator_uid,))
             
+            # Query 2: Get ALL compositions for this operator's lines in ONE query
+            comp_query = """
+            SELECT 
+                lc.line_id,
+                c.parts, 
+                c.name as comp_name
+            FROM line_composition lc
+            JOIN composition c ON lc.composition_id = c.id
+            JOIN line l ON lc.line_id = l.id
+            JOIN operator o ON l.operator_id = o.id
+            WHERE o.uid = %s
+            ORDER BY lc.line_id, c.id
+            """
+            all_compositions = sql.execute_query(comp_query, (operator_uid,))
+            
+            # Build composition map: {line_id: [compositions]}
+            comp_map = {}
+            for comp in all_compositions:
+                line_id = comp['line_id']
+                if line_id not in comp_map:
+                    comp_map[line_id] = []
+                comp_map[line_id].append({
+                    'name': comp['comp_name'] or '',
+                    'parts': comp['parts']
+                })
+            
             lines = []
             for row in results:
-                comp_query = """
-                SELECT c.parts, c.name as comp_name
-                FROM line_composition lc
-                JOIN composition c ON lc.composition_id = c.id
-                WHERE lc.line_id = %s
-                ORDER BY c.id
-                """
-                compositions_raw = sql.execute_query(comp_query, (row['id'],))
-                
-                compositions = []
-                for comp in compositions_raw:
-                    compositions.append({
-                        'name': comp['comp_name'] or '',
-                        'parts': comp['parts']
-                    })
-                
                 line = {
                     'name': row['name'],
                     'color': row['color'],
@@ -221,7 +232,7 @@ class LineController:
                     'type': row['type'] or 'public',
                     'notice': row['notice'] or '',
                     'stations': row['stations'].split('||') if row['stations'] else [],
-                    'compositions': compositions,
+                    'compositions': comp_map.get(row['id'], []),
                     'operator': row['operator_name'] or '',
                     'operator_uid': row['operator_uid'] or ''
                 }

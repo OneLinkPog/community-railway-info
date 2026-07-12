@@ -88,37 +88,25 @@ def operator_route(uid):
     AVATAR_CACHE_FILE = os.path.join(main_dir, "operator_avatar_cache.json")
     AVATAR_CACHE_TTL = 60 * 60 * 24
 
-    def get_cached_user_data(user_id):
-        if not os.path.exists(AVATAR_CACHE_FILE):
-            return None
-        try:
-            with open(AVATAR_CACHE_FILE) as f:
-                cache = json.load(f)
-        except Exception:
-            return None
-        entry = cache.get(user_id)
-        if entry and time.time() - entry.get("timestamp", 0) < AVATAR_CACHE_TTL:
-            return entry["data"]
-        return None
-
-    def set_cached_user_data(user_id, data):
+    if operator and 'users' in operator:
+        operator['user_datas'] = []
+        
+        # Load cache once
+        cache = {}
         if os.path.exists(AVATAR_CACHE_FILE):
             try:
                 with open(AVATAR_CACHE_FILE) as f:
                     cache = json.load(f)
             except Exception:
-                cache = {}
-        else:
-            cache = {}
-        cache[user_id] = {"data": data, "timestamp": time.time()}
-        with open(AVATAR_CACHE_FILE, "w") as f:
-            json.dump(cache, f)
-
-    if operator and 'users' in operator:
-        operator['user_datas'] = []
+                pass
+                
+        cache_updated = False
         
         for user_id in operator['users']:
-            user_data = get_cached_user_data(user_id)
+            entry = cache.get(user_id)
+            user_data = None
+            if entry and time.time() - entry.get("timestamp", 0) < AVATAR_CACHE_TTL:
+                user_data = entry["data"]
             
             if not user_data:
                 discord_data = fetch_discord_user(user_id, config.discord_bot_token)
@@ -142,7 +130,8 @@ def operator_route(uid):
                         "display_name": user_id
                     }
                 
-                set_cached_user_data(user_id, user_data)
+                cache[user_id] = {"data": user_data, "timestamp": time.time()}
+                cache_updated = True
                 
             operator['user_datas'].append({
                 'id': user_id,
@@ -150,6 +139,13 @@ def operator_route(uid):
                 'username': user_data.get("username", user_id),
                 'display_name': user_data.get("display_name", user_id),
             })
+            
+        if cache_updated:
+            try:
+                with open(AVATAR_CACHE_FILE, "w") as f:
+                    json.dump(cache, f)
+            except Exception as e:
+                logger.error(f"Failed to write avatar cache: {e}")
 
     for line in operator_lines:
         line['notice'] = clean(

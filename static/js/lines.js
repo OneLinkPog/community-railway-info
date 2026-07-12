@@ -21,16 +21,26 @@ function closeModal() {
     });
 }
 
-async function getOperatorColor(operatorUid) {
+let operatorsCache = null;
+
+async function getOperators() {
+    if (operatorsCache) {
+        return operatorsCache;
+    }
     try {
         const response = await fetch('/api/operators');
-        const operators = await response.json();
-        const operator = operators.find(op => op.uid === operatorUid);
-        return operator?.color || '#808080';
+        operatorsCache = await response.json();
+        return operatorsCache;
     } catch (error) {
-        console.error('Error fetching operator color:', error);
-        return '#808080';
+        console.error('Error fetching operators:', error);
+        return [];
     }
+}
+
+async function getOperatorColor(operatorUid) {
+    const operators = await getOperators();
+    const operator = operators.find(op => op.uid === operatorUid);
+    return operator?.color || '#808080';
 }
 
 let linesData = [];
@@ -83,16 +93,9 @@ function fetchLines() {
 
                         const operatorColor = await getOperatorColor(lineData.operator_uid);
 
-                        const operatorName = await fetch('/api/operators')
-                            .then(response => response.json())
-                            .then(operators => {
-                                const operator = operators.find(op => op.uid === lineData.operator_uid);
-                                return operator?.name || 'Unknown Operator';
-                            })
-                            .catch(error => {
-                                console.error('Error fetching operator name:', error);
-                                return 'Unknown Operator';
-                            });
+                        const operators = await getOperators();
+                        const operator = operators.find(op => op.uid === lineData.operator_uid);
+                        const operatorName = operator?.name || 'Unknown Operator';
 
                         const fgColor = getContrastColor(lineData.color);
                         const operatorFgColor = getContrastColor(operatorColor);

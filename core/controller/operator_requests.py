@@ -295,8 +295,7 @@ class OperatorRequestController:
             True if successful, False otherwise
         """
         try:
-            query = "DELETE FROM operator_request WHERE timestamp = %s"
-            count = sql.execute_query(query, (timestamp,))
+            count = sql.delete('operator_request', {'timestamp': timestamp})
             
             if count > 0:
                 return True

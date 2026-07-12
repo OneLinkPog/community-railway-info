@@ -58,8 +58,8 @@ async def callback():
     session.permanent = True
     session.modified = True
     
-    if hasattr(session, 'app'):
-        session.app.permanent_session_lifetime = timedelta(days=14)
+    from flask import current_app
+    current_app.permanent_session_lifetime = timedelta(days=14)
 
     logger.info(f"User {user['id']} ({user['username']}) logged in successfully.")
 

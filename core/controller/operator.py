@@ -66,6 +66,7 @@ class OperatorController:
         
         except Exception as e:
             logger.error(f"Error fetching operators from database: {str(e)}")
+            return []
     
     @staticmethod
     def get_operator_by_uid(operator_uid: str) -> Optional[Dict[str, Any]]:
@@ -178,30 +179,26 @@ class OperatorController:
         """
         try:
             operators_query = """
-            SELECT DISTINCT o.id, o.name, o.color, o.short, o.uid
+            SELECT o.id, o.name, o.color, o.short, o.uid,
+                   GROUP_CONCAT(DISTINCT ou_all.user_id ORDER BY ou_all.user_id SEPARATOR ',') as users
             FROM operator o
             JOIN operator_user ou ON o.id = ou.operator_id
-            JOIN user u ON ou.user_id = u.id
-            WHERE u.id = %s
+            JOIN operator_user ou_all ON o.id = ou_all.operator_id
+            WHERE ou.user_id = %s
+            GROUP BY o.id, o.name, o.color, o.short, o.uid
             ORDER BY o.name
             """
             operators_raw = sql.execute_query(operators_query, (user_id,))
             
             operators = []
             for op in operators_raw:
-                # Get all users for this operator
-                users_query = """
-                SELECT u.id
-                FROM operator_user ou
-                JOIN user u ON ou.user_id = u.id
-                WHERE ou.operator_id = %s
-                """
-                users_raw = sql.execute_query(users_query, (op['id'],))
+                users_str = op.get('users')
+                users_list = [u.strip() for u in users_str.split(',') if u.strip()] if users_str else []
                 
                 operator = {
                     'name': op['name'],
                     'color': op['color'] or '#808080',
-                    'users': [str(user['id']) for user in users_raw],
+                    'users': users_list,
                     'short': op['short'] or '',
                     'uid': op['uid']
                 }
