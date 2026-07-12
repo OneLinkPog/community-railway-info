@@ -43,10 +43,12 @@
                 <span class="sort-text">Sort A-Z</span>
             </button>
         </div>
+        {% if session.get('user') %}
         <button id="addStationBtn" class="btn-primary add-station-btn">
             <span class="material-symbols">add</span>
             Add New Station
         </button>
+        {% endif %}
         <button id="listViewBtn" class="btn-secondary sort-btn" title="Show as alphabetical list">
             <span class="material-symbols">view_list</span>
             <span class="sort-text">List View</span>

@@ -388,7 +388,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close modal event listeners
     document.getElementById('closeStationModal').addEventListener('click', closeStationModal);
     document.querySelector('.station-modal-backdrop').addEventListener('click', closeStationModal);
-    document.getElementById('editStationModal').addEventListener('click', openStationEditModal);
+    
+    const editStationModal = document.getElementById('editStationModal');
+    if (editStationModal) {
+        editStationModal.addEventListener('click', openStationEditModal);
+    }
     
     // Edit modal event listeners
     document.getElementById('cancelStationEdit').addEventListener('click', closeStationEditModal);
